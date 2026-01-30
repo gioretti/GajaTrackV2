@@ -1,0 +1,77 @@
+@page "/import"
+@using GajaTrack.Application.Interfaces
+@inject ILegacyImportService ImportService
+@inject ILogger<Import> Logger
+
+<PageTitle>Import Legacy Data</PageTitle>
+
+<h1>Import Data</h1>
+<p>Upload your export file from Philips Baby+ (iOS or Android).</p>
+
+<div class="card p-4" style="max-width: 600px;">
+    <InputFile OnChange="LoadFiles" class="form-control mb-3" accept=".json" />
+    
+    @if (_isProcessing)
+    {
+        <div class="alert alert-info">Processing import... please wait.</div>
+    }
+    
+    @if (_errorMessage != null)
+    {
+        <div class="alert alert-danger">@_errorMessage</div>
+    }
+
+    @if (_summary != null)
+    {
+        <div class="alert alert-success">
+            <h4>Import Complete!</h4>
+            <ul>
+                <li>Nursing Feeds: <strong>@_summary.NursingFeedsImported</strong></li>
+                <li>Bottle Feeds: <strong>@_summary.BottleFeedsImported</strong></li>
+                <li>Sleep Sessions: <strong>@_summary.SleepSessionsImported</strong></li>
+                <li>Diaper Changes: <strong>@_summary.DiaperChangesImported</strong></li>
+            </ul>
+        </div>
+    }
+</div>
+
+@code {
+    private ImportSummary? _summary;
+    private string? _errorMessage;
+    private bool _isProcessing;
+    
+    // 10MB limit
+    private const long MaxFileSize = 10 * 1024 * 1024; 
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        _isProcessing = true;
+        _errorMessage = null;
+        _summary = null;
+
+        try
+        {
+            var file = e.File;
+            if (file.Size > MaxFileSize)
+            {
+                _errorMessage = $"File size exceeds the 10MB limit. ({file.Size / 1024 / 1024} MB)";
+                return;
+            }
+
+            // We must read the stream carefully. OpenReadStream returns a stream 
+            // that we can pass directly to our service.
+            await using var stream = file.OpenReadStream(MaxFileSize);
+            
+            _summary = await ImportService.ImportFromStreamAsync(stream);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error importing file");
+            _errorMessage = $"An error occurred during import: {ex.Message}";
+        }
+        finally
+        {
+            _isProcessing = false;
+        }
+    }
+}
