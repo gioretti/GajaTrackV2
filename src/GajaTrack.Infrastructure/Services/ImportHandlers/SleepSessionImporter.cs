@@ -1,3 +1,4 @@
+using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Infrastructure.Services.ImportHandlers;
@@ -11,12 +12,18 @@ internal static class SleepSessionImporter
         var result = new List<SleepSession>();
         foreach (var item in source)
         {
+            if (item.EndDate.HasValue && item.EndDate < item.StartDate)
+            {
+                throw new ImportValidationException(nameof(SleepSession), item.Pk, 
+                    $"EndTime {item.EndDate} is before StartTime {item.StartDate}");
+            }
+
             result.Add(new SleepSession
             {
                 BabyId = Guid.Empty,
                 ExternalId = item.Pk,
                 StartTime = item.StartDate,
-                EndTime = item.EndDate.Year == 1 ? null : item.EndDate
+                EndTime = item.EndDate
             });
         }
         return result;

@@ -1,3 +1,4 @@
+using GajaTrack.Application.Interfaces;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
 
@@ -21,5 +22,20 @@ public class SleepSessionImporterTests
         Assert.Equal("pk3", result[0].ExternalId);
         Assert.Equal(now, result[0].StartTime);
         Assert.Equal(jsonItem.EndDate, result[0].EndTime);
+    }
+
+    [Fact]
+    public void Map_ShouldThrowException_WhenEndDateIsBeforeStartTime()
+    {
+        // Arrange
+        var start = DateTime.UtcNow;
+        var end = start.AddMinutes(-10);
+        var jsonItem = new JsonSleep("pk_fail", start, end);
+        var list = new List<JsonSleep> { jsonItem };
+
+        // Act & Assert
+        var ex = Assert.Throws<ImportValidationException>(() => SleepSessionImporter.Map(list));
+        Assert.Equal("pk_fail", ex.ExternalId);
+        Assert.Contains("before", ex.Message);
     }
 }

@@ -1,3 +1,4 @@
+using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Enums;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
@@ -23,5 +24,20 @@ public class BottleFeedImporterTests
         Assert.Equal(now, result[0].Time);
         Assert.Equal(150, result[0].AmountMl);
         Assert.Equal(BottleContent.Formula, result[0].Content);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-10)]
+    public void Map_ShouldThrowException_WhenAmountIsZeroOrBelow(double amount)
+    {
+        // Arrange
+        var jsonItem = new JsonBottleFeed("pk_fail", DateTime.UtcNow, amount, true);
+        var list = new List<JsonBottleFeed> { jsonItem };
+
+        // Act & Assert
+        var ex = Assert.Throws<ImportValidationException>(() => BottleFeedImporter.Map(list));
+        Assert.Equal("pk_fail", ex.ExternalId);
+        Assert.Contains("Amount", ex.Message);
     }
 }

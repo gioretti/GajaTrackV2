@@ -12,7 +12,7 @@ internal record BabyPlusExport(
 internal record JsonNursingFeed(
     string Pk,
     DateTime StartDate,
-    DateTime EndDate
+    DateTime? EndDate
 );
 
 internal record JsonBottleFeed(
@@ -25,7 +25,7 @@ internal record JsonBottleFeed(
 internal record JsonSleep(
     string Pk,
     DateTime StartDate,
-    DateTime EndDate
+    DateTime? EndDate
 );
 
 internal record JsonDiaper(

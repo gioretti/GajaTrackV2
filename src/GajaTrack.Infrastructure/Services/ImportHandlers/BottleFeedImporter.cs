@@ -1,3 +1,4 @@
+using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Domain.Enums;
 
@@ -12,6 +13,12 @@ internal static class BottleFeedImporter
         var result = new List<BottleFeed>();
         foreach (var item in source)
         {
+            if (item.AmountMl <= 0)
+            {
+                throw new ImportValidationException(nameof(BottleFeed), item.Pk, 
+                    $"Amount {item.AmountMl} must be greater than zero.");
+            }
+
             result.Add(new BottleFeed
             {
                 BabyId = Guid.Empty,
