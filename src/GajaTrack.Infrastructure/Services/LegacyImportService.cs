@@ -23,22 +23,40 @@ public class LegacyImportService(GajaDbContext dbContext) : ILegacyImportService
         await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
+            // 1. Map and validate
             var nursingFeeds = NursingFeedImporter.Map(data.NursingFeeds);
             var bottleFeeds = BottleFeedImporter.Map(data.BottleFeeds);
             var sleepSessions = SleepSessionImporter.Map(data.SleepSessions);
             var diaperChanges = DiaperChangeImporter.Map(data.DiaperChanges);
 
-            // Fetch existing external IDs to ensure idempotency
+            // 2. Filter existing records (Database check)
             var existingNursingIds = await dbContext.NursingFeeds.Select(x => x.ExternalId).ToListAsync(cancellationToken);
             var existingBottleIds = await dbContext.BottleFeeds.Select(x => x.ExternalId).ToListAsync(cancellationToken);
             var existingSleepIds = await dbContext.SleepSessions.Select(x => x.ExternalId).ToListAsync(cancellationToken);
             var existingDiaperIds = await dbContext.DiaperChanges.Select(x => x.ExternalId).ToListAsync(cancellationToken);
 
-            var newNursing = nursingFeeds.Where(x => !existingNursingIds.Contains(x.ExternalId)).ToList();
-            var newBottle = bottleFeeds.Where(x => !existingBottleIds.Contains(x.ExternalId)).ToList();
-            var newSleep = sleepSessions.Where(x => !existingSleepIds.Contains(x.ExternalId)).ToList();
-            var newDiaper = diaperChanges.Where(x => !existingDiaperIds.Contains(x.ExternalId)).ToList();
+            // 3. Filter duplicates within the file itself and against the database
+            var newNursing = nursingFeeds
+                .DistinctBy(x => x.ExternalId)
+                .Where(x => !existingNursingIds.Contains(x.ExternalId))
+                .ToList();
+            
+            var newBottle = bottleFeeds
+                .DistinctBy(x => x.ExternalId)
+                .Where(x => !existingBottleIds.Contains(x.ExternalId))
+                .ToList();
+            
+            var newSleep = sleepSessions
+                .DistinctBy(x => x.ExternalId)
+                .Where(x => !existingSleepIds.Contains(x.ExternalId))
+                .ToList();
+            
+            var newDiaper = diaperChanges
+                .DistinctBy(x => x.ExternalId)
+                .Where(x => !existingDiaperIds.Contains(x.ExternalId))
+                .ToList();
 
+            // 4. Persist
             dbContext.NursingFeeds.AddRange(newNursing);
             dbContext.BottleFeeds.AddRange(newBottle);
             dbContext.SleepSessions.AddRange(newSleep);
@@ -57,6 +75,7 @@ public class LegacyImportService(GajaDbContext dbContext) : ILegacyImportService
         catch
         {
             await transaction.RollbackAsync(cancellationToken);
+            dbContext.ChangeTracker.Clear(); // Ensure context is clean for next attempt
             throw;
         }
     }
