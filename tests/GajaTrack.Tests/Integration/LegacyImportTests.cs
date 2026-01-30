@@ -1,5 +1,6 @@
 using GajaTrack.Infrastructure.Persistence;
 using GajaTrack.Infrastructure.Services;
+using GajaTrack.Domain.Enums;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -96,6 +97,53 @@ public class LegacyImportTests : IDisposable
 
         var feed = await _context.NursingFeeds.FirstAsync(x => x.ExternalId == "A1");
         Assert.Equal(new DateTime(2023, 11, 15, 10, 0, 0, DateTimeKind.Utc), feed.StartTime);
+    }
+
+    [Fact]
+    public async Task Import_ShouldMapAllFieldsCorrectly()
+    {
+        // Arrange
+        var json = """
+        {
+           "baby_nursingfeed": [{ "pk": "N1", "startDate": 1700000000.0, "endDate": 1700000600.0 }],
+           "baby_bottlefeed": [{ "pk": "B1", "date": 1700001000.0, "amountML": 125, "isFormula": 1 }],
+           "baby_sleep": [{ "pk": "S1", "startDate": 1700002000.0, "endDate": 1700005000.0 }],
+           "baby_nappy": [
+                { "pk": "D1", "date": 1700006000.0, "type": "Wet" },
+                { "pk": "D2", "date": 1700007000.0, "type": "Soiled" },
+                { "pk": "D3", "date": 1700008000.0, "type": "Mixed" }
+           ]
+        }
+        """;
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var service = new LegacyImportService(_context);
+
+        // Act
+        await service.ImportFromStreamAsync(stream);
+
+        // Assert - Nursing
+        var nursing = await _context.NursingFeeds.FirstAsync(x => x.ExternalId == "N1");
+        Assert.Equal(1700000000.0, nursing.StartTime.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds, 0.01);
+        Assert.Equal(1700000600.0, nursing.EndTime!.Value.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds, 0.01);
+
+        // Assert - Bottle
+        var bottle = await _context.BottleFeeds.FirstAsync(x => x.ExternalId == "B1");
+        Assert.Equal(125, bottle.AmountMl);
+        Assert.Equal(BottleContent.Formula, bottle.Content);
+
+        // Assert - Sleep
+        var sleep = await _context.SleepSessions.FirstAsync(x => x.ExternalId == "S1");
+        Assert.Equal(3000, (sleep.EndTime - sleep.StartTime)!.Value.TotalSeconds);
+
+        // Assert - Diapers
+        var d1 = await _context.DiaperChanges.FirstAsync(x => x.ExternalId == "D1");
+        Assert.Equal(GajaTrack.Domain.Enums.DiaperType.Wet, d1.Type);
+        
+        var d2 = await _context.DiaperChanges.FirstAsync(x => x.ExternalId == "D2");
+        Assert.Equal(GajaTrack.Domain.Enums.DiaperType.Soiled, d2.Type);
+
+        var d3 = await _context.DiaperChanges.FirstAsync(x => x.ExternalId == "D3");
+        Assert.Equal(GajaTrack.Domain.Enums.DiaperType.Mixed, d3.Type);
     }
 
     public void Dispose()
