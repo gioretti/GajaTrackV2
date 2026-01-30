@@ -1,9 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GajaTrack.Application.Interfaces;
-using GajaTrack.Domain.Entities;
-using GajaTrack.Domain.Enums;
 using GajaTrack.Infrastructure.Persistence;
+using GajaTrack.Infrastructure.Services.ImportHandlers;
 using Microsoft.EntityFrameworkCore;
 
 namespace GajaTrack.Infrastructure.Services;
@@ -20,16 +19,16 @@ public class LegacyImportService(GajaDbContext dbContext) : ILegacyImportService
         
         if (data is null) return new ImportSummary(0, 0, 0, 0);
 
-        var nursingFeeds = MapNursingFeeds(data.NursingFeeds);
+        var nursingFeeds = NursingFeedImporter.Map(data.NursingFeeds);
         dbContext.NursingFeeds.AddRange(nursingFeeds);
 
-        var bottleFeeds = MapBottleFeeds(data.BottleFeeds);
+        var bottleFeeds = BottleFeedImporter.Map(data.BottleFeeds);
         dbContext.BottleFeeds.AddRange(bottleFeeds);
 
-        var sleepSessions = MapSleepSessions(data.SleepSessions);
+        var sleepSessions = SleepSessionImporter.Map(data.SleepSessions);
         dbContext.SleepSessions.AddRange(sleepSessions);
 
-        var diaperChanges = MapDiaperChanges(data.DiaperChanges);
+        var diaperChanges = DiaperChangeImporter.Map(data.DiaperChanges);
         dbContext.DiaperChanges.AddRange(diaperChanges);
 
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -40,91 +39,6 @@ public class LegacyImportService(GajaDbContext dbContext) : ILegacyImportService
             sleepSessions.Count,
             diaperChanges.Count
         );
-    }
-
-    private List<NursingFeed> MapNursingFeeds(List<JsonNursingFeed>? source)
-    {
-        var result = new List<NursingFeed>();
-        if (source == null) return result;
-
-        foreach (var item in source)
-        {
-            if (item.Pk == null) continue;
-            result.Add(new NursingFeed
-            {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                StartTime = item.StartDate,
-                EndTime = item.EndDate.Year == 1 ? null : item.EndDate
-            });
-        }
-        return result;
-    }
-
-    private List<BottleFeed> MapBottleFeeds(List<JsonBottleFeed>? source)
-    {
-        var result = new List<BottleFeed>();
-        if (source == null) return result;
-
-        foreach (var item in source)
-        {
-            if (item.Pk == null) continue;
-            result.Add(new BottleFeed
-            {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                Time = item.Date,
-                AmountMl = (int)item.AmountMl,
-                Content = item.IsFormula ? BottleContent.Formula : BottleContent.BreastMilk
-            });
-        }
-        return result;
-    }
-
-    private List<SleepSession> MapSleepSessions(List<JsonSleep>? source)
-    {
-        var result = new List<SleepSession>();
-        if (source == null) return result;
-
-        foreach (var item in source)
-        {
-            if (item.Pk == null) continue;
-            result.Add(new SleepSession
-            {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                StartTime = item.StartDate,
-                EndTime = item.EndDate.Year == 1 ? null : item.EndDate
-            });
-        }
-        return result;
-    }
-
-    private List<DiaperChange> MapDiaperChanges(List<JsonDiaper>? source)
-    {
-        var result = new List<DiaperChange>();
-        if (source == null) return result;
-
-        foreach (var item in source)
-        {
-            if (item.Pk == null) continue;
-            
-            DiaperType type = DiaperType.Wet; // Default
-            if (item.Type != null)
-            {
-                if (item.Type.Contains("Soiled", StringComparison.OrdinalIgnoreCase)) type = DiaperType.Soiled;
-                else if (item.Type.Contains("Mixed", StringComparison.OrdinalIgnoreCase)) type = DiaperType.Mixed;
-            }
-
-            result.Add(new DiaperChange
-            {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                Time = item.Date,
-                Type = type
-            });
-        }
-        return result;
     }
 
     private class PolymorphicDateTimeConverter : JsonConverter<DateTime>
@@ -175,49 +89,5 @@ public class LegacyImportService(GajaDbContext dbContext) : ILegacyImportService
         {
             writer.WriteBooleanValue(value);
         }
-    }
-
-    private class BabyPlusExport
-    {
-        [JsonPropertyName("baby_nursingfeed")]
-        public List<JsonNursingFeed>? NursingFeeds { get; set; }
-
-        [JsonPropertyName("baby_bottlefeed")]
-        public List<JsonBottleFeed>? BottleFeeds { get; set; }
-        
-        [JsonPropertyName("baby_sleep")]
-        public List<JsonSleep>? SleepSessions { get; set; }
-        
-        [JsonPropertyName("baby_nappy")]
-        public List<JsonDiaper>? DiaperChanges { get; set; }
-    }
-    
-    private class JsonNursingFeed
-    {
-        public string? Pk { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; } 
-    }
-
-    private class JsonBottleFeed
-    {
-        public string? Pk { get; set; }
-        public DateTime Date { get; set; }
-        public double AmountMl { get; set; }
-        public bool IsFormula { get; set; }
-    }
-
-    private class JsonSleep
-    {
-        public string? Pk { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-    }
-    
-    private class JsonDiaper
-    {
-        public string? Pk { get; set; }
-        public DateTime Date { get; set; }
-        public string? Type { get; set; }
     }
 }
