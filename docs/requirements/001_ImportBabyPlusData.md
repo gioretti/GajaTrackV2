@@ -136,7 +136,7 @@ Then the system should:
 ### Validation Strategy (Strict Mode)
 - **Policy**: If *any* record is invalid, the entire import transaction is rolled back.
 - **Sanitization Rule**:
-  - Records with `endDate : 0` (abandoned timers) are sanitized by setting `EndDate = StartTime` before validation.
+  - Records with `endDate : 0` (abandoned timers) are sanitized by setting `EndDate = null` before validation.
 - **Polymorphic Parsing**:
   - The parser MUST handle both **Unix Timestamp** (Double, e.g., iOS) and **ISO 8601** (String, e.g
   - ., Android) formats for all date fields.
