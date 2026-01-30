@@ -13,6 +13,12 @@ internal static class BottleFeedImporter
         var result = new List<BottleFeed>();
         foreach (var item in source)
         {
+            if (item.Date > DateTime.UtcNow)
+            {
+                throw new ImportValidationException(nameof(BottleFeed), item.Pk, 
+                    $"Date {item.Date} is in the future.");
+            }
+
             if (item.AmountMl <= 0)
             {
                 throw new ImportValidationException(nameof(BottleFeed), item.Pk, 

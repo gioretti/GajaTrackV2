@@ -52,6 +52,29 @@ public class LegacyImportServiceTests : IDisposable
         Assert.Equal(1, await _context.NursingFeeds.CountAsync());
     }
 
+    [Fact]
+    public async Task Import_ShouldBeIdempotent_AndSkipExistingRecords()
+    {
+        // Arrange
+        var json = """
+        {
+           "baby_nursingfeed": [{ "pk": "DUP1", "startDate": 1700000000.0, "endDate": 1700000600.0 }]
+        }
+        """;
+        var stream1 = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var stream2 = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var service = new LegacyImportService(_context);
+
+        // Act
+        var result1 = await service.ImportFromStreamAsync(stream1);
+        var result2 = await service.ImportFromStreamAsync(stream2);
+
+        // Assert
+        Assert.Equal(1, result1.NursingFeedsImported);
+        Assert.Equal(0, result2.NursingFeedsImported); // Should skip the second time
+        Assert.Equal(1, await _context.NursingFeeds.CountAsync());
+    }
+
     public void Dispose()
     {
         _connection.Dispose();

@@ -1,3 +1,4 @@
+using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Domain.Enums;
 
@@ -12,6 +13,12 @@ internal static class DiaperChangeImporter
         var result = new List<DiaperChange>();
         foreach (var item in source)
         {
+            if (item.Date > DateTime.UtcNow)
+            {
+                throw new ImportValidationException(nameof(DiaperChange), item.Pk, 
+                    $"Date {item.Date} is in the future.");
+            }
+
             DiaperType type = item.Type switch
             {
                 "Wet" => DiaperType.Wet,

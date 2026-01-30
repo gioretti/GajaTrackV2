@@ -24,25 +24,34 @@ public class LegacyImportService(GajaDbContext dbContext) : ILegacyImportService
         try
         {
             var nursingFeeds = NursingFeedImporter.Map(data.NursingFeeds);
-            dbContext.NursingFeeds.AddRange(nursingFeeds);
-
             var bottleFeeds = BottleFeedImporter.Map(data.BottleFeeds);
-            dbContext.BottleFeeds.AddRange(bottleFeeds);
-
             var sleepSessions = SleepSessionImporter.Map(data.SleepSessions);
-            dbContext.SleepSessions.AddRange(sleepSessions);
-
             var diaperChanges = DiaperChangeImporter.Map(data.DiaperChanges);
-            dbContext.DiaperChanges.AddRange(diaperChanges);
+
+            // Fetch existing external IDs to ensure idempotency
+            var existingNursingIds = await dbContext.NursingFeeds.Select(x => x.ExternalId).ToListAsync(cancellationToken);
+            var existingBottleIds = await dbContext.BottleFeeds.Select(x => x.ExternalId).ToListAsync(cancellationToken);
+            var existingSleepIds = await dbContext.SleepSessions.Select(x => x.ExternalId).ToListAsync(cancellationToken);
+            var existingDiaperIds = await dbContext.DiaperChanges.Select(x => x.ExternalId).ToListAsync(cancellationToken);
+
+            var newNursing = nursingFeeds.Where(x => !existingNursingIds.Contains(x.ExternalId)).ToList();
+            var newBottle = bottleFeeds.Where(x => !existingBottleIds.Contains(x.ExternalId)).ToList();
+            var newSleep = sleepSessions.Where(x => !existingSleepIds.Contains(x.ExternalId)).ToList();
+            var newDiaper = diaperChanges.Where(x => !existingDiaperIds.Contains(x.ExternalId)).ToList();
+
+            dbContext.NursingFeeds.AddRange(newNursing);
+            dbContext.BottleFeeds.AddRange(newBottle);
+            dbContext.SleepSessions.AddRange(newSleep);
+            dbContext.DiaperChanges.AddRange(newDiaper);
 
             await dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
             return new ImportSummary(
-                nursingFeeds.Count,
-                bottleFeeds.Count,
-                sleepSessions.Count,
-                diaperChanges.Count
+                newNursing.Count,
+                newBottle.Count,
+                newSleep.Count,
+                newDiaper.Count
             );
         }
         catch

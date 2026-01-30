@@ -12,6 +12,12 @@ internal static class SleepSessionImporter
         var result = new List<SleepSession>();
         foreach (var item in source)
         {
+            if (item.StartDate > DateTime.UtcNow)
+            {
+                throw new ImportValidationException(nameof(SleepSession), item.Pk, 
+                    $"StartTime {item.StartDate} is in the future.");
+            }
+
             if (item.EndDate.HasValue && item.EndDate < item.StartDate)
             {
                 throw new ImportValidationException(nameof(SleepSession), item.Pk, 

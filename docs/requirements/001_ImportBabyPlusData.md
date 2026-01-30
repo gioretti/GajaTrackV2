@@ -26,19 +26,17 @@ So that I can continue tracking these core metrics without losing history.
 
 ## Assumption**:
 - **Single Baby System**: The system supports only one baby for this MVP.
-- **Import Strategy**: All records assigned to the single "Default Baby". Create profile from `babyprofile` if missing.
+- **Import Strategy**: All records assigned to the single "Default Baby" (Fixed ID). 
 
 ## Gherkin Scenarios
 
 ### Scenario: Import Core Tracking Data for Default Baby
 Given I have a valid export file "babyplus_data_export.json"
-And no baby profile exists in the system
 When I upload the file to GajaTrack
 Then the system should:
-1. Create a Baby profile.
-2. Import all Nursing and Bottle feed records.
-3. Import all Sleep sessions.
-4. Import all Diaper changes.
+1. Import all Nursing and Bottle feed records.
+2. Import all Sleep sessions.
+3. Import all Diaper changes.
    And the imported values must be transformed correctly:
 - Unix timestamps (double) converted to local/UTC DateTime.
 - `isFormula` (0/1) mapped to `BottleContent` Enum.
