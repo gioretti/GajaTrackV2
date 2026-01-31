@@ -7,7 +7,7 @@ public class BottleFeed
   public Guid Id { get; init; } = Guid.CreateVersion7();
   public required Guid BabyId { get; init; }
   public required string ExternalId { get; init; }
-  public required DateTime Time { get; init; }
+  public required DateTime Time { get; set; }
   public int AmountMl { get; set; }
   public required BottleContent Content { get; set; }
 
@@ -29,5 +29,17 @@ public class BottleFeed
       AmountMl = amountMl,
       Content = content
     };
+  }
+
+  public void Update(DateTime time, int amountMl, BottleContent content)
+  {
+    if (amountMl <= 0)
+    {
+      throw new ArgumentException("Amount must be greater than zero.", nameof(amountMl));
+    }
+
+    Time = time;
+    AmountMl = amountMl;
+    Content = content;
   }
 }

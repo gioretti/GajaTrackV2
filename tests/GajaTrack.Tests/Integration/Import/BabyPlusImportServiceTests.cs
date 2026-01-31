@@ -38,7 +38,7 @@ public class BabyPlusImportServiceTests : IDisposable
         }
         """;
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        var service = new BabyPlusImportService(_context);
+        var service = new BabyPlusImportService(_context, Microsoft.Extensions.Logging.Abstractions.NullLogger<BabyPlusImportService>.Instance);
 
         // Act
         var result = await service.ImportFromStreamAsync(stream);
@@ -53,17 +53,22 @@ public class BabyPlusImportServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task Import_ShouldBeIdempotent_AndSkipExistingRecords()
+    public async Task Import_ShouldBeIdempotent_AndUpdateExistingRecords()
     {
         // Arrange
-        var json = """
+        var json1 = """
         {
            "baby_nursingfeed": [{ "pk": "DUP1", "startDate": 1700000000.0, "endDate": 1700000600.0 }]
         }
         """;
-        var stream1 = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        var stream2 = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        var service = new BabyPlusImportService(_context);
+        var json2 = """
+        {
+           "baby_nursingfeed": [{ "pk": "DUP1", "startDate": 1700000000.0, "endDate": 1700000999.0 }]
+        }
+        """;
+        var stream1 = new MemoryStream(Encoding.UTF8.GetBytes(json1));
+        var stream2 = new MemoryStream(Encoding.UTF8.GetBytes(json2));
+        var service = new BabyPlusImportService(_context, Microsoft.Extensions.Logging.Abstractions.NullLogger<BabyPlusImportService>.Instance);
 
         // Act
         var result1 = await service.ImportFromStreamAsync(stream1);
@@ -71,8 +76,11 @@ public class BabyPlusImportServiceTests : IDisposable
 
         // Assert
         Assert.Equal(1, result1.NursingFeedsImported);
-        Assert.Equal(0, result2.NursingFeedsImported); // Should skip the second time
-        Assert.Equal(1, await _context.NursingFeeds.CountAsync());
+        Assert.Equal(0, result2.NursingFeedsImported); // 0 NEW feeds, but 1 updated
+        
+        var feed = await _context.NursingFeeds.FirstAsync(x => x.ExternalId == "DUP1");
+        // Verify update happened (EndDate changed from 600 to 999)
+        Assert.Equal(1700000999.0, (feed.EndTime!.Value - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds, 0.01);
     }
 
     [Fact]
@@ -85,7 +93,7 @@ public class BabyPlusImportServiceTests : IDisposable
         }
         """;
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        var service = new BabyPlusImportService(_context);
+        var service = new BabyPlusImportService(_context, Microsoft.Extensions.Logging.Abstractions.NullLogger<BabyPlusImportService>.Instance);
 
         // Act
         var result = await service.ImportFromStreamAsync(stream);

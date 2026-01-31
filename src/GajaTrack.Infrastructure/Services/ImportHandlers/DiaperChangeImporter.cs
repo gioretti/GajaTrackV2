@@ -6,11 +6,10 @@ namespace GajaTrack.Infrastructure.Services.ImportHandlers;
 
 internal static class DiaperChangeImporter
 {
-    public static List<DiaperChange> Map(List<JsonDiaper>? source)
+    public static void Map(List<JsonDiaper>? source, Dictionary<string, DiaperChange> existingEntries, List<DiaperChange> newEntries)
     {
-        if (source == null) return [];
+        if (source == null) return;
 
-        var result = new List<DiaperChange>();
         foreach (var item in source)
         {
             if (item.Date > DateTime.UtcNow)
@@ -27,13 +26,19 @@ internal static class DiaperChangeImporter
                 _ => throw new ImportValidationException(nameof(DiaperChange), item.Pk, $"Unknown Diaper Type: {item.Type}")
             };
 
-            result.Add(DiaperChange.Create(
-                Guid.Empty,
-                item.Pk,
-                item.Date,
-                type
-            ));
+            if (existingEntries.TryGetValue(item.Pk, out var existing))
+            {
+                existing.Update(item.Date, type);
+            }
+            else
+            {
+                newEntries.Add(DiaperChange.Create(
+                    Guid.Empty,
+                    item.Pk,
+                    item.Date,
+                    type
+                ));
+            }
         }
-        return result;
     }
 }

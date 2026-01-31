@@ -7,7 +7,7 @@ public class DiaperChange
   public Guid Id { get; init; } = Guid.CreateVersion7();
   public required Guid BabyId { get; init; }
   public required string ExternalId { get; init; }
-  public required DateTime Time { get; init; }
+  public required DateTime Time { get; set; }
   public required DiaperType Type { get; set; }
 
   private DiaperChange() { }
@@ -21,5 +21,11 @@ public class DiaperChange
       Time = time,
       Type = type
     };
+  }
+
+  public void Update(DateTime time, DiaperType type)
+  {
+    Time = time;
+    Type = type;
   }
 }

@@ -5,11 +5,10 @@ namespace GajaTrack.Infrastructure.Services.ImportHandlers;
 
 internal static class SleepSessionImporter
 {
-    public static List<SleepSession> Map(List<JsonSleep>? source)
+    public static void Map(List<JsonSleep>? source, Dictionary<string, SleepSession> existingEntries, List<SleepSession> newEntries)
     {
-        if (source == null) return [];
+        if (source == null) return;
 
-        var result = new List<SleepSession>();
         foreach (var item in source)
         {
             if (item.StartDate > DateTime.UtcNow)
@@ -18,20 +17,33 @@ internal static class SleepSessionImporter
                     $"StartTime {item.StartDate} is in the future.");
             }
 
-            try
+            if (existingEntries.TryGetValue(item.Pk, out var existing))
             {
-                result.Add(SleepSession.Create(
-                    Guid.Empty,
-                    item.Pk,
-                    item.StartDate,
-                    item.EndDate
-                ));
+                try
+                {
+                    existing.Update(item.StartDate, item.EndDate);
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new ImportValidationException(nameof(SleepSession), item.Pk, ex.Message);
+                }
             }
-            catch (ArgumentException ex)
+            else
             {
-                throw new ImportValidationException(nameof(SleepSession), item.Pk, ex.Message);
+                try
+                {
+                    newEntries.Add(SleepSession.Create(
+                        Guid.Empty,
+                        item.Pk,
+                        item.StartDate,
+                        item.EndDate
+                    ));
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new ImportValidationException(nameof(SleepSession), item.Pk, ex.Message);
+                }
             }
         }
-        return result;
     }
 }

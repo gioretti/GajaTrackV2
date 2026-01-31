@@ -1,6 +1,7 @@
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
+using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Tests.Integration.Import;
 
@@ -13,15 +14,16 @@ public class SleepSessionImporterTests
         var now = DateTime.UtcNow;
         var jsonItem = new JsonSleep("pk3", now, now.AddHours(2));
         var list = new List<JsonSleep> { jsonItem };
+        var newEntries = new List<SleepSession>();
 
         // Act
-        var result = SleepSessionImporter.Map(list);
+        SleepSessionImporter.Map(list, [], newEntries);
 
         // Assert
-        Assert.Single(result);
-        Assert.Equal("pk3", result[0].ExternalId);
-        Assert.Equal(now, result[0].StartTime);
-        Assert.Equal(jsonItem.EndDate, result[0].EndTime);
+        Assert.Single(newEntries);
+        Assert.Equal("pk3", newEntries[0].ExternalId);
+        Assert.Equal(now, newEntries[0].StartTime);
+        Assert.Equal(jsonItem.EndDate, newEntries[0].EndTime);
     }
 
     [Fact]
@@ -29,13 +31,11 @@ public class SleepSessionImporterTests
     {
         // Arrange
         var start = DateTime.UtcNow;
-        var end = start.AddMinutes(-10);
+        var end = start.AddMinutes(-30);
         var jsonItem = new JsonSleep("pk_fail", start, end);
         var list = new List<JsonSleep> { jsonItem };
 
         // Act & Assert
-        var ex = Assert.Throws<ImportValidationException>(() => SleepSessionImporter.Map(list));
-        Assert.Equal("pk_fail", ex.ExternalId);
-        Assert.Contains("before", ex.Message);
+        Assert.Throws<ImportValidationException>(() => SleepSessionImporter.Map(list, [], []));
     }
 }

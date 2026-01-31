@@ -6,11 +6,10 @@ namespace GajaTrack.Infrastructure.Services.ImportHandlers;
 
 internal static class BottleFeedImporter
 {
-    public static List<BottleFeed> Map(List<JsonBottleFeed>? source)
+    public static void Map(List<JsonBottleFeed>? source, Dictionary<string, BottleFeed> existingEntries, List<BottleFeed> newEntries)
     {
-        if (source == null) return [];
+        if (source == null) return;
 
-        var result = new List<BottleFeed>();
         foreach (var item in source)
         {
             if (item.Date > DateTime.UtcNow)
@@ -19,21 +18,36 @@ internal static class BottleFeedImporter
                     $"Date {item.Date} is in the future.");
             }
 
-            try
+            var content = item.IsFormula ? BottleContent.Formula : BottleContent.BreastMilk;
+
+            if (existingEntries.TryGetValue(item.Pk, out var existing))
             {
-                result.Add(BottleFeed.Create(
-                    Guid.Empty,
-                    item.Pk,
-                    item.Date,
-                    (int)item.AmountMl,
-                    item.IsFormula ? BottleContent.Formula : BottleContent.BreastMilk
-                ));
+                try
+                {
+                    existing.Update(item.Date, (int)item.AmountMl, content);
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new ImportValidationException(nameof(BottleFeed), item.Pk, ex.Message);
+                }
             }
-            catch (ArgumentException ex)
+            else
             {
-                throw new ImportValidationException(nameof(BottleFeed), item.Pk, ex.Message);
+                try
+                {
+                    newEntries.Add(BottleFeed.Create(
+                        Guid.Empty,
+                        item.Pk,
+                        item.Date,
+                        (int)item.AmountMl,
+                        content
+                    ));
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new ImportValidationException(nameof(BottleFeed), item.Pk, ex.Message);
+                }
             }
         }
-        return result;
     }
 }

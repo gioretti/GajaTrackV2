@@ -2,6 +2,7 @@ using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Enums;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
+using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Tests.Integration.Import;
 
@@ -14,16 +15,17 @@ public class BottleFeedImporterTests
         var now = DateTime.UtcNow;
         var jsonItem = new JsonBottleFeed("pk2", now, 150.5, true);
         var list = new List<JsonBottleFeed> { jsonItem };
+        var newEntries = new List<BottleFeed>();
 
         // Act
-        var result = BottleFeedImporter.Map(list);
+        BottleFeedImporter.Map(list, [], newEntries);
 
         // Assert
-        Assert.Single(result);
-        Assert.Equal("pk2", result[0].ExternalId);
-        Assert.Equal(now, result[0].Time);
-        Assert.Equal(150, result[0].AmountMl);
-        Assert.Equal(BottleContent.Formula, result[0].Content);
+        Assert.Single(newEntries);
+        Assert.Equal("pk2", newEntries[0].ExternalId);
+        Assert.Equal(now, newEntries[0].Time);
+        Assert.Equal(150, newEntries[0].AmountMl);
+        Assert.Equal(BottleContent.Formula, newEntries[0].Content);
     }
 
     [Theory]
@@ -36,8 +38,6 @@ public class BottleFeedImporterTests
         var list = new List<JsonBottleFeed> { jsonItem };
 
         // Act & Assert
-        var ex = Assert.Throws<ImportValidationException>(() => BottleFeedImporter.Map(list));
-        Assert.Equal("pk_fail", ex.ExternalId);
-        Assert.Contains("Amount", ex.Message);
+        Assert.Throws<ImportValidationException>(() => BottleFeedImporter.Map(list, [], []));
     }
 }

@@ -2,6 +2,7 @@ using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Enums;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
+using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Tests.Integration.Import;
 
@@ -17,14 +18,15 @@ public class DiaperChangeImporterTests
         var now = DateTime.UtcNow;
         var jsonItem = new JsonDiaper("pk", now, sourceType);
         var list = new List<JsonDiaper> { jsonItem };
+        var newEntries = new List<DiaperChange>();
 
         // Act
-        var result = DiaperChangeImporter.Map(list);
+        DiaperChangeImporter.Map(list, [], newEntries);
 
         // Assert
-        Assert.Single(result);
-        Assert.Equal(expectedType, result[0].Type);
-        Assert.Equal(now, result[0].Time);
+        Assert.Single(newEntries);
+        Assert.Equal(expectedType, newEntries[0].Type);
+        Assert.Equal(now, newEntries[0].Time);
     }
 
     [Fact]
@@ -35,6 +37,6 @@ public class DiaperChangeImporterTests
         var list = new List<JsonDiaper> { jsonItem };
 
         // Act & Assert
-        Assert.Throws<ImportValidationException>(() => DiaperChangeImporter.Map(list));
+        Assert.Throws<ImportValidationException>(() => DiaperChangeImporter.Map(list, [], []));
     }
 }

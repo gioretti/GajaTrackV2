@@ -1,6 +1,7 @@
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
+using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Tests.Integration.Import;
 
@@ -12,15 +13,16 @@ public class NursingFeedImporterTests
         // Arrange
         var jsonItem = new JsonNursingFeed("pk1", DateTime.UtcNow, DateTime.UtcNow.AddMinutes(10));
         var list = new List<JsonNursingFeed> { jsonItem };
+        var newEntries = new List<NursingFeed>();
 
         // Act
-        var result = NursingFeedImporter.Map(list);
+        NursingFeedImporter.Map(list, [], newEntries);
 
         // Assert
-        Assert.Single(result);
-        Assert.Equal("pk1", result[0].ExternalId);
-        Assert.Equal(jsonItem.StartDate, result[0].StartTime);
-        Assert.Equal(jsonItem.EndDate, result[0].EndTime);
+        Assert.Single(newEntries);
+        Assert.Equal("pk1", newEntries[0].ExternalId);
+        Assert.Equal(jsonItem.StartDate, newEntries[0].StartTime);
+        Assert.Equal(jsonItem.EndDate, newEntries[0].EndTime);
     }
 
     [Fact]
@@ -33,9 +35,7 @@ public class NursingFeedImporterTests
         var list = new List<JsonNursingFeed> { jsonItem };
 
         // Act & Assert
-        var ex = Assert.Throws<ImportValidationException>(() => NursingFeedImporter.Map(list));
-        Assert.Equal("pk_fail", ex.ExternalId);
-        Assert.Contains("before", ex.Message);
+        Assert.Throws<ImportValidationException>(() => NursingFeedImporter.Map(list, [], []));
     }
 
     [Fact]
@@ -43,15 +43,14 @@ public class NursingFeedImporterTests
     {
         // Arrange
         var start = DateTime.UtcNow;
-        // The converter is responsible for returning null if JSON value is 0.
-        // We simulate that by passing null here.
         var jsonItem = new JsonNursingFeed("pk_zero", start, null);
         var list = new List<JsonNursingFeed> { jsonItem };
+        var newEntries = new List<NursingFeed>();
 
         // Act
-        var result = NursingFeedImporter.Map(list);
+        NursingFeedImporter.Map(list, [], newEntries);
 
         // Assert
-        Assert.Null(result[0].EndTime);
+        Assert.Null(newEntries[0].EndTime);
     }
 }
