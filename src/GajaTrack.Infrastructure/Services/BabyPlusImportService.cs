@@ -69,7 +69,6 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
             dbContext.ChangeTracker.DetectChanges();
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            // Transaction removed
             progress?.Report("Import successful!");
 
             return new ImportSummary(newNursing.Count, newBottle.Count, newSleep.Count, newDiaper.Count);
@@ -77,7 +76,6 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
         catch (Exception ex)
         {
             logger.LogError(ex, "Import failed.");
-            // Transaction rollback removed
             dbContext.ChangeTracker.Clear();
             throw;
         }
