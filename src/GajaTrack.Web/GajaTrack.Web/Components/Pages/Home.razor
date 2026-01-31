@@ -1,7 +1,50 @@
 ﻿@page "/"
+@using GajaTrack.Infrastructure.Persistence
+@using Microsoft.EntityFrameworkCore
+@inject GajaDbContext DbContext
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Baby Gaja Tracking</h1>
 
-Welcome to your new app.
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h3>Nursing</h3>
+            <p class="display-4">@_nursingCount</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h3>Bottle</h3>
+            <p class="display-4">@_bottleCount</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h3>Sleep</h3>
+            <p class="display-4">@_sleepCount</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h3>Diapers</h3>
+            <p class="display-4">@_diaperCount</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int _nursingCount;
+    private int _bottleCount;
+    private int _sleepCount;
+    private int _diaperCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _nursingCount = await DbContext.NursingFeeds.CountAsync();
+        _bottleCount = await DbContext.BottleFeeds.CountAsync();
+        _sleepCount = await DbContext.SleepSessions.CountAsync();
+        _diaperCount = await DbContext.DiaperChanges.CountAsync();
+    }
+}
