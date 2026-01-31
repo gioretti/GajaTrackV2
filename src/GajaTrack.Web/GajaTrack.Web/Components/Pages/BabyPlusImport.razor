@@ -2,72 +2,107 @@
 @using GajaTrack.Application.Interfaces
 @inject IBabyPlusImportService ImportService
 @inject ILogger<BabyPlusImport> Logger
+@rendermode InteractiveServer
 
 <PageTitle>Import Baby+ Data</PageTitle>
 
 <h1>Import Data</h1>
 <p>Upload your export file from Philips Baby+ (iOS or Android).</p>
 
-<div class="card p-4" style="max-width: 600px;">
-    <InputFile OnChange="LoadFiles" class="form-control mb-3" accept=".json" />
+<div class="card p-4 shadow-sm" style="max-width: 600px;">
+    <div class="mb-3">
+        <label for="fileInput" class="form-label">Select JSON file</label>
+        <InputFile OnChange="HandleFileSelected" class="form-control" id="fileInput" accept=".json" />
+    </div>
+
+    <button class="btn btn-primary mb-3" @onclick="TriggerImport" disabled="@_isProcessing">
+        @if (_isProcessing)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span> Importing...</span>
+        }
+        else
+        {
+            <span>Import Data</span>
+        }
+    </button>
     
     @if (_isProcessing)
     {
-        <div class="alert alert-info">Processing import... please wait.</div>
+        <div class="alert alert-info shadow-sm">
+            <strong>Processing...</strong> please wait.
+        </div>
     }
     
     @if (_errorMessage != null)
     {
-        <div class="alert alert-danger">@_errorMessage</div>
+        <div class="alert alert-danger shadow-sm">
+            <p class="mb-0">@_errorMessage</p>
+        </div>
     }
 
     @if (_summary != null)
     {
-        <div class="alert alert-success">
-            <h4>Import Complete!</h4>
+        <div class="alert alert-success shadow-sm">
+            <h4 class="alert-heading">🎉 Import Complete!</h4>
+            <hr>
             <ul>
-                <li>Nursing Feeds: <strong>@_summary.NursingFeedsImported</strong></li>
-                <li>Bottle Feeds: <strong>@_summary.BottleFeedsImported</strong></li>
-                <li>Sleep Sessions: <strong>@_summary.SleepSessionsImported</strong></li>
-                <li>Diaper Changes: <strong>@_summary.DiaperChangesImported</strong></li>
+                <li>Nursing: <strong>@_summary.NursingFeedsImported</strong></li>
+                <li>Bottle: <strong>@_summary.BottleFeedsImported</strong></li>
+                <li>Sleep: <strong>@_summary.SleepSessionsImported</strong></li>
+                <li>Diapers: <strong>@_summary.DiaperChangesImported</strong></li>
             </ul>
+            <a href="/" class="btn btn-outline-success btn-sm">View Dashboard</a>
         </div>
     }
 </div>
 
 @code {
+    private IBrowserFile? _selectedFile;
     private ImportSummary? _summary;
     private string? _errorMessage;
     private bool _isProcessing;
     
-    // 10MB limit
     private const long MaxFileSize = 10 * 1024 * 1024; 
 
-    private async Task LoadFiles(InputFileChangeEventArgs e)
+    private void HandleFileSelected(InputFileChangeEventArgs e)
     {
+        _selectedFile = e.File;
+        _errorMessage = null;
+        _summary = null;
+    }
+
+    private async Task TriggerImport()
+    {
+        if (_selectedFile == null)
+        {
+            _errorMessage = "Please select a file first.";
+            return;
+        }
+
         _isProcessing = true;
         _errorMessage = null;
         _summary = null;
 
         try
         {
-            var file = e.File;
-            if (file.Size > MaxFileSize)
+            if (_selectedFile.Size > MaxFileSize)
             {
-                _errorMessage = $"File size exceeds the 10MB limit. ({file.Size / 1024 / 1024} MB)";
+                _errorMessage = $"File exceeds 10MB.";
                 return;
             }
 
-            // We must read the stream carefully. OpenReadStream returns a stream 
-            // that we can pass directly to our service.
-            await using var stream = file.OpenReadStream(MaxFileSize);
-            
-            _summary = await ImportService.ImportFromStreamAsync(stream);
+            using var ms = new MemoryStream();
+            await _selectedFile.OpenReadStream(MaxFileSize).CopyToAsync(ms);
+            ms.Position = 0;
+
+            _summary = await ImportService.ImportFromStreamAsync(ms);
+            Logger.LogInformation("Imported records successfully.");
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error importing file");
-            _errorMessage = $"An error occurred during import: {ex.Message}";
+            Logger.LogError(ex, "Import failed");
+            _errorMessage = $"Error: {ex.Message}";
         }
         finally
         {
