@@ -75,6 +75,27 @@ public class BabyPlusImportServiceTests : IDisposable
         Assert.Equal(1, await _context.NursingFeeds.CountAsync());
     }
 
+    [Fact]
+    public async Task Import_ShouldHandleNumericPks()
+    {
+        // Arrange
+        var json = """
+        {
+           "baby_nursingfeed": [{ "pk": 4280847906750135348, "startDate": 1700000000.0, "endDate": 1700000600.0 }]
+        }
+        """;
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var service = new BabyPlusImportService(_context);
+
+        // Act
+        var result = await service.ImportFromStreamAsync(stream);
+
+        // Assert
+        Assert.Equal(1, result.NursingFeedsImported);
+        var feed = await _context.NursingFeeds.FirstAsync();
+        Assert.Equal("4280847906750135348", feed.ExternalId);
+    }
+
     public void Dispose()
     {
         _connection.Dispose();
