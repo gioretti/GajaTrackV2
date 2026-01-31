@@ -18,19 +18,19 @@ internal static class SleepSessionImporter
                     $"StartTime {item.StartDate} is in the future.");
             }
 
-            if (item.EndDate.HasValue && item.EndDate < item.StartDate)
+            try
             {
-                throw new ImportValidationException(nameof(SleepSession), item.Pk, 
-                    $"EndTime {item.EndDate} is before StartTime {item.StartDate}");
+                result.Add(SleepSession.Create(
+                    Guid.Empty,
+                    item.Pk,
+                    item.StartDate,
+                    item.EndDate
+                ));
             }
-
-            result.Add(new SleepSession
+            catch (ArgumentException ex)
             {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                StartTime = item.StartDate,
-                EndTime = item.EndDate
-            });
+                throw new ImportValidationException(nameof(SleepSession), item.Pk, ex.Message);
+            }
         }
         return result;
     }

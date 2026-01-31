@@ -1,0 +1,38 @@
+using GajaTrack.Domain.Entities;
+
+namespace GajaTrack.Tests.Unit.Domain;
+
+public class SleepSessionTests
+{
+    [Fact]
+    public void Create_ShouldInitializePropertiesCorrectly()
+    {
+        // Arrange
+        var babyId = Guid.NewGuid();
+        var externalId = "pk3";
+        var start = DateTime.UtcNow;
+        var end = start.AddHours(2);
+
+        // Act
+        var result = SleepSession.Create(babyId, externalId, start, end);
+
+        // Assert
+        Assert.Equal(babyId, result.BabyId);
+        Assert.Equal(externalId, result.ExternalId);
+        Assert.Equal(start, result.StartTime);
+        Assert.Equal(end, result.EndTime);
+        Assert.NotEqual(Guid.Empty, result.Id);
+    }
+
+    [Fact]
+    public void Create_ShouldThrowArgumentException_WhenEndDateIsBeforeStartTime()
+    {
+        // Arrange
+        var start = DateTime.UtcNow;
+        var end = start.AddMinutes(-30);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => 
+            SleepSession.Create(Guid.NewGuid(), "pk", start, end));
+    }
+}

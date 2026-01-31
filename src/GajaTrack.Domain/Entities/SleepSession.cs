@@ -7,4 +7,22 @@ public class SleepSession
   public required string ExternalId { get; init; }
   public required DateTime StartTime { get; init; }
   public DateTime? EndTime { get; set; }
+
+  private SleepSession() { }
+
+  public static SleepSession Create(Guid babyId, string externalId, DateTime startTime, DateTime? endTime)
+  {
+    if (endTime.HasValue && endTime < startTime)
+    {
+      throw new ArgumentException("EndTime cannot be before StartTime.", nameof(endTime));
+    }
+
+    return new SleepSession
+    {
+      BabyId = babyId,
+      ExternalId = externalId,
+      StartTime = startTime,
+      EndTime = endTime
+    };
+  }
 }
