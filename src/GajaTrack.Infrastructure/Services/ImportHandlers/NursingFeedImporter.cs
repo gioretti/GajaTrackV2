@@ -18,19 +18,19 @@ internal static class NursingFeedImporter
                     $"StartTime {item.StartDate} is in the future.");
             }
 
-            if (item.EndDate.HasValue && item.EndDate < item.StartDate)
+            try
             {
-                throw new ImportValidationException(nameof(NursingFeed), item.Pk, 
-                    $"EndTime {item.EndDate} is before StartTime {item.StartDate}");
+                result.Add(NursingFeed.Create(
+                    Guid.Empty,
+                    item.Pk,
+                    item.StartDate,
+                    item.EndDate
+                ));
             }
-
-            result.Add(new NursingFeed
+            catch (ArgumentException ex)
             {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                StartTime = item.StartDate,
-                EndTime = item.EndDate
-            });
+                throw new ImportValidationException(nameof(NursingFeed), item.Pk, ex.Message);
+            }
         }
         return result;
     }
