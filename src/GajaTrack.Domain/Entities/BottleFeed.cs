@@ -10,4 +10,24 @@ public class BottleFeed
   public required DateTime Time { get; init; }
   public int AmountMl { get; set; }
   public required BottleContent Content { get; set; }
+
+  // Private constructor for EF Core and internal creation
+  private BottleFeed() { }
+
+  public static BottleFeed Create(Guid babyId, string externalId, DateTime time, int amountMl, BottleContent content)
+  {
+    if (amountMl <= 0)
+    {
+      throw new ArgumentException("Amount must be greater than zero.", nameof(amountMl));
+    }
+
+    return new BottleFeed
+    {
+      BabyId = babyId,
+      ExternalId = externalId,
+      Time = time,
+      AmountMl = amountMl,
+      Content = content
+    };
+  }
 }

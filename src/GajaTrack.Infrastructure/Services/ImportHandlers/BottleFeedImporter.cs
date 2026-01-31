@@ -19,20 +19,20 @@ internal static class BottleFeedImporter
                     $"Date {item.Date} is in the future.");
             }
 
-            if (item.AmountMl <= 0)
+            try
             {
-                throw new ImportValidationException(nameof(BottleFeed), item.Pk, 
-                    $"Amount {item.AmountMl} must be greater than zero.");
+                result.Add(BottleFeed.Create(
+                    Guid.Empty,
+                    item.Pk,
+                    item.Date,
+                    (int)item.AmountMl,
+                    item.IsFormula ? BottleContent.Formula : BottleContent.BreastMilk
+                ));
             }
-
-            result.Add(new BottleFeed
+            catch (ArgumentException ex)
             {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                Time = item.Date,
-                AmountMl = (int)item.AmountMl,
-                Content = item.IsFormula ? BottleContent.Formula : BottleContent.BreastMilk
-            });
+                throw new ImportValidationException(nameof(BottleFeed), item.Pk, ex.Message);
+            }
         }
         return result;
     }
