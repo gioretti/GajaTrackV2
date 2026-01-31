@@ -1,5 +1,5 @@
 # Story: Import Philips Baby+ Data
-status: Verification
+status: Closed
 
 ## Description
 As a parent transitioning from Philips Baby+,
