@@ -41,7 +41,7 @@ public class BabyPlusImportServiceTests : IDisposable
         var service = new BabyPlusImportService(_context, Microsoft.Extensions.Logging.Abstractions.NullLogger<BabyPlusImportService>.Instance);
 
         // Act
-        var result = await service.ImportFromStreamAsync(stream);
+        var result = await service.ImportFromStreamAsync(stream, null);
 
         // Assert
         Assert.Equal(1, result.NursingFeedsImported);
@@ -71,8 +71,8 @@ public class BabyPlusImportServiceTests : IDisposable
         var service = new BabyPlusImportService(_context, Microsoft.Extensions.Logging.Abstractions.NullLogger<BabyPlusImportService>.Instance);
 
         // Act
-        var result1 = await service.ImportFromStreamAsync(stream1);
-        var result2 = await service.ImportFromStreamAsync(stream2);
+        var result1 = await service.ImportFromStreamAsync(stream1, null);
+        var result2 = await service.ImportFromStreamAsync(stream2, null);
 
         // Assert
         Assert.Equal(1, result1.NursingFeedsImported);
@@ -96,7 +96,7 @@ public class BabyPlusImportServiceTests : IDisposable
         var service = new BabyPlusImportService(_context, Microsoft.Extensions.Logging.Abstractions.NullLogger<BabyPlusImportService>.Instance);
 
         // Act
-        var result = await service.ImportFromStreamAsync(stream);
+        var result = await service.ImportFromStreamAsync(stream, null);
 
         // Assert
         Assert.Equal(1, result.NursingFeedsImported);

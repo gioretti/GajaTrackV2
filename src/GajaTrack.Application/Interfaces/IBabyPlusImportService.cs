@@ -9,5 +9,5 @@ public record ImportSummary(
 
 public interface IBabyPlusImportService
 {
-    Task<ImportSummary> ImportFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
+    Task<ImportSummary> ImportFromStreamAsync(Stream stream, IProgress<string>? progress = null, CancellationToken cancellationToken = default);
 }

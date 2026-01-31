@@ -10,8 +10,7 @@ public static class InfrastructureServiceRegistration
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<GajaDbContext>(options =>
-            options.UseSqlite(connectionString));
+        // DbContext is registered via Factory in Program.cs
             
         services.AddScoped<IBabyPlusImportService, BabyPlusImportService>();
 
