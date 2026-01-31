@@ -9,4 +9,17 @@ public class DiaperChange
   public required string ExternalId { get; init; }
   public required DateTime Time { get; init; }
   public required DiaperType Type { get; set; }
+
+  private DiaperChange() { }
+
+  public static DiaperChange Create(Guid babyId, string externalId, DateTime time, DiaperType type)
+  {
+    return new DiaperChange
+    {
+      BabyId = babyId,
+      ExternalId = externalId,
+      Time = time,
+      Type = type
+    };
+  }
 }

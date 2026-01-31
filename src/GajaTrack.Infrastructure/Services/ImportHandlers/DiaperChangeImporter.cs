@@ -24,16 +24,15 @@ internal static class DiaperChangeImporter
                 "Wet" => DiaperType.Wet,
                 "Soiled" => DiaperType.Soiled,
                 "Mixed" => DiaperType.Mixed,
-                _ => throw new ArgumentException($"Unknown Diaper Type: {item.Type}")
+                _ => throw new ImportValidationException(nameof(DiaperChange), item.Pk, $"Unknown Diaper Type: {item.Type}")
             };
 
-            result.Add(new DiaperChange
-            {
-                BabyId = Guid.Empty,
-                ExternalId = item.Pk,
-                Time = item.Date,
-                Type = type
-            });
+            result.Add(DiaperChange.Create(
+                Guid.Empty,
+                item.Pk,
+                item.Date,
+                type
+            ));
         }
         return result;
     }

@@ -1,3 +1,4 @@
+using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Enums;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
@@ -34,6 +35,6 @@ public class DiaperChangeImporterTests
         var list = new List<JsonDiaper> { jsonItem };
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => DiaperChangeImporter.Map(list));
+        Assert.Throws<ImportValidationException>(() => DiaperChangeImporter.Map(list));
     }
 }
