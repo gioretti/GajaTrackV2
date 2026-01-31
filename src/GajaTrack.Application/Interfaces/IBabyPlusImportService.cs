@@ -7,7 +7,7 @@ public record ImportSummary(
     int DiaperChangesImported
 );
 
-public interface ILegacyImportService
+public interface IBabyPlusImportService
 {
     Task<ImportSummary> ImportFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
 }

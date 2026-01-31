@@ -13,7 +13,7 @@ public static class InfrastructureServiceRegistration
         services.AddDbContext<GajaDbContext>(options =>
             options.UseSqlite(connectionString));
             
-        services.AddScoped<ILegacyImportService, LegacyImportService>();
+        services.AddScoped<IBabyPlusImportService, BabyPlusImportService>();
 
         return services;
     }

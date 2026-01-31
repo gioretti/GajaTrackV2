@@ -7,12 +7,12 @@ using System.Text;
 
 namespace GajaTrack.Tests.Integration.Import;
 
-public class LegacyImportServiceTests : IDisposable
+public class BabyPlusImportServiceTests : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly GajaDbContext _context;
 
-    public LegacyImportServiceTests()
+    public BabyPlusImportServiceTests()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
@@ -38,7 +38,7 @@ public class LegacyImportServiceTests : IDisposable
         }
         """;
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        var service = new LegacyImportService(_context);
+        var service = new BabyPlusImportService(_context);
 
         // Act
         var result = await service.ImportFromStreamAsync(stream);
@@ -63,7 +63,7 @@ public class LegacyImportServiceTests : IDisposable
         """;
         var stream1 = new MemoryStream(Encoding.UTF8.GetBytes(json));
         var stream2 = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        var service = new LegacyImportService(_context);
+        var service = new BabyPlusImportService(_context);
 
         // Act
         var result1 = await service.ImportFromStreamAsync(stream1);

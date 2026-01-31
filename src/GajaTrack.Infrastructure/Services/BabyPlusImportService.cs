@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GajaTrack.Infrastructure.Services;
 
-public class LegacyImportService(GajaDbContext dbContext) : ILegacyImportService
+public class BabyPlusImportService(GajaDbContext dbContext) : IBabyPlusImportService
 {
     public async Task<ImportSummary> ImportFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
     {
