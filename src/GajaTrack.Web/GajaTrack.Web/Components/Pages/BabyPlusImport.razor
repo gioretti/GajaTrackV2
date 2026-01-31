@@ -1,6 +1,6 @@
 @page "/import-babyplus"
 @using GajaTrack.Application.Interfaces
-@inject IBabyPlusImportService ImportService
+@inject IServiceScopeFactory ScopeFactory
 @inject ILogger<BabyPlusImport> Logger
 @rendermode InteractiveServer
 
@@ -30,7 +30,8 @@
     @if (_isProcessing)
     {
         <div class="alert alert-info shadow-sm">
-            <strong>Processing...</strong> please wait.
+            <p class="mb-1"><strong>Processing...</strong> please wait.</p>
+            <small class="text-muted">@_progressMessage</small>
         </div>
     }
     
@@ -61,6 +62,7 @@
     private IBrowserFile? _selectedFile;
     private ImportSummary? _summary;
     private string? _errorMessage;
+    private string? _progressMessage;
     private bool _isProcessing;
     
     private const long MaxFileSize = 10 * 1024 * 1024; 
@@ -70,6 +72,7 @@
         _selectedFile = e.File;
         _errorMessage = null;
         _summary = null;
+        StateHasChanged();
     }
 
     private async Task TriggerImport()
@@ -83,6 +86,8 @@
         _isProcessing = true;
         _errorMessage = null;
         _summary = null;
+        _progressMessage = "Initializing...";
+        StateHasChanged();
 
         try
         {
@@ -92,11 +97,27 @@
                 return;
             }
 
+            var progressReporter = new Progress<string>(m => 
+            {
+                _progressMessage = m;
+                InvokeAsync(StateHasChanged);
+            });
+
             using var ms = new MemoryStream();
             await _selectedFile.OpenReadStream(MaxFileSize).CopyToAsync(ms);
             ms.Position = 0;
 
-            _summary = await ImportService.ImportFromStreamAsync(ms);
+            _progressMessage = "Upload complete. Starting background processing...";
+            StateHasChanged();
+
+            // Offload to background thread with a FRESH scope to avoid DbContext threading issues
+            _summary = await Task.Run(async () => 
+            {
+                using var scope = ScopeFactory.CreateScope();
+                var scopedService = scope.ServiceProvider.GetRequiredService<IBabyPlusImportService>();
+                return await scopedService.ImportFromStreamAsync(ms, progressReporter);
+            });
+
             Logger.LogInformation("Imported records successfully.");
         }
         catch (Exception ex)
@@ -107,6 +128,7 @@
         finally
         {
             _isProcessing = false;
+            StateHasChanged();
         }
     }
 }

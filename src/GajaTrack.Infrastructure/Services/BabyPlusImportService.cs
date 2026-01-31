@@ -11,7 +11,9 @@ namespace GajaTrack.Infrastructure.Services;
 
 public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImportService> logger) : IBabyPlusImportService
 {
-    public async Task<ImportSummary> ImportFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+    private const int BatchSize = 500; // Increased to 500
+
+    public async Task<ImportSummary> ImportFromStreamAsync(Stream stream, IProgress<string>? progress = null, CancellationToken cancellationToken = default)
     {
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         options.Converters.Add(new PolymorphicDateTimeConverter());
@@ -19,13 +21,22 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
         options.Converters.Add(new PolymorphicBoolConverter());
         options.Converters.Add(new PolymorphicStringConverter());
         
+        progress?.Report("Deserializing JSON data...");
         var data = await JsonSerializer.DeserializeAsync<BabyPlusExport>(stream, options, cancellationToken);
+        
         if (data is null) return new ImportSummary(0, 0, 0, 0);
 
-        await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+        progress?.Report($"Data loaded. Found: {data.NursingFeeds?.Count ?? 0} Nursing, {data.BottleFeeds?.Count ?? 0} Bottle, {data.SleepSessions?.Count ?? 0} Sleep, {data.DiaperChanges?.Count ?? 0} Diapers.");
+
+        logger.LogInformation("JSON Deserialized. Fetching existing records...");
+
+        // Removed explicit transaction to prevent SQLite locking issues with UI readers.
+        // Idempotency logic ensures we can re-run if it fails halfway.
         try
         {
-            // 1. Fetch existing entities into dictionaries for O(1) upsert lookup
+            dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
+
+            progress?.Report("Checking for existing records...");
             var existingNursing = await dbContext.NursingFeeds.ToDictionaryAsync(x => x.ExternalId, cancellationToken);
             var existingBottle = await dbContext.BottleFeeds.ToDictionaryAsync(x => x.ExternalId, cancellationToken);
             var existingSleep = await dbContext.SleepSessions.ToDictionaryAsync(x => x.ExternalId, cancellationToken);
@@ -36,35 +47,60 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
             var newSleep = new List<SleepSession>();
             var newDiaper = new List<DiaperChange>();
 
-            // 2. Process data (DistinctBy PK to handle intra-file duplicates)
+            progress?.Report("Mapping and validating...");
             NursingFeedImporter.Map(data.NursingFeeds?.DistinctBy(x => x.Pk).ToList(), existingNursing, newNursing);
             BottleFeedImporter.Map(data.BottleFeeds?.DistinctBy(x => x.Pk).ToList(), existingBottle, newBottle);
             SleepSessionImporter.Map(data.SleepSessions?.DistinctBy(x => x.Pk).ToList(), existingSleep, newSleep);
             DiaperChangeImporter.Map(data.DiaperChanges?.DistinctBy(x => x.Pk).ToList(), existingDiaper, newDiaper);
 
-            // 3. Add only truly new records
-            dbContext.NursingFeeds.AddRange(newNursing);
-            dbContext.BottleFeeds.AddRange(newBottle);
-            dbContext.SleepSessions.AddRange(newSleep);
-            dbContext.DiaperChanges.AddRange(newDiaper);
+            progress?.Report("Saving new Nursing feeds...");
+            await SaveNewEntries(newNursing, dbContext.NursingFeeds, progress, cancellationToken);
+            
+            progress?.Report("Saving new Bottle feeds...");
+            await SaveNewEntries(newBottle, dbContext.BottleFeeds, progress, cancellationToken);
+            
+            progress?.Report("Saving new Sleep sessions...");
+            await SaveNewEntries(newSleep, dbContext.SleepSessions, progress, cancellationToken);
+            
+            progress?.Report("Saving new Diaper changes...");
+            await SaveNewEntries(newDiaper, dbContext.DiaperChanges, progress, cancellationToken);
 
-            // 4. Save (EF Core automatically generates UPDATEs for entries in dictionaries if they were modified)
+            progress?.Report("Applying updates...");
+            dbContext.ChangeTracker.DetectChanges();
             await dbContext.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
 
-            return new ImportSummary(
-                newNursing.Count,
-                newBottle.Count,
-                newSleep.Count,
-                newDiaper.Count
-            );
+            // Transaction removed
+            progress?.Report("Import successful!");
+
+            return new ImportSummary(newNursing.Count, newBottle.Count, newSleep.Count, newDiaper.Count);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Import failed.");
-            await transaction.RollbackAsync(cancellationToken);
+            // Transaction rollback removed
             dbContext.ChangeTracker.Clear();
             throw;
+        }
+        finally
+        {
+            dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
+        }
+    }
+
+    private async Task SaveNewEntries<T>(List<T> items, DbSet<T> dbSet, IProgress<string>? progress, CancellationToken ct) where T : class
+    {
+        int totalSaved = 0;
+        for (int i = 0; i < items.Count; i += BatchSize)
+        {
+            var batch = items.Skip(i).Take(BatchSize).ToList();
+            dbSet.AddRange(batch);
+            await dbContext.SaveChangesAsync(ct);
+            foreach (var item in batch)
+            {
+                dbContext.Entry(item).State = EntityState.Detached;
+            }
+            totalSaved += batch.Count;
+            progress?.Report($"Saving {typeof(T).Name}s... {totalSaved}/{items.Count}");
         }
     }
 
