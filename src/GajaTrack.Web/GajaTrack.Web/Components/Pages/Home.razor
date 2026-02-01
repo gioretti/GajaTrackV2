@@ -1,11 +1,20 @@
 ﻿@page "/"
+@using GajaTrack.Application.Interfaces
 @using GajaTrack.Infrastructure.Persistence
 @using Microsoft.EntityFrameworkCore
 @inject GajaDbContext DbContext
+@inject IExportService ExportService
+@inject IJSRuntime JS
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<h1>Baby Gaja Tracking</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Baby Gaja Tracking</h1>
+    <button class="btn btn-secondary" @onclick="DownloadExport">
+        <i class="bi bi-download"></i> Export Data
+    </button>
+</div>
 
 <div class="row mt-4">
     <div class="col-md-3">
@@ -46,5 +55,16 @@
         _bottleCount = await DbContext.BottleFeeds.CountAsync();
         _sleepCount = await DbContext.SleepSessions.CountAsync();
         _diaperCount = await DbContext.DiaperChanges.CountAsync();
+    }
+
+    private async Task DownloadExport()
+    {
+        var bytes = await ExportService.ExportDataAsync();
+        var fileName = $"gajatrack_export_{DateTime.UtcNow:yyyy-MM-dd}.json";
+        
+        using var stream = new MemoryStream(bytes);
+        using var streamRef = new DotNetStreamReference(stream);
+        
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }

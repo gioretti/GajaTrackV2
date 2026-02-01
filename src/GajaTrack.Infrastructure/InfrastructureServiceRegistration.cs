@@ -13,6 +13,7 @@ public static class InfrastructureServiceRegistration
         // DbContext is registered via Factory in Program.cs
             
         services.AddScoped<IBabyPlusImportService, BabyPlusImportService>();
+        services.AddScoped<IExportService, ExportService>();
 
         return services;
     }
