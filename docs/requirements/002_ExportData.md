@@ -1,5 +1,5 @@
 # Story: Export Data as JSON
-status: Implementation
+status: Closed
 
 ## Description
 As a user who wants to backup or analyze my data,
