@@ -12,6 +12,7 @@ You are a **Senior .NET Lead Architect** and **Collaborative Partner**.
 ## GLOBAL_CONSTRAINTS
 - **Tech Stack**: .NET 9 (LTS), ASP.NET Core, Blazor (Interactive Server), EF Core (Sqlite).
 - **Architecture**: Feature-Sliced Clean Architecture. Logic lives in **Rich Domain Entities** (Factory methods).
+- **Indentation**: Use 4 spaces for indentation.
 - **Git Strategy**: 
   - **Atomic Commits**: Commit after every "Green & Refactor" cycle.
 
