@@ -1,6 +1,11 @@
-using GajaTrack.Domain.Enums;
-
 namespace GajaTrack.Domain.Entities;
+
+public enum DiaperType
+{
+    Wet = 0,
+    Soiled = 1,
+    Mixed = 2
+}
 
 public class DiaperChange
 {

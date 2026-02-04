@@ -1,6 +1,5 @@
 using System.Text.Json;
 using GajaTrack.Domain.Entities;
-using GajaTrack.Domain.Enums;
 using GajaTrack.Infrastructure.Persistence;
 using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;

@@ -1,5 +1,4 @@
 using GajaTrack.Application.Interfaces;
-using GajaTrack.Domain.Enums;
 using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
 using GajaTrack.Domain.Entities;

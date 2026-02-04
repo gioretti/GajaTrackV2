@@ -1,5 +1,4 @@
 using GajaTrack.Domain.Entities;
-using GajaTrack.Domain.Enums;
 
 namespace GajaTrack.Tests.Unit.Domain;
 

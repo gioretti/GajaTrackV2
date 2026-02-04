@@ -1,9 +1,11 @@
+using System.Text;
+using System.Text.Json;
+using GajaTrack.Application.Interfaces;
+using GajaTrack.Domain.Entities;
 using GajaTrack.Infrastructure.Persistence;
 using GajaTrack.Infrastructure.Services;
-using GajaTrack.Domain.Enums;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 
 namespace GajaTrack.Tests.Integration.Import;
 

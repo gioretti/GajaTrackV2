@@ -1,6 +1,10 @@
-using GajaTrack.Domain.Enums;
-
 namespace GajaTrack.Domain.Entities;
+
+public enum BottleContent
+{
+    BreastMilk = 0,
+    Formula = 1
+}
 
 public class BottleFeed
 {
