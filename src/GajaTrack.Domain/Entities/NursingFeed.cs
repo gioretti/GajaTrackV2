@@ -2,38 +2,39 @@ namespace GajaTrack.Domain.Entities;
 
 public class NursingFeed
 {
-  public Guid Id { get; init; } = Guid.CreateVersion7();
-  public required Guid BabyId { get; init; }
-  public required string ExternalId { get; init; }
-  public required DateTime StartTime { get; set; }
-  public DateTime? EndTime { get; set; }
+    public Guid Id { get; init; } = Guid.CreateVersion7();
+    public Guid BabyId { get; init; }
+    public string ExternalId { get; init; } = null!;
+    public DateTime StartTime { get; private set; }
+    public DateTime? EndTime { get; private set; }
 
-  private NursingFeed() { }
+    // For EF Core
+    private NursingFeed() { }
 
-  public static NursingFeed Create(Guid babyId, string externalId, DateTime startTime, DateTime? endTime)
-  {
-    if (endTime.HasValue && endTime < startTime)
+    public static NursingFeed Create(Guid babyId, string externalId, DateTime startTime, DateTime? endTime)
     {
-      throw new ArgumentException("EndTime cannot be before StartTime.", nameof(endTime));
+        if (endTime.HasValue && endTime < startTime)
+        {
+            throw new ArgumentException("EndTime cannot be before StartTime.", nameof(endTime));
+        }
+
+        return new NursingFeed
+        {
+            BabyId = babyId,
+            ExternalId = externalId,
+            StartTime = startTime,
+            EndTime = endTime
+        };
     }
 
-    return new NursingFeed
+    public void Update(DateTime startTime, DateTime? endTime)
     {
-      BabyId = babyId,
-      ExternalId = externalId,
-      StartTime = startTime,
-      EndTime = endTime
-    };
-  }
+        if (endTime.HasValue && endTime < startTime)
+        {
+            throw new ArgumentException("EndTime cannot be before StartTime.", nameof(endTime));
+        }
 
-  public void Update(DateTime startTime, DateTime? endTime)
-  {
-    if (endTime.HasValue && endTime < startTime)
-    {
-      throw new ArgumentException("EndTime cannot be before StartTime.", nameof(endTime));
+        StartTime = startTime;
+        EndTime = endTime;
     }
-
-    StartTime = startTime;
-    EndTime = endTime;
-  }
 }

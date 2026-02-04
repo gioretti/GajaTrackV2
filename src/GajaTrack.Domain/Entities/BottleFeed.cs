@@ -4,42 +4,42 @@ namespace GajaTrack.Domain.Entities;
 
 public class BottleFeed
 {
-  public Guid Id { get; init; } = Guid.CreateVersion7();
-  public required Guid BabyId { get; init; }
-  public required string ExternalId { get; init; }
-  public required DateTime Time { get; set; }
-  public int AmountMl { get; set; }
-  public required BottleContent Content { get; set; }
+    public Guid Id { get; init; } = Guid.CreateVersion7();
+    public Guid BabyId { get; init; }
+    public string ExternalId { get; init; } = null!;
+    public DateTime Time { get; private set; }
+    public int AmountMl { get; private set; }
+    public BottleContent Content { get; private set; }
 
-  // Private constructor for EF Core and internal creation
-  private BottleFeed() { }
+    // For EF Core
+    private BottleFeed() { }
 
-  public static BottleFeed Create(Guid babyId, string externalId, DateTime time, int amountMl, BottleContent content)
-  {
-    if (amountMl <= 0)
+    public static BottleFeed Create(Guid babyId, string externalId, DateTime time, int amountMl, BottleContent content)
     {
-      throw new ArgumentException("Amount must be greater than zero.", nameof(amountMl));
+        if (amountMl <= 0)
+        {
+            throw new ArgumentException("Amount must be greater than zero.", nameof(amountMl));
+        }
+
+        return new BottleFeed
+        {
+            BabyId = babyId,
+            ExternalId = externalId,
+            Time = time,
+            AmountMl = amountMl,
+            Content = content
+        };
     }
 
-    return new BottleFeed
+    public void Update(DateTime time, int amountMl, BottleContent content)
     {
-      BabyId = babyId,
-      ExternalId = externalId,
-      Time = time,
-      AmountMl = amountMl,
-      Content = content
-    };
-  }
+        if (amountMl <= 0)
+        {
+            throw new ArgumentException("Amount must be greater than zero.", nameof(amountMl));
+        }
 
-  public void Update(DateTime time, int amountMl, BottleContent content)
-  {
-    if (amountMl <= 0)
-    {
-      throw new ArgumentException("Amount must be greater than zero.", nameof(amountMl));
+        Time = time;
+        AmountMl = amountMl;
+        Content = content;
     }
-
-    Time = time;
-    AmountMl = amountMl;
-    Content = content;
-  }
 }
