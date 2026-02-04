@@ -106,6 +106,31 @@ public class BabyPlusImportServiceTests : IDisposable
         Assert.Equal("4280847906750135348", feed.ExternalId);
     }
 
+    [Fact]
+    public async Task Import_ShouldHandleUnixEpochEndDate_BySettingToNull()
+    {
+        // Arrange
+        var json = """
+        {
+           "baby_nursingfeed": [{ 
+                "pk": "EPOCH_TEST", 
+                "startDate": "2025-01-30T17:34:00.000+01:00", 
+                "endDate": "1970-01-01T01:00:00.000+01:00" 
+           }]
+        }
+        """;
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var service = new BabyPlusImportService(_context, Microsoft.Extensions.Logging.Abstractions.NullLogger<BabyPlusImportService>.Instance);
+
+        // Act
+        var result = await service.ImportFromStreamAsync(stream, null);
+
+        // Assert
+        Assert.Equal(1, result.NursingFeedsImported);
+        var feed = await _context.NursingFeeds.FirstAsync(x => x.ExternalId == "EPOCH_TEST");
+        Assert.Null(feed.EndTime);
+    }
+
     public void Dispose()
     {
         _connection.Dispose();

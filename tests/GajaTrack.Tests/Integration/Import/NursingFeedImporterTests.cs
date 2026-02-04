@@ -53,4 +53,21 @@ public class NursingFeedImporterTests
         // Assert
         Assert.Null(newEntries[0].EndTime);
     }
+
+    [Fact]
+    public void Map_ShouldHandleEpochEndDate_BySettingToNull_WhenBeforeStartTime()
+    {
+        // Arrange
+        var start = new DateTime(2025, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+        var epoch = DateTimeOffset.FromUnixTimeSeconds(0).UtcDateTime; // 1970-01-01T00:00:00Z
+        var jsonItem = new JsonNursingFeed("pk_epoch", start, epoch);
+        var list = new List<JsonNursingFeed> { jsonItem };
+        var newEntries = new List<NursingFeed>();
+
+        // Act
+        NursingFeedImporter.Map(list, [], newEntries);
+
+        // Assert
+        Assert.Null(newEntries[0].EndTime);
+    }
 }

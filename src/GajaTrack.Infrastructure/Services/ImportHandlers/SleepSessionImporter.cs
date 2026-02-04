@@ -11,6 +11,13 @@ internal static class SleepSessionImporter
 
         foreach (var item in source)
         {
+            var endDate = item.EndDate;
+            // Android uses 1970-01-01T00:00:00Z as a placeholder for null EndDate
+            if (endDate.HasValue && endDate < item.StartDate && endDate.Value == DateTime.UnixEpoch)
+            {
+                endDate = null;
+            }
+
             if (item.StartDate > DateTime.UtcNow)
             {
                 throw new ImportValidationException(nameof(SleepSession), item.Pk, 
@@ -21,7 +28,7 @@ internal static class SleepSessionImporter
             {
                 try
                 {
-                    existing.Update(item.StartDate, item.EndDate);
+                    existing.Update(item.StartDate, endDate);
                 }
                 catch (ArgumentException ex)
                 {
@@ -36,7 +43,7 @@ internal static class SleepSessionImporter
                         Guid.Empty,
                         item.Pk,
                         item.StartDate,
-                        item.EndDate
+                        endDate
                     ));
                 }
                 catch (ArgumentException ex)
