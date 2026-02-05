@@ -12,6 +12,16 @@
 
         <!-- Background -->
         <rect x="0" y="0" width="@TotalWidth" height="@TotalHeight" fill="white" />
+        
+        <!-- Column Banding (Vertical Striping) -->
+        @for (int h = 0; h < 24; h++)
+        {
+            if (h % 2 == 0) // Alternating hours
+            {
+                var x = LeftMargin + (h * 60);
+                <rect x="@x" y="@HeaderHeight" width="60" height="@(TotalHeight - HeaderHeight)" fill="#f9f9f9" />
+            }
+        }
 
         <!-- Vertical Hour Grid Lines & Labels -->
         @for (int h = 0; h <= 24; h++)
@@ -40,10 +50,11 @@
             var y = i * RowHeight + HeaderHeight;
             var midY = y + RowHeight / 2;
             
-            <!-- Zebra Striping -->
+            <!-- Row Banding (Zebra Striping) - Darker to contrast with columns -->
             @if (i % 2 == 1)
             {
-                <rect x="@LeftMargin" y="@y" width="@ChartWidth" height="@RowHeight" fill="#f8f9fa" opacity="0.5" />
+                <!-- Use a mix-blend-mode or just simple transparency overlay -->
+                <rect x="@LeftMargin" y="@y" width="@ChartWidth" height="@RowHeight" fill="#eef2f5" opacity="0.6" />
             }
             
             <!-- Date Label (Left) -->
@@ -52,7 +63,6 @@
             </g>
 
             <!-- Events -->
-            <!-- We assume events are clipped to the day window by the service logic. -->
             @foreach (var ev in day.Events)
             {
                 var xStart = LeftMargin + ev.StartMinute;
@@ -62,12 +72,13 @@
                 {
                     case ProtocolEventType.Sleep:
                         <!-- Sleep Line (Thin horizontal line) -->
-                        <line x1="@xStart" y1="@midY" x2="@(xStart + width)" y2="@midY" stroke="black" stroke-width="3" stroke-linecap="round" title="Sleep: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <line x1="@xStart" y1="@midY" x2="@(xStart + width)" y2="@midY" stroke="black" stroke-width="2" stroke-linecap="square" title="Sleep: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
                         
                     case ProtocolEventType.Crying:
                         <!-- Wavy Line (Black Sine Wave) -->
-                        <path d="@GenerateSineWave(xStart, width, midY, 4)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <!-- Amplitude: 5px (Total height 10px, matches triangle) -->
+                        <path d="@GenerateSineWave(xStart, width, midY, 5)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
 
                     case ProtocolEventType.Nursing:
@@ -104,22 +115,20 @@
 
     private string GenerateSineWave(double startX, double width, double midY, double amplitude)
     {
-        // Smooth sine wave
         var sb = new StringBuilder();
         sb.Append($"M {startX} {midY}");
         
-        double frequency = 0.2; // Adjust for wave tightness
-        int step = 2; // Pixel step for smoothness
+        // Tighter wave: Wavelength = 6px (Frequency ~ 1.0)
+        double frequency = 1.0; 
+        int step = 1; 
         
         for (double x = 0; x <= width; x += step)
         {
-             double yOffset = amplitude * Math.Sin((x) * frequency);
+             // Use Math.Sin with a tighter period
+             double yOffset = amplitude * Math.Sin(x * frequency);
              sb.Append($" L {startX + x} {midY + yOffset}");
         }
         
-        // Ensure we land at the end
-        sb.Append($" L {startX + width} {midY + amplitude * Math.Sin(width * frequency)}");
-
         return sb.ToString();
     }
     
