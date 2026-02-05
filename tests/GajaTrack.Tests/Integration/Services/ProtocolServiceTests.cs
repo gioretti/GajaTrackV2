@@ -48,7 +48,7 @@ public class ProtocolServiceTests : IDisposable
         var service = new ProtocolService(_context);
 
         // Act
-        var result = await service.GetProtocolAsync(day, day);
+        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -82,7 +82,7 @@ public class ProtocolServiceTests : IDisposable
         var service = new ProtocolService(_context);
 
         // Act
-        var result = await service.GetProtocolAsync(day, day);
+        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -111,7 +111,7 @@ public class ProtocolServiceTests : IDisposable
         var service = new ProtocolService(_context);
 
         // Act
-        var result = await service.GetProtocolAsync(day, day);
+        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -138,7 +138,7 @@ public class ProtocolServiceTests : IDisposable
         var service = new ProtocolService(_context);
 
         // Act
-        var result = await service.GetProtocolAsync(day, day);
+        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result[0].Events);
@@ -164,5 +164,37 @@ public class ProtocolServiceTests : IDisposable
         Assert.Equal(2, result.Count);
         Assert.Equal(day2, result[0].Date);
         Assert.Equal(day1, result[1].Date);
+    }
+
+    [Fact]
+    public async Task GetProtocol_ShouldHandleTimeZoneOffset()
+    {
+        // Arrange
+        // We use a fixed timezone: UTC+1 (Central European Time without DST for simplicity)
+        // Or just use a custom offset timezone.
+        var tz = TimeZoneInfo.CreateCustomTimeZone("TestTZ", TimeSpan.FromHours(1), "TestTZ", "TestTZ");
+        
+        var day = new DateOnly(2026, 2, 5);
+        // Local 06:00 Feb 5 is 05:00 UTC Feb 5
+        
+        // Event at 06:00 LOCAL (05:00 UTC)
+        var utcTime = new DateTime(2026, 2, 5, 5, 0, 0, DateTimeKind.Utc);
+        
+        _context.NursingFeeds.Add(NursingFeed.Create(Guid.NewGuid(), "tz-test", utcTime, null));
+        await _context.SaveChangesAsync();
+        
+        var service = new ProtocolService(_context);
+
+        // Act
+        var result = await service.GetProtocolAsync(day, day, timeZone: tz);
+
+        // Assert
+        Assert.Single(result[0].Events);
+        var ev = result[0].Events[0];
+        
+        // 06:00 Local start, event is at 06:00 Local -> StartMinute = 0
+        Assert.Equal(0, ev.StartMinute);
+        // OriginalStartTime in DTO should be converted to Local
+        Assert.Equal(6, ev.OriginalStartTime.Hour);
     }
 }

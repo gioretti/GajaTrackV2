@@ -7,12 +7,14 @@ namespace GajaTrack.Infrastructure.Services;
 
 public class ProtocolService(GajaDbContext dbContext) : IProtocolService
 {
-    public async Task<List<ProtocolDay>> GetProtocolAsync(DateOnly startDate, DateOnly endDate, bool mostRecentFirst = false, CancellationToken cancellationToken = default)
+    public async Task<List<ProtocolDay>> GetProtocolAsync(DateOnly startDate, DateOnly endDate, bool mostRecentFirst = false, TimeZoneInfo? timeZone = null, CancellationToken cancellationToken = default)
     {
+        timeZone ??= TimeZoneInfo.Local;
+
         // 1. Determine Fetch Range (Buffer to catch overlapping events)
-        // We use UTC 06:00 as the definition of the "Day Start" for simplicity in this version.
-        var fetchStart = startDate.AddDays(-1).ToDateTime(new TimeOnly(6, 0), DateTimeKind.Utc);
-        var fetchEnd = endDate.AddDays(2).ToDateTime(new TimeOnly(6, 0), DateTimeKind.Utc);
+        // Fetch slightly more than needed to ensure we catch events that might cross boundaries after TZ conversion
+        var fetchStart = startDate.AddDays(-1).ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
+        var fetchEnd = endDate.AddDays(2).ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
 
         // 2. Fetch Data
         var sleepTask = dbContext.SleepSessions
@@ -42,8 +44,11 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
         // 3. Iterate Days
         for (var d = startDate; d <= endDate; d = d.AddDays(1))
         {
-            var windowStart = d.ToDateTime(new TimeOnly(6, 0), DateTimeKind.Utc);
+            // Window is 06:00 Local to 06:00 Local (Next Day)
+            var localStart = new DateTime(d.Year, d.Month, d.Day, 6, 0, 0, DateTimeKind.Unspecified);
+            var windowStart = TimeZoneInfo.ConvertTimeToUtc(localStart, timeZone);
             var windowEnd = windowStart.AddDays(1);
+            
             var dayEvents = new List<ProtocolEvent>();
 
             // Process Sleep
@@ -60,7 +65,8 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
                     {
                         var startMin = (effectiveStart - windowStart).TotalMinutes;
                         var durMin = (effectiveEnd - effectiveStart).TotalMinutes;
-                        dayEvents.Add(new ProtocolEvent(s.Id, ProtocolEventType.Sleep, s.StartTime, startMin, durMin));
+                        var displayTime = TimeZoneInfo.ConvertTimeFromUtc(s.StartTime, timeZone);
+                        dayEvents.Add(new ProtocolEvent(s.Id, ProtocolEventType.Sleep, displayTime, startMin, durMin));
                     }
                 }
             }
@@ -78,7 +84,8 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
                     {
                         var startMin = (effectiveStart - windowStart).TotalMinutes;
                         var durMin = (effectiveEnd - effectiveStart).TotalMinutes;
-                        dayEvents.Add(new ProtocolEvent(c.Id, ProtocolEventType.Crying, c.StartTime, startMin, durMin));
+                        var displayTime = TimeZoneInfo.ConvertTimeFromUtc(c.StartTime, timeZone);
+                        dayEvents.Add(new ProtocolEvent(c.Id, ProtocolEventType.Crying, displayTime, startMin, durMin));
                     }
                 }
             }
@@ -89,7 +96,8 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
                 if (n.StartTime >= windowStart && n.StartTime < windowEnd)
                 {
                      var startMin = (n.StartTime - windowStart).TotalMinutes;
-                     dayEvents.Add(new ProtocolEvent(n.Id, ProtocolEventType.Nursing, n.StartTime, startMin, 0));
+                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(n.StartTime, timeZone);
+                     dayEvents.Add(new ProtocolEvent(n.Id, ProtocolEventType.Nursing, displayTime, startMin, 0));
                 }
             }
             
@@ -99,8 +107,9 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
                 if (b.Time >= windowStart && b.Time < windowEnd)
                 {
                      var startMin = (b.Time - windowStart).TotalMinutes;
+                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(b.Time, timeZone);
                      var type = b.Content == Domain.Entities.BottleContent.Formula ? ProtocolEventType.BottleFormula : ProtocolEventType.BottleMilk;
-                     dayEvents.Add(new ProtocolEvent(b.Id, type, b.Time, startMin, 0, $"{b.AmountMl}ml"));
+                     dayEvents.Add(new ProtocolEvent(b.Id, type, displayTime, startMin, 0, $"{b.AmountMl}ml"));
                 }
             }
             result.Add(new ProtocolDay(d, windowStart, windowEnd, dayEvents.OrderBy(x => x.StartMinute).ToList()));
