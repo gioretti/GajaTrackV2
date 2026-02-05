@@ -1,0 +1,145 @@
+@using GajaTrack.Application.DTOs.Protocol
+@using System.Text
+
+<div class="protocol-chart-container">
+    <svg viewBox="0 0 @Width @TotalHeight" preserveAspectRatio="xMidYMid meet" class="protocol-svg">
+        <!-- Definitions for patterns/markers -->
+        <defs>
+            <pattern id="gridPattern" width="60" height="@TotalHeight" patternUnits="userSpaceOnUse">
+                <line x1="60" y1="0" x2="60" y2="@TotalHeight" stroke="#eee" stroke-width="1" />
+            </pattern>
+        </defs>
+
+        <!-- Background -->
+        <rect x="0" y="0" width="@Width" height="@TotalHeight" fill="white" />
+
+        <!-- Vertical Hour Grid Lines & Labels -->
+        @for (int h = 0; h <= 24; h++)
+        {
+            var x = h * 60;
+            <line x1="@x" y1="@HeaderHeight" x2="@x" y2="@TotalHeight" stroke="#e0e0e0" stroke-width="1" />
+            
+            // Hour Label (06 to 06)
+            var hour = (h + 6) % 24;
+            var label = hour == 0 ? "24" : hour.ToString("00"); // 24-hour protocol uses 24 for midnight
+            if (h == 24) label = "06"; // The end label
+            
+            <g>
+                <text x="@x" y="@(HeaderHeight - 5)" font-size="12" text-anchor="middle" fill="#666">@label</text>
+            </g>
+        }
+
+        <!-- Rows -->
+        @for (int i = 0; i < Days.Count; i++)
+        {
+            var day = Days[i];
+            var y = i * RowHeight + HeaderHeight;
+            
+            <!-- Zebra Striping -->
+            @if (i % 2 == 1)
+            {
+                <rect x="0" y="@y" width="@Width" height="@RowHeight" fill="#f8f9fa" opacity="0.5" />
+            }
+            
+            <!-- Day Label (Left Side - effectively outside the grid in real implementation, but here inside for simplicity) -->
+            <!-- Actually, usually the label is to the left. But we are in SVG. 
+                 Let's assume the component is passed a date. -->
+            <!-- We will render the events -->
+
+            @foreach (var ev in day.Events)
+            {
+                var xStart = ev.StartMinute;
+                var width = ev.DurationMinutes;
+                
+                switch (ev.Type)
+                {
+                    case ProtocolEventType.Sleep:
+                        <rect x="@xStart" y="@(y + RowHeight/4)" width="@width" height="@(RowHeight/2)" fill="#333" rx="2" ry="2" title="Sleep: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        break;
+                        
+                    case ProtocolEventType.Crying:
+                        <!-- Wavy Line -->
+                        <path d="@GenerateWavyPath(xStart, width, y + RowHeight/2, 5)" stroke="#ff4444" stroke-width="2" fill="none" title="Crying: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        break;
+
+                    case ProtocolEventType.Nursing:
+                        <!-- Hollow Triangle -->
+                        <polygon points="@GetTrianglePoints(xStart, y + RowHeight/2)" fill="white" stroke="black" stroke-width="2" title="Nursing: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        break;
+                        
+                    case ProtocolEventType.BottleFormula:
+                        <!-- Solid Blue Triangle -->
+                        <polygon points="@GetTrianglePoints(xStart, y + RowHeight/2)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.Description" />
+                        break;
+                        
+                    case ProtocolEventType.BottleMilk:
+                        <!-- Solid Grey Triangle -->
+                        <polygon points="@GetTrianglePoints(xStart, y + RowHeight/2)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.Description" />
+                        break;
+                }
+            }
+        }
+    </svg>
+</div>
+
+@code {
+    [Parameter] public List<ProtocolDay> Days { get; set; } = new();
+    
+    private const double Width = 1440; // 24 hours * 60 minutes
+    private const double RowHeight = 50;
+    private const double HeaderHeight = 30;
+    
+    private double TotalHeight => Math.Max(RowHeight, Days.Count * RowHeight + HeaderHeight);
+
+    private string GenerateWavyPath(double startX, double width, double midY, double amplitude)
+    {
+        // Generate a sine wave path
+        var sb = new StringBuilder();
+        sb.Append($"M {startX} {midY}");
+        
+        // One wave cycle every 10 pixels?
+        double frequency = 10;
+        for (double x = 0; x <= width; x += frequency / 2)
+        {
+             // Simple zigzag or smooth curve
+             // Let's use Q (Quadratic Bezier) for smoothness
+             // M startX midY Q (startX+2.5) (midY-amp) (startX+5) midY T (startX+10) midY
+             // Too complex to iterate points perfectly.
+             // Let's just do a polyline zigzag for robustness/performance or simple sine approx.
+             
+             // Actually, the requirement says "Wavy Line".
+             // A simple way is relative cubic beziers.
+             // But loop is easiest.
+        }
+        
+        // Simpler implementation: Just zigzag
+        bool up = true;
+        for (double i = 0; i < width; i += 4)
+        {
+            double yOffset = up ? -amplitude : amplitude;
+            sb.Append($" L {startX + i} {midY + yOffset}");
+            up = !up;
+        }
+        sb.Append($" L {startX + width} {midY}"); // Finish at center
+
+        return sb.ToString();
+    }
+    
+    private string GetTrianglePoints(double cx, double cy)
+    {
+        // Equilateral triangle centered at cx, cy
+        double size = 12;
+        double halfSize = size / 2;
+        
+        // Top point, Bottom Right, Bottom Left
+        // Wait, "Triangle at Start Time".
+        // Usually, the point or the center aligns with time?
+        // Let's align center for visibility.
+        
+        // Points: (cx, cy-half), (cx+half, cy+half), (cx-half, cy+half) ??
+        // Inverted? Requirements don't specify orientation. 
+        // Standard "Triangle" usually points up.
+        
+        return $"{cx},{cy - halfSize} {cx + halfSize},{cy + halfSize} {cx - halfSize},{cy + halfSize}";
+    }
+}

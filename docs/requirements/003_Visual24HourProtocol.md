@@ -35,3 +35,28 @@ Based on the clinical "24-Stunden-Protokoll" used by the University Children's H
 ### 4. Data Handling
 - [ ] **Cross-Day Events**: Events spanning across the 06:00 boundary must visually wrap or be handled such that the visualization remains accurate to the 06:00-06:00 cycle.
 - [ ] **Mobile View**: Horizontal scrolling is acceptable/preferred over compressing the 24h axis into unreadable widths.
+
+## Atomic Tasks
+
+### 1. Application Layer: DTOs & Interface
+- [ ] Create `ProtocolDTOs.cs`: `ProtocolDay`, `ProtocolEvent` (Type, StartTime, Duration, Details).
+- [ ] Create `IProtocolService.cs`: Interface for fetching protocol data.
+- [ ] Define Event Types: Sleep, Crying, Feed (Nursing, Bottle, Formula).
+
+### 2. Infrastructure Layer: Protocol Service Implementation
+- [ ] Implement `ProtocolService.cs`.
+- [ ] **Logic**: Fetch data from `DbContext`.
+- [ ] **Logic**: Map entities to `ProtocolEvent`s.
+- [ ] **Logic**: "Day Splitting". Ensure events spanning across 06:00 are split or assigned to the correct "Protocol Day" (06:00 - 06:00).
+- [ ] Register Service in DI.
+
+### 3. Tests: Service Logic
+- [ ] Unit Test: Verify 06:00 boundary handling (e.g., sleep from 05:00 to 07:00 should split).
+- [ ] Unit Test: Verify correct day assignment (Events before 06:00 belong to previous day).
+
+### 4. UI Layer: Components
+- [ ] Create `ProtocolChart.razor`: The SVG-based visualizer.
+- [ ] Implement Grid (Time Axis 06:00 - 06:00).
+- [ ] Implement Row Rendering (Loop through days).
+- [ ] Implement Shapes (Rect for Sleep, Path for Crying, Triangle for Feed).
+- [ ] Add `ProtocolPage.razor` to host the chart.

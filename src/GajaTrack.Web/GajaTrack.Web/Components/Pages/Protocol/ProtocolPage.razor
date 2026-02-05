@@ -1,0 +1,104 @@
+@page "/protocol"
+@using GajaTrack.Application.Interfaces
+@using GajaTrack.Application.DTOs.Protocol
+@inject IProtocolService ProtocolService
+@rendermode InteractiveServer
+
+<PageTitle>24-Hour Protocol</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>24-Hour Protocol</h1>
+    <div class="d-flex gap-2 align-items-center">
+        <span>@_startDate.ToString("dd.MM.yyyy") - @_startDate.AddDays(13).ToString("dd.MM.yyyy")</span>
+        <div class="btn-group">
+            <button class="btn btn-outline-secondary" @onclick="PrevPage">&lt;</button>
+            <button class="btn btn-outline-secondary" @onclick="NextPage">&gt;</button>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3 shadow-sm overflow-auto">
+    @if (_days == null)
+    {
+        <div class="d-flex justify-content-center p-5">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex">
+            <!-- Left Sidebar for Dates -->
+            <div class="flex-shrink-0 pt-[30px]" style="padding-top: 30px; width: 60px; border-right: 1px solid #eee;">
+                 @foreach(var day in _days)
+                 {
+                     <div class="text-end pe-2 text-muted" style="height: 50px; line-height: 50px; font-size: 14px;">
+                        <strong>@day.Date.ToString("dd.MM.")</strong>
+                     </div>
+                 }
+            </div>
+            
+            <!-- Main Chart Area -->
+            <div class="flex-grow-1" style="min-width: 800px;">
+                 <ProtocolChart Days="_days" />
+            </div>
+        </div>
+        
+        <div class="mt-4 border-top pt-3">
+            <h5>Legend</h5>
+            <div class="d-flex gap-4 flex-wrap">
+                <div class="d-flex align-items-center gap-2">
+                    <span style="display:inline-block; width:20px; height:6px; background:#333; border-radius:2px;"></span>
+                    <span>Sleep</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <svg width="20" height="20"><path d="M 0 10 L 5 5 L 10 15 L 15 5 L 20 10" stroke="#ff4444" stroke-width="2" fill="none"/></svg>
+                    <span>Crying</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 12px solid white; border: 1px solid black;"></div>
+                    <!-- CSS Triangle is hard with borders. Let's use SVG for legend too -->
+                    <svg width="15" height="15"><polygon points="7.5,2 13,13 2,13" fill="white" stroke="black" stroke-width="2"/></svg>
+                    <span>Nursing</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <svg width="15" height="15"><polygon points="7.5,2 13,13 2,13" fill="blue" stroke="blue"/></svg>
+                    <span>Formula</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <svg width="15" height="15"><polygon points="7.5,2 13,13 2,13" fill="grey" stroke="grey"/></svg>
+                    <span>Bottle (Milk)</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<ProtocolDay>? _days;
+    // Default to showing the last 2 weeks ending today (or recent data)
+    private DateOnly _startDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-13));
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        _days = await ProtocolService.GetProtocolAsync(_startDate, _startDate.AddDays(13));
+    }
+    
+    private async Task PrevPage()
+    {
+        _startDate = _startDate.AddDays(-14);
+        await LoadData();
+    }
+
+    private async Task NextPage()
+    {
+        _startDate = _startDate.AddDays(14);
+        await LoadData();
+    }
+}
