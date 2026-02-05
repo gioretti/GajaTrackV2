@@ -147,4 +147,22 @@ public class ProtocolServiceTests : IDisposable
         Assert.Equal(120, ev.StartMinute); // 2 hours
         Assert.Equal(0, ev.DurationMinutes);
     }
+
+    [Fact]
+    public async Task GetProtocol_ShouldReturnMostRecentFirst_WhenDescendingIsTrue()
+    {
+        // Arrange
+        var day1 = new DateOnly(2026, 2, 5);
+        var day2 = new DateOnly(2026, 2, 6);
+        
+        var service = new ProtocolService(_context);
+
+        // Act
+        var result = await service.GetProtocolAsync(day1, day2, mostRecentFirst: true);
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Equal(day2, result[0].Date);
+        Assert.Equal(day1, result[1].Date);
+    }
 }

@@ -75,7 +75,7 @@
 
     private async Task LoadData()
     {
-        _days = await ProtocolService.GetProtocolAsync(_startDate, _startDate.AddDays(13));
+        _days = await ProtocolService.GetProtocolAsync(_startDate, _startDate.AddDays(13), mostRecentFirst: true);
     }
     
     private async Task PrevPage()
