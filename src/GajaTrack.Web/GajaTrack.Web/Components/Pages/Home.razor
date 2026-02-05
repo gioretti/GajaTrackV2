@@ -41,6 +41,12 @@
             <p class="display-4">@_diaperCount</p>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h3>Crying</h3>
+            <p class="display-4">@_cryingCount</p>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -48,6 +54,7 @@
     private int _bottleCount;
     private int _sleepCount;
     private int _diaperCount;
+    private int _cryingCount;
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,6 +62,7 @@
         _bottleCount = await DbContext.BottleFeeds.CountAsync();
         _sleepCount = await DbContext.SleepSessions.CountAsync();
         _diaperCount = await DbContext.DiaperChanges.CountAsync();
+        _cryingCount = await DbContext.CryingSessions.CountAsync();
     }
 
     private async Task DownloadExport()
