@@ -3,6 +3,7 @@ using System;
 using GajaTrack.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GajaTrack.Infrastructure.Migrations
 {
     [DbContext(typeof(GajaDbContext))]
-    partial class GajaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260205213537_MakeCryingSessionEndTimeNullable")]
+    partial class MakeCryingSessionEndTimeNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
