@@ -8,6 +8,7 @@ public class GajaDbContext(DbContextOptions<GajaDbContext> options) : DbContext(
     public DbSet<NursingFeed> NursingFeeds { get; set; }
     public DbSet<BottleFeed> BottleFeeds { get; set; }
     public DbSet<SleepSession> SleepSessions { get; set; }
+    public DbSet<CryingSession> CryingSessions { get; set; }
     public DbSet<DiaperChange> DiaperChanges { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +34,14 @@ public class GajaDbContext(DbContextOptions<GajaDbContext> options) : DbContext(
 
         // SleepSession Configuration
         modelBuilder.Entity<SleepSession>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.ExternalId).IsUnique();
+            entity.Property(e => e.ExternalId).IsRequired();
+        });
+
+        // CryingSession Configuration
+        modelBuilder.Entity<CryingSession>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.ExternalId).IsUnique();

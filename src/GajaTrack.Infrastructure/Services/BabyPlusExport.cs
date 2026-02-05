@@ -7,12 +7,19 @@ internal record BabyPlusExport(
     [property: JsonPropertyName("baby_nursingfeed")] List<JsonNursingFeed>? NursingFeeds,
     [property: JsonPropertyName("baby_bottlefeed")] List<JsonBottleFeed>? BottleFeeds,
     [property: JsonPropertyName("baby_sleep")] List<JsonSleep>? SleepSessions,
-    [property: JsonPropertyName("baby_nappy")] List<JsonDiaper>? DiaperChanges
+    [property: JsonPropertyName("baby_nappy")] List<JsonDiaper>? DiaperChanges,
+    [property: JsonPropertyName("baby_crying")] List<JsonCryingSession>? CryingSessions
 );
 
 internal record JsonBabyProfile(
     string Name,
     DateTime BirthDate
+);
+
+internal record JsonCryingSession(
+    string Pk,
+    DateTime StartDate,
+    DateTime? EndDate
 );
 
 internal record JsonNursingFeed(

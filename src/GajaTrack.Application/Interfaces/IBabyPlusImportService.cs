@@ -4,7 +4,8 @@ public record ImportSummary(
     int NursingFeedsImported,
     int BottleFeedsImported,
     int SleepSessionsImported,
-    int DiaperChangesImported
+    int DiaperChangesImported,
+    int CryingSessionsImported
 );
 
 public interface IBabyPlusImportService

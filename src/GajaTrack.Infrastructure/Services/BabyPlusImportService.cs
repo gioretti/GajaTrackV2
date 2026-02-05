@@ -24,7 +24,7 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
         progress?.Report("Deserializing JSON data...");
         var data = await JsonSerializer.DeserializeAsync<BabyPlusExport>(stream, options, cancellationToken);
         
-        if (data is null) return new ImportSummary(0, 0, 0, 0);
+        if (data is null) return new ImportSummary(0, 0, 0, 0, 0);
 
         progress?.Report($"Data loaded. Found: {data.NursingFeeds?.Count ?? 0} Nursing, {data.BottleFeeds?.Count ?? 0} Bottle, {data.SleepSessions?.Count ?? 0} Sleep, {data.DiaperChanges?.Count ?? 0} Diapers.");
 
@@ -41,17 +41,20 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
             var existingBottle = await dbContext.BottleFeeds.ToDictionaryAsync(x => x.ExternalId, cancellationToken);
             var existingSleep = await dbContext.SleepSessions.ToDictionaryAsync(x => x.ExternalId, cancellationToken);
             var existingDiaper = await dbContext.DiaperChanges.ToDictionaryAsync(x => x.ExternalId, cancellationToken);
+            var existingCrying = await dbContext.CryingSessions.ToDictionaryAsync(x => x.ExternalId, cancellationToken);
 
             var newNursing = new List<NursingFeed>();
             var newBottle = new List<BottleFeed>();
             var newSleep = new List<SleepSession>();
             var newDiaper = new List<DiaperChange>();
+            var newCrying = new List<CryingSession>();
 
             progress?.Report("Mapping and validating...");
             NursingFeedImporter.Map(data.NursingFeeds?.DistinctBy(x => x.Pk).ToList(), existingNursing, newNursing);
             BottleFeedImporter.Map(data.BottleFeeds?.DistinctBy(x => x.Pk).ToList(), existingBottle, newBottle);
             SleepSessionImporter.Map(data.SleepSessions?.DistinctBy(x => x.Pk).ToList(), existingSleep, newSleep);
             DiaperChangeImporter.Map(data.DiaperChanges?.DistinctBy(x => x.Pk).ToList(), existingDiaper, newDiaper);
+            CryingSessionImporter.Map(data.CryingSessions?.DistinctBy(x => x.Pk).ToList(), existingCrying, newCrying);
 
             progress?.Report("Saving new Nursing feeds...");
             await SaveNewEntries(newNursing, dbContext.NursingFeeds, progress, cancellationToken);
@@ -64,6 +67,9 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
             
             progress?.Report("Saving new Diaper changes...");
             await SaveNewEntries(newDiaper, dbContext.DiaperChanges, progress, cancellationToken);
+            
+            progress?.Report("Saving new Crying sessions...");
+            await SaveNewEntries(newCrying, dbContext.CryingSessions, progress, cancellationToken);
 
             progress?.Report("Applying updates...");
             dbContext.ChangeTracker.DetectChanges();
@@ -71,7 +77,7 @@ public class BabyPlusImportService(GajaDbContext dbContext, ILogger<BabyPlusImpo
 
             progress?.Report("Import successful!");
 
-            return new ImportSummary(newNursing.Count, newBottle.Count, newSleep.Count, newDiaper.Count);
+            return new ImportSummary(newNursing.Count, newBottle.Count, newSleep.Count, newDiaper.Count, newCrying.Count);
         }
         catch (Exception ex)
         {
