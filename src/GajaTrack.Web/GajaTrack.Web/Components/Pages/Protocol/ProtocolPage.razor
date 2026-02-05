@@ -28,21 +28,9 @@
     }
     else
     {
-        <div class="d-flex">
-            <!-- Left Sidebar for Dates -->
-            <div class="flex-shrink-0 pt-[30px]" style="padding-top: 30px; width: 60px; border-right: 1px solid #eee;">
-                 @foreach(var day in _days)
-                 {
-                     <div class="text-end pe-2 text-muted" style="height: 50px; line-height: 50px; font-size: 14px;">
-                        <strong>@day.Date.ToString("dd.MM.")</strong>
-                     </div>
-                 }
-            </div>
-            
-            <!-- Main Chart Area -->
-            <div class="flex-grow-1" style="min-width: 800px;">
-                 <ProtocolChart Days="_days" />
-            </div>
+        <div class="d-flex justify-content-center">
+             <!-- The Chart contains the dates now -->
+            <ProtocolChart Days="_days" />
         </div>
         
         <div class="mt-4 border-top pt-3">

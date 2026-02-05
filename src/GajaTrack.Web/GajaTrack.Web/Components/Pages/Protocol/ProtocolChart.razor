@@ -2,30 +2,34 @@
 @using System.Text
 
 <div class="protocol-chart-container">
-    <svg viewBox="0 0 @Width @TotalHeight" preserveAspectRatio="xMidYMid meet" class="protocol-svg">
+    <svg viewBox="0 0 @TotalWidth @TotalHeight" preserveAspectRatio="xMidYMid meet" class="protocol-svg">
         <!-- Definitions for patterns/markers -->
         <defs>
-            <pattern id="gridPattern" width="60" height="@TotalHeight" patternUnits="userSpaceOnUse">
-                <line x1="60" y1="0" x2="60" y2="@TotalHeight" stroke="#eee" stroke-width="1" />
-            </pattern>
+            <clipPath id="chartClip">
+                <rect x="@LeftMargin" y="0" width="@ChartWidth" height="@TotalHeight" />
+            </clipPath>
         </defs>
 
         <!-- Background -->
-        <rect x="0" y="0" width="@Width" height="@TotalHeight" fill="white" />
+        <rect x="0" y="0" width="@TotalWidth" height="@TotalHeight" fill="white" />
 
         <!-- Vertical Hour Grid Lines & Labels -->
         @for (int h = 0; h <= 24; h++)
         {
-            var x = h * 60;
+            var x = LeftMargin + (h * 60);
+            var hour = (h + 6) % 24;
+            var label = hour == 0 ? "24" : hour.ToString("00");
+            if (h == 24) label = "06";
+            
+            var anchor = "middle";
+            if (h == 0) anchor = "start";
+            if (h == 24) anchor = "end";
+            
+            <!-- Grid Line -->
             <line x1="@x" y1="@HeaderHeight" x2="@x" y2="@TotalHeight" stroke="#e0e0e0" stroke-width="1" />
             
-            // Hour Label (06 to 06)
-            var hour = (h + 6) % 24;
-            var label = hour == 0 ? "24" : hour.ToString("00"); // 24-hour protocol uses 24 for midnight
-            if (h == 24) label = "06"; // The end label
-            
             <g>
-                <text x="@x" y="@(HeaderHeight - 5)" font-size="12" text-anchor="middle" fill="#666">@label</text>
+                <text x="@x" y="@(HeaderHeight - 8)" font-size="12" text-anchor="@anchor" fill="#666">@label</text>
             </g>
         }
 
@@ -34,47 +38,51 @@
         {
             var day = Days[i];
             var y = i * RowHeight + HeaderHeight;
+            var midY = y + RowHeight / 2;
             
             <!-- Zebra Striping -->
             @if (i % 2 == 1)
             {
-                <rect x="0" y="@y" width="@Width" height="@RowHeight" fill="#f8f9fa" opacity="0.5" />
+                <rect x="@LeftMargin" y="@y" width="@ChartWidth" height="@RowHeight" fill="#f8f9fa" opacity="0.5" />
             }
             
-            <!-- Day Label (Left Side - effectively outside the grid in real implementation, but here inside for simplicity) -->
-            <!-- Actually, usually the label is to the left. But we are in SVG. 
-                 Let's assume the component is passed a date. -->
-            <!-- We will render the events -->
+            <!-- Date Label (Left) -->
+            <g>
+                <text x="@(LeftMargin - 10)" y="@(midY + 4)" font-size="12" font-weight="bold" text-anchor="end" fill="#333">@day.Date.ToString("dd.MM.")</text>
+            </g>
 
+            <!-- Events -->
+            <!-- We assume events are clipped to the day window by the service logic. -->
             @foreach (var ev in day.Events)
             {
-                var xStart = ev.StartMinute;
+                var xStart = LeftMargin + ev.StartMinute;
                 var width = ev.DurationMinutes;
                 
                 switch (ev.Type)
                 {
                     case ProtocolEventType.Sleep:
-                        <rect x="@xStart" y="@(y + RowHeight/4)" width="@width" height="@(RowHeight/2)" fill="#333" rx="2" ry="2" title="Sleep: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <!-- Sleep Line (Thin horizontal line) -->
+                        <line x1="@xStart" y1="@midY" x2="@(xStart + width)" y2="@midY" stroke="black" stroke-width="3" stroke-linecap="round" title="Sleep: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
                         
                     case ProtocolEventType.Crying:
-                        <!-- Wavy Line -->
-                        <path d="@GenerateWavyPath(xStart, width, y + RowHeight/2, 5)" stroke="#ff4444" stroke-width="2" fill="none" title="Crying: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <!-- Wavy Line (Black Sine Wave) -->
+                        <path d="@GenerateSineWave(xStart, width, midY, 4)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
 
                     case ProtocolEventType.Nursing:
                         <!-- Hollow Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, y + RowHeight/2)" fill="white" stroke="black" stroke-width="2" title="Nursing: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="white" stroke="black" stroke-width="1.5" title="Nursing: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
                         
                     case ProtocolEventType.BottleFormula:
                         <!-- Solid Blue Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, y + RowHeight/2)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.Description" />
                         break;
                         
                     case ProtocolEventType.BottleMilk:
                         <!-- Solid Grey Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, y + RowHeight/2)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.Description" />
                         break;
                 }
             }
@@ -85,61 +93,57 @@
 @code {
     [Parameter] public List<ProtocolDay> Days { get; set; } = new();
     
-    private const double Width = 1440; // 24 hours * 60 minutes
+    private const double ChartWidth = 1440; // 24 hours * 60 minutes
+    private const double LeftMargin = 60;   // Space for Date labels
+    private const double TotalWidth = LeftMargin + ChartWidth + 20; // +Padding Right
+    
     private const double RowHeight = 50;
     private const double HeaderHeight = 30;
     
     private double TotalHeight => Math.Max(RowHeight, Days.Count * RowHeight + HeaderHeight);
 
-    private string GenerateWavyPath(double startX, double width, double midY, double amplitude)
+    private string GenerateSineWave(double startX, double width, double midY, double amplitude)
     {
-        // Generate a sine wave path
+        // Smooth sine wave
         var sb = new StringBuilder();
         sb.Append($"M {startX} {midY}");
         
-        // One wave cycle every 10 pixels?
-        double frequency = 10;
-        for (double x = 0; x <= width; x += frequency / 2)
+        double frequency = 0.2; // Adjust for wave tightness
+        int step = 2; // Pixel step for smoothness
+        
+        for (double x = 0; x <= width; x += step)
         {
-             // Simple zigzag or smooth curve
-             // Let's use Q (Quadratic Bezier) for smoothness
-             // M startX midY Q (startX+2.5) (midY-amp) (startX+5) midY T (startX+10) midY
-             // Too complex to iterate points perfectly.
-             // Let's just do a polyline zigzag for robustness/performance or simple sine approx.
-             
-             // Actually, the requirement says "Wavy Line".
-             // A simple way is relative cubic beziers.
-             // But loop is easiest.
+             double yOffset = amplitude * Math.Sin((x) * frequency);
+             sb.Append($" L {startX + x} {midY + yOffset}");
         }
         
-        // Simpler implementation: Just zigzag
-        bool up = true;
-        for (double i = 0; i < width; i += 4)
-        {
-            double yOffset = up ? -amplitude : amplitude;
-            sb.Append($" L {startX + i} {midY + yOffset}");
-            up = !up;
-        }
-        sb.Append($" L {startX + width} {midY}"); // Finish at center
+        // Ensure we land at the end
+        sb.Append($" L {startX + width} {midY + amplitude * Math.Sin(width * frequency)}");
 
         return sb.ToString();
     }
     
     private string GetTrianglePoints(double cx, double cy)
     {
-        // Equilateral triangle centered at cx, cy
-        double size = 12;
+        double size = 10;
         double halfSize = size / 2;
+        // Pointing Up? Or Down?
+        // Standard triangles in charts usually point up.
+        // cx,cy is center of row.
+        // Let's center the triangle vertically.
         
-        // Top point, Bottom Right, Bottom Left
-        // Wait, "Triangle at Start Time".
-        // Usually, the point or the center aligns with time?
-        // Let's align center for visibility.
+        // Top
+        double x1 = cx;
+        double y1 = cy - halfSize;
         
-        // Points: (cx, cy-half), (cx+half, cy+half), (cx-half, cy+half) ??
-        // Inverted? Requirements don't specify orientation. 
-        // Standard "Triangle" usually points up.
+        // Bottom Right
+        double x2 = cx + halfSize;
+        double y2 = cy + halfSize;
         
-        return $"{cx},{cy - halfSize} {cx + halfSize},{cy + halfSize} {cx - halfSize},{cy + halfSize}";
+        // Bottom Left
+        double x3 = cx - halfSize;
+        double y3 = cy + halfSize;
+        
+        return $"{x1},{y1} {x2},{y2} {x3},{y3}";
     }
 }
