@@ -1,5 +1,6 @@
 using GajaTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GajaTrack.Infrastructure.Persistence;
 
@@ -10,6 +11,25 @@ public class GajaDbContext(DbContextOptions<GajaDbContext> options) : DbContext(
     public DbSet<SleepSession> SleepSessions { get; set; }
     public DbSet<CryingSession> CryingSessions { get; set; }
     public DbSet<DiaperChange> DiaperChanges { get; set; }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder
+            .Properties<UtcDateTime>()
+            .HaveConversion<UtcDateTimeConverter>();
+
+        configurationBuilder
+            .Properties<UtcDateTime?>()
+            .HaveConversion<NullableUtcDateTimeConverter>();
+    }
+
+    private class UtcDateTimeConverter() : ValueConverter<UtcDateTime, DateTime>(
+        v => v.Value,
+        v => UtcDateTime.FromDateTime(DateTime.SpecifyKind(v, DateTimeKind.Utc)));
+
+    private class NullableUtcDateTimeConverter() : ValueConverter<UtcDateTime?, DateTime?>(
+        v => v.HasValue ? v.Value.Value : null,
+        v => v.HasValue ? UtcDateTime.FromDateTime(DateTime.SpecifyKind(v.Value, DateTimeKind.Utc)) : null);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
