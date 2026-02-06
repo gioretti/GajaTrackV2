@@ -12,13 +12,13 @@ public class DiaperChange
     public Guid Id { get; init; } = Guid.CreateVersion7();
     public Guid BabyId { get; init; }
     public string ExternalId { get; init; } = null!;
-    public DateTime Time { get; private set; }
+    public UtcDateTime Time { get; private set; }
     public DiaperType Type { get; private set; }
 
     // For EF Core
     private DiaperChange() { }
 
-    public static DiaperChange Create(Guid babyId, string externalId, DateTime time, DiaperType type)
+    public static DiaperChange Create(Guid babyId, string externalId, UtcDateTime time, DiaperType type)
     {
         return new DiaperChange
         {
@@ -29,7 +29,7 @@ public class DiaperChange
         };
     }
 
-    public void Update(DateTime time, DiaperType type)
+    public void Update(UtcDateTime time, DiaperType type)
     {
         Time = time;
         Type = type;

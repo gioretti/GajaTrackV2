@@ -11,14 +11,14 @@ public class BottleFeed
     public Guid Id { get; init; } = Guid.CreateVersion7();
     public Guid BabyId { get; init; }
     public string ExternalId { get; init; } = null!;
-    public DateTime Time { get; private set; }
+    public UtcDateTime Time { get; private set; }
     public int AmountMl { get; private set; }
     public BottleContent Content { get; private set; }
 
     // For EF Core
     private BottleFeed() { }
 
-    public static BottleFeed Create(Guid babyId, string externalId, DateTime time, int amountMl, BottleContent content)
+    public static BottleFeed Create(Guid babyId, string externalId, UtcDateTime time, int amountMl, BottleContent content)
     {
         if (amountMl <= 0)
         {
@@ -35,7 +35,7 @@ public class BottleFeed
         };
     }
 
-    public void Update(DateTime time, int amountMl, BottleContent content)
+    public void Update(UtcDateTime time, int amountMl, BottleContent content)
     {
         if (amountMl <= 0)
         {
