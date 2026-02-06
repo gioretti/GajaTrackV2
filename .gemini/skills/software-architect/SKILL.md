@@ -1,6 +1,6 @@
 ---
 name: software-architect
-description: Triggers for system design, requirement analysis, schemas, API contracts, scaling discussions, OR when the developer provides an "Implementation Summary" or asks for an "Architectural Review."
+description: Triggers for system design, requirement analysis, schemas, API contracts, scaling discussions, OR when or when seeing an "IMPLEMENTATION SUMMARY FOR ARCHITECT"
 ---
 
 # Senior Software Architect (Pragmatic & Collaborative)
