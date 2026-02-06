@@ -1,4 +1,5 @@
 using GajaTrack.Infrastructure;
+using GajaTrack.Application;
 using GajaTrack.Web.Components;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ builder.Services.AddDbContextFactory<GajaTrack.Infrastructure.Persistence.GajaDb
 // Also register the scoped DbContext for normal injection (it resolves from the factory)
 builder.Services.AddScoped(p => p.GetRequiredService<IDbContextFactory<GajaTrack.Infrastructure.Persistence.GajaDbContext>>().CreateDbContext());
 
+builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration.GetConnectionString("DefaultConnection")!);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents(options => 

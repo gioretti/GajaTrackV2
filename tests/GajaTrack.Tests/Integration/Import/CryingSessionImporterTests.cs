@@ -22,8 +22,8 @@ public class CryingSessionImporterTests
         // Assert
         Assert.Single(newEntries);
         Assert.Equal("pk3", newEntries[0].ExternalId);
-        Assert.Equal(now, (DateTime)newEntries[0].StartTime);
-        Assert.Equal(jsonItem.EndDate, (DateTime?)newEntries[0].EndTime);
+        Assert.Equal(now, newEntries[0].StartTime);
+        Assert.Equal(jsonItem.EndDate, newEntries[0].EndTime);
     }
 
     [Fact]

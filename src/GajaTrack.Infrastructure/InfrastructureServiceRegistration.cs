@@ -14,7 +14,7 @@ public static class InfrastructureServiceRegistration
             
         services.AddScoped<IBabyPlusImportService, BabyPlusImportService>();
         services.AddScoped<IExportService, ExportService>();
-        services.AddScoped<IProtocolService, ProtocolService>();
+        services.AddScoped<ITrackingRepository, TrackingRepository>();
 
         return services;
     }

@@ -89,12 +89,12 @@
                         
                     case ProtocolEventType.BottleFormula:
                         <!-- Solid Blue Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
                         break;
                         
                     case ProtocolEventType.BottleMilk:
                         <!-- Solid Grey Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
                         break;
                 }
             }

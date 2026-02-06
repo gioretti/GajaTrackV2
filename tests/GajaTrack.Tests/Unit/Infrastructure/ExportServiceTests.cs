@@ -66,7 +66,7 @@ public class ExportServiceTests : IDisposable
         
         // Verify time value match
         var startJson = item.GetProperty("startTime").GetDateTime();
-        Assert.Equal((DateTime)feed.StartTime, startJson);
+        Assert.Equal(feed.StartTime, startJson);
     }
 
     [Fact]

@@ -111,11 +111,11 @@ public class ImportSystemTests : IDisposable
         Assert.NotNull(feed);
         
         // UtcDateTime record struct should ensure this is UTC
-        Assert.Equal(DateTimeKind.Utc, ((DateTime)feed.StartTime).Kind);
+        Assert.Equal(DateTimeKind.Utc, feed.StartTime.Value.Kind);
         
         // 1759921965.1993608 seconds since epoch is 2025-10-08T11:12:45.1993608Z
         var expected = DateTimeOffset.FromUnixTimeSeconds(1759921965).UtcDateTime;
-        Assert.Equal(expected.Date, ((DateTime)feed.StartTime).Date);
+        Assert.Equal(expected.Date, feed.StartTime.Value.Date);
     }
 
     protected Stream GetFixtureStream(string fileName)

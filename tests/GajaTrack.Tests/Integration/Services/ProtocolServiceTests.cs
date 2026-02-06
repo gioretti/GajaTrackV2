@@ -1,4 +1,5 @@
 using GajaTrack.Application.DTOs.Protocol;
+using GajaTrack.Application.Services;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Infrastructure.Persistence;
 using GajaTrack.Infrastructure.Services;
@@ -11,6 +12,7 @@ public class ProtocolServiceTests : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly GajaDbContext _context;
+    private readonly ProtocolService _service;
 
     public ProtocolServiceTests()
     {
@@ -23,6 +25,9 @@ public class ProtocolServiceTests : IDisposable
 
         _context = new GajaDbContext(options);
         _context.Database.EnsureCreated();
+
+        var repository = new TrackingRepository(_context);
+        _service = new ProtocolService(repository);
     }
 
     public void Dispose()
@@ -45,10 +50,8 @@ public class ProtocolServiceTests : IDisposable
         _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "1", sleepStart, sleepEnd));
         await _context.SaveChangesAsync();
         
-        var service = new ProtocolService(_context);
-
         // Act
-        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -79,10 +82,8 @@ public class ProtocolServiceTests : IDisposable
         _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "split-start", sleepStart, sleepEnd));
         await _context.SaveChangesAsync();
         
-        var service = new ProtocolService(_context);
-
         // Act
-        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -108,10 +109,8 @@ public class ProtocolServiceTests : IDisposable
         _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "split-end", sleepStart, sleepEnd));
         await _context.SaveChangesAsync();
         
-        var service = new ProtocolService(_context);
-
         // Act
-        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -135,10 +134,8 @@ public class ProtocolServiceTests : IDisposable
         _context.NursingFeeds.Add(NursingFeed.Create(Guid.NewGuid(), "n1", nursingTime, null));
         await _context.SaveChangesAsync();
         
-        var service = new ProtocolService(_context);
-
         // Act
-        var result = await service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result[0].Events);
@@ -155,10 +152,8 @@ public class ProtocolServiceTests : IDisposable
         var day1 = new DateOnly(2026, 2, 5);
         var day2 = new DateOnly(2026, 2, 6);
         
-        var service = new ProtocolService(_context);
-
         // Act
-        var result = await service.GetProtocolAsync(day1, day2, mostRecentFirst: true);
+        var result = await _service.GetProtocolAsync(day1, day2, mostRecentFirst: true);
 
         // Assert
         Assert.Equal(2, result.Count);
@@ -183,10 +178,8 @@ public class ProtocolServiceTests : IDisposable
         _context.NursingFeeds.Add(NursingFeed.Create(Guid.NewGuid(), "tz-test", utcTime, null));
         await _context.SaveChangesAsync();
         
-        var service = new ProtocolService(_context);
-
         // Act
-        var result = await service.GetProtocolAsync(day, day, timeZone: tz);
+        var result = await _service.GetProtocolAsync(day, day, timeZone: tz);
 
         // Assert
         Assert.Single(result[0].Events);
