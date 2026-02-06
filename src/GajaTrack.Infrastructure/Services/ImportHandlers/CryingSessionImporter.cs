@@ -28,7 +28,7 @@ internal static class CryingSessionImporter
             {
                 try
                 {
-                    existing.Update(item.StartDate, endDate);
+                    existing.Update(UtcDateTime.FromDateTime(item.StartDate), endDate.HasValue ? UtcDateTime.FromDateTime(endDate.Value) : null);
                 }
                 catch (ArgumentException ex)
                 {
@@ -42,8 +42,8 @@ internal static class CryingSessionImporter
                     newEntries.Add(CryingSession.Create(
                         Guid.Empty,
                         item.Pk,
-                        item.StartDate,
-                        endDate
+                        UtcDateTime.FromDateTime(item.StartDate),
+                        endDate.HasValue ? UtcDateTime.FromDateTime(endDate.Value) : null
                     ));
                 }
                 catch (ArgumentException ex)

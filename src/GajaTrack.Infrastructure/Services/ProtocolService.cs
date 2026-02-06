@@ -1,5 +1,6 @@
 using GajaTrack.Application.DTOs.Protocol;
 using GajaTrack.Application.Interfaces;
+using GajaTrack.Domain.Entities;
 using GajaTrack.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,20 +18,21 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
         var fetchEnd = endDate.AddDays(2).ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
 
         // 2. Fetch Data
+        // LINQ to Entities will use the ValueConverter automatically
         var sleepTask = dbContext.SleepSessions
-            .Where(x => x.StartTime < fetchEnd && (x.EndTime == null || x.EndTime > fetchStart))
+            .Where(x => (DateTime)x.StartTime < fetchEnd && (x.EndTime == null || (DateTime)x.EndTime > fetchStart))
             .ToListAsync(cancellationToken);
             
         var nursingTask = dbContext.NursingFeeds
-            .Where(x => x.StartTime >= fetchStart && x.StartTime < fetchEnd)
+            .Where(x => (DateTime)x.StartTime >= fetchStart && (DateTime)x.StartTime < fetchEnd)
             .ToListAsync(cancellationToken);
             
         var bottleTask = dbContext.BottleFeeds
-            .Where(x => x.Time >= fetchStart && x.Time < fetchEnd)
+            .Where(x => (DateTime)x.Time >= fetchStart && (DateTime)x.Time < fetchEnd)
             .ToListAsync(cancellationToken);
             
         var cryingTask = dbContext.CryingSessions
-            .Where(x => x.StartTime < fetchEnd && (x.EndTime == null || x.EndTime > fetchStart))
+            .Where(x => (DateTime)x.StartTime < fetchEnd && (x.EndTime == null || (DateTime)x.EndTime > fetchStart))
             .ToListAsync(cancellationToken);
 
         await Task.WhenAll(sleepTask, nursingTask, bottleTask, cryingTask);
@@ -54,18 +56,19 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
             // Process Sleep
             foreach (var s in sleepList)
             {
-                var sEnd = s.EndTime ?? DateTime.UtcNow; 
+                var sStart = (DateTime)s.StartTime;
+                var sEnd = (DateTime?)(s.EndTime) ?? DateTime.UtcNow; 
                 
-                if (s.StartTime < windowEnd && sEnd > windowStart)
+                if (sStart < windowEnd && sEnd > windowStart)
                 {
-                    var effectiveStart = s.StartTime < windowStart ? windowStart : s.StartTime;
+                    var effectiveStart = sStart < windowStart ? windowStart : sStart;
                     var effectiveEnd = sEnd > windowEnd ? windowEnd : sEnd;
                     
                     if (effectiveEnd > effectiveStart)
                     {
                         var startMin = (effectiveStart - windowStart).TotalMinutes;
                         var durMin = (effectiveEnd - effectiveStart).TotalMinutes;
-                        var displayTime = TimeZoneInfo.ConvertTimeFromUtc(s.StartTime, timeZone);
+                        var displayTime = TimeZoneInfo.ConvertTimeFromUtc(sStart, timeZone);
                         dayEvents.Add(new ProtocolEvent(s.Id, ProtocolEventType.Sleep, displayTime, startMin, durMin));
                     }
                 }
@@ -74,17 +77,18 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
             // Process Crying
             foreach (var c in cryingList)
             {
-                var cEnd = c.EndTime ?? DateTime.UtcNow;
-                if (c.StartTime < windowEnd && cEnd > windowStart)
+                var cStart = (DateTime)c.StartTime;
+                var cEnd = (DateTime?)(c.EndTime) ?? DateTime.UtcNow;
+                if (cStart < windowEnd && cEnd > windowStart)
                 {
-                    var effectiveStart = c.StartTime < windowStart ? windowStart : c.StartTime;
+                    var effectiveStart = cStart < windowStart ? windowStart : cStart;
                     var effectiveEnd = cEnd > windowEnd ? windowEnd : cEnd;
                     
                     if (effectiveEnd > effectiveStart)
                     {
                         var startMin = (effectiveStart - windowStart).TotalMinutes;
                         var durMin = (effectiveEnd - effectiveStart).TotalMinutes;
-                        var displayTime = TimeZoneInfo.ConvertTimeFromUtc(c.StartTime, timeZone);
+                        var displayTime = TimeZoneInfo.ConvertTimeFromUtc(cStart, timeZone);
                         dayEvents.Add(new ProtocolEvent(c.Id, ProtocolEventType.Crying, displayTime, startMin, durMin));
                     }
                 }
@@ -93,10 +97,11 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
             // Process Nursing (Point)
             foreach (var n in nursingList)
             {
-                if (n.StartTime >= windowStart && n.StartTime < windowEnd)
+                var nStart = (DateTime)n.StartTime;
+                if (nStart >= windowStart && nStart < windowEnd)
                 {
-                     var startMin = (n.StartTime - windowStart).TotalMinutes;
-                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(n.StartTime, timeZone);
+                     var startMin = (nStart - windowStart).TotalMinutes;
+                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(nStart, timeZone);
                      dayEvents.Add(new ProtocolEvent(n.Id, ProtocolEventType.Nursing, displayTime, startMin, 0));
                 }
             }
@@ -104,10 +109,11 @@ public class ProtocolService(GajaDbContext dbContext) : IProtocolService
             // Process Bottle (Point)
             foreach (var b in bottleList)
             {
-                if (b.Time >= windowStart && b.Time < windowEnd)
+                var bTime = (DateTime)b.Time;
+                if (bTime >= windowStart && bTime < windowEnd)
                 {
-                     var startMin = (b.Time - windowStart).TotalMinutes;
-                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(b.Time, timeZone);
+                     var startMin = (bTime - windowStart).TotalMinutes;
+                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(bTime, timeZone);
                      var type = b.Content == Domain.Entities.BottleContent.Formula ? ProtocolEventType.BottleFormula : ProtocolEventType.BottleMilk;
                      dayEvents.Add(new ProtocolEvent(b.Id, type, displayTime, startMin, 0, $"{b.AmountMl}ml"));
                 }

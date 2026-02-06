@@ -23,7 +23,7 @@ internal static class BottleFeedImporter
             {
                 try
                 {
-                    existing.Update(item.Date, (int)item.AmountMl, content);
+                    existing.Update(UtcDateTime.FromDateTime(item.Date), (int)item.AmountMl, content);
                 }
                 catch (ArgumentException ex)
                 {
@@ -37,7 +37,7 @@ internal static class BottleFeedImporter
                     newEntries.Add(BottleFeed.Create(
                         Guid.Empty,
                         item.Pk,
-                        item.Date,
+                        UtcDateTime.FromDateTime(item.Date),
                         (int)item.AmountMl,
                         content
                     ));

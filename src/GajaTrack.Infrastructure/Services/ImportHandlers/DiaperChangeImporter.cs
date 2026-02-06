@@ -27,14 +27,14 @@ internal static class DiaperChangeImporter
 
             if (existingEntries.TryGetValue(item.Pk, out var existing))
             {
-                existing.Update(item.Date, type);
+                existing.Update(UtcDateTime.FromDateTime(item.Date), type);
             }
             else
             {
                 newEntries.Add(DiaperChange.Create(
                     Guid.Empty,
                     item.Pk,
-                    item.Date,
+                    UtcDateTime.FromDateTime(item.Date),
                     type
                 ));
             }
