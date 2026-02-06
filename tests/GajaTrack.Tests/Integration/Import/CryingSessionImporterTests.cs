@@ -22,8 +22,8 @@ public class CryingSessionImporterTests
         // Assert
         Assert.Single(newEntries);
         Assert.Equal("pk3", newEntries[0].ExternalId);
-        Assert.Equal(now, newEntries[0].StartTime);
-        Assert.Equal(jsonItem.EndDate, newEntries[0].EndTime);
+        Assert.Equal(now, (DateTime)newEntries[0].StartTime);
+        Assert.Equal(jsonItem.EndDate, (DateTime?)newEntries[0].EndTime);
     }
 
     [Fact]
@@ -61,12 +61,12 @@ public class CryingSessionImporterTests
     public void Map_ShouldUpdateExistingEntity()
     {
         // Arrange
-        var start = DateTime.UtcNow;
-        var initialEnd = start.AddMinutes(10);
+        var start = UtcDateTime.FromDateTime(DateTime.UtcNow);
+        var initialEnd = UtcDateTime.FromDateTime(start.Value.AddMinutes(10));
         var existing = CryingSession.Create(Guid.NewGuid(), "pk_update", start, initialEnd);
         var dictionary = new Dictionary<string, CryingSession> { { "pk_update", existing } };
         
-        var newEnd = start.AddMinutes(20);
+        var newEnd = start.Value.AddMinutes(20);
         var jsonItem = new JsonCryingSession("pk_update", start, newEnd);
         var list = new List<JsonCryingSession> { jsonItem };
         var newEntries = new List<CryingSession>();
@@ -76,6 +76,6 @@ public class CryingSessionImporterTests
 
         // Assert
         Assert.Empty(newEntries); // Should not add new
-        Assert.Equal(newEnd, existing.EndTime);
+        Assert.Equal(newEnd, (DateTime?)existing.EndTime);
     }
 }

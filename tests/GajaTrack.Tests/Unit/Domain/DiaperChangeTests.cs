@@ -10,7 +10,7 @@ public class DiaperChangeTests
         // Arrange
         var babyId = Guid.NewGuid();
         var externalId = "pk4";
-        var time = DateTime.UtcNow;
+        var time = UtcDateTime.FromDateTime(DateTime.UtcNow);
         var type = DiaperType.Soiled;
 
         // Act

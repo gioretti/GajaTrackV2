@@ -10,8 +10,8 @@ public class SleepSessionTests
         // Arrange
         var babyId = Guid.NewGuid();
         var externalId = "pk3";
-        var start = DateTime.UtcNow;
-        var end = start.AddHours(2);
+        var start = UtcDateTime.FromDateTime(DateTime.UtcNow);
+        var end = UtcDateTime.FromDateTime(start.Value.AddHours(2));
 
         // Act
         var result = SleepSession.Create(babyId, externalId, start, end);
@@ -28,8 +28,8 @@ public class SleepSessionTests
     public void Create_ShouldThrowArgumentException_WhenEndDateIsBeforeStartTime()
     {
         // Arrange
-        var start = DateTime.UtcNow;
-        var end = start.AddMinutes(-30);
+        var start = UtcDateTime.FromDateTime(DateTime.UtcNow);
+        var end = UtcDateTime.FromDateTime(start.Value.AddMinutes(-30));
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => 

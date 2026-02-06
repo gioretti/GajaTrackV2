@@ -10,8 +10,8 @@ public class CryingSessionTests
     {
         // Arrange
         var babyId = Guid.NewGuid();
-        var startTime = DateTime.UtcNow;
-        var endTime = startTime.AddMinutes(15);
+        var startTime = UtcDateTime.FromDateTime(DateTime.UtcNow);
+        var endTime = UtcDateTime.FromDateTime(startTime.Value.AddMinutes(15));
         var externalId = "ext-123";
 
         // Act
@@ -32,7 +32,7 @@ public class CryingSessionTests
     {
         // Arrange
         var babyId = Guid.NewGuid();
-        var startTime = DateTime.UtcNow;
+        var startTime = UtcDateTime.FromDateTime(DateTime.UtcNow);
         var externalId = "ext-123";
 
         // Act
@@ -50,8 +50,8 @@ public class CryingSessionTests
     {
         // Arrange
         var babyId = Guid.NewGuid();
-        var startTime = DateTime.UtcNow;
-        var endTime = startTime.AddMinutes(-1);
+        var startTime = UtcDateTime.FromDateTime(DateTime.UtcNow);
+        var endTime = UtcDateTime.FromDateTime(startTime.Value.AddMinutes(-1));
         var externalId = "ext-123";
 
         // Act & Assert
@@ -65,9 +65,9 @@ public class CryingSessionTests
     public void Update_ShouldUpdateValues()
     {
         // Arrange
-        var session = CryingSession.Create(Guid.NewGuid(), "ext-123", DateTime.UtcNow, null);
-        var newStart = DateTime.UtcNow.AddMinutes(10);
-        var newEnd = newStart.AddMinutes(5);
+        var session = CryingSession.Create(Guid.NewGuid(), "ext-123", UtcDateTime.Now(), null);
+        var newStart = UtcDateTime.FromDateTime(DateTime.UtcNow.AddMinutes(10));
+        var newEnd = UtcDateTime.FromDateTime(newStart.Value.AddMinutes(5));
 
         // Act
         session.Update(newStart, newEnd);

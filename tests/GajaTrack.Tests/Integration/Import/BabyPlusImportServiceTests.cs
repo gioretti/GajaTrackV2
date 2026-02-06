@@ -82,7 +82,7 @@ public class BabyPlusImportServiceTests : IDisposable
         
         var feed = await _context.NursingFeeds.FirstAsync(x => x.ExternalId == "DUP1");
         // Verify update happened (EndDate changed from 600 to 999)
-        Assert.Equal(1700000999.0, (feed.EndTime!.Value - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds, 0.01);
+        Assert.Equal(1700000999.0, (feed.EndTime!.Value.Value - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds, 0.01);
     }
 
     [Fact]

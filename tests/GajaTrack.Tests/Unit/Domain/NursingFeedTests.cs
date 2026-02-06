@@ -10,8 +10,8 @@ public class NursingFeedTests
         // Arrange
         var babyId = Guid.NewGuid();
         var externalId = "pk1";
-        var start = DateTime.UtcNow;
-        var end = start.AddMinutes(15);
+        var start = UtcDateTime.FromDateTime(DateTime.UtcNow);
+        var end = UtcDateTime.FromDateTime(start.Value.AddMinutes(15));
 
         // Act
         var result = NursingFeed.Create(babyId, externalId, start, end);
@@ -28,8 +28,8 @@ public class NursingFeedTests
     public void Create_ShouldThrowArgumentException_WhenEndDateIsBeforeStartTime()
     {
         // Arrange
-        var start = DateTime.UtcNow;
-        var end = start.AddMinutes(-15);
+        var start = UtcDateTime.FromDateTime(DateTime.UtcNow);
+        var end = UtcDateTime.FromDateTime(start.Value.AddMinutes(-15));
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => 
@@ -40,7 +40,7 @@ public class NursingFeedTests
     public void Create_ShouldAllowNullEndDate()
     {
         // Act
-        var result = NursingFeed.Create(Guid.NewGuid(), "pk", DateTime.UtcNow, null);
+        var result = NursingFeed.Create(Guid.NewGuid(), "pk", UtcDateTime.Now(), null);
 
         // Assert
         Assert.Null(result.EndTime);

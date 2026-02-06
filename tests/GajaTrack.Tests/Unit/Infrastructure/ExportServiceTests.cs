@@ -49,7 +49,7 @@ public class ExportServiceTests : IDisposable
     {
         // Arrange
         var now = DateTime.UtcNow;
-        var feed = NursingFeed.Create(Guid.NewGuid(), "pk1", now, now.AddMinutes(15));
+        var feed = NursingFeed.Create(Guid.NewGuid(), "pk1", UtcDateTime.FromDateTime(now), UtcDateTime.FromDateTime(now.AddMinutes(15)));
         _context.NursingFeeds.Add(feed);
         await _context.SaveChangesAsync();
         var service = new ExportService(_context);
@@ -66,7 +66,7 @@ public class ExportServiceTests : IDisposable
         
         // Verify time value match
         var startJson = item.GetProperty("startTime").GetDateTime();
-        Assert.Equal(feed.StartTime, startJson);
+        Assert.Equal((DateTime)feed.StartTime, startJson);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class ExportServiceTests : IDisposable
     {
         // Arrange
         var now = DateTime.UtcNow;
-        var feed = BottleFeed.Create(Guid.NewGuid(), "pk2", now, 150, BottleContent.BreastMilk);
+        var feed = BottleFeed.Create(Guid.NewGuid(), "pk2", UtcDateTime.FromDateTime(now), 150, BottleContent.BreastMilk);
         _context.BottleFeeds.Add(feed);
         await _context.SaveChangesAsync();
         var service = new ExportService(_context);
@@ -96,7 +96,7 @@ public class ExportServiceTests : IDisposable
     {
         // Arrange
         var now = DateTime.UtcNow;
-        var sleep = SleepSession.Create(Guid.NewGuid(), "pk3", now, now.AddHours(2));
+        var sleep = SleepSession.Create(Guid.NewGuid(), "pk3", UtcDateTime.FromDateTime(now), UtcDateTime.FromDateTime(now.AddHours(2)));
         _context.SleepSessions.Add(sleep);
         await _context.SaveChangesAsync();
         var service = new ExportService(_context);
@@ -117,7 +117,7 @@ public class ExportServiceTests : IDisposable
     {
         // Arrange
         var now = DateTime.UtcNow;
-        var diaper = DiaperChange.Create(Guid.NewGuid(), "pk4", now, DiaperType.Soiled);
+        var diaper = DiaperChange.Create(Guid.NewGuid(), "pk4", UtcDateTime.FromDateTime(now), DiaperType.Soiled);
         _context.DiaperChanges.Add(diaper);
         await _context.SaveChangesAsync();
         var service = new ExportService(_context);

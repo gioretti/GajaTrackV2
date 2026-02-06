@@ -10,7 +10,7 @@ public class BottleFeedTests
         // Arrange
         var babyId = Guid.NewGuid();
         var externalId = "pk1";
-        var time = DateTime.UtcNow;
+        var time = UtcDateTime.FromDateTime(DateTime.UtcNow);
         var amount = 150;
         var content = BottleContent.BreastMilk;
 
@@ -34,7 +34,7 @@ public class BottleFeedTests
         // Arrange
         var babyId = Guid.NewGuid();
         var externalId = "pk1";
-        var time = DateTime.UtcNow;
+        var time = UtcDateTime.FromDateTime(DateTime.UtcNow);
         var content = BottleContent.BreastMilk;
 
         // Act & Assert

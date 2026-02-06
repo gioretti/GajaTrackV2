@@ -39,8 +39,8 @@ public class ProtocolServiceTests : IDisposable
         var day = new DateOnly(2026, 2, 5); 
         
         // 10:00 - 12:00 (Inside)
-        var sleepStart = new DateTime(2026, 2, 5, 10, 0, 0, DateTimeKind.Utc);
-        var sleepEnd = new DateTime(2026, 2, 5, 12, 0, 0, DateTimeKind.Utc);
+        var sleepStart = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 10, 0, 0, DateTimeKind.Utc));
+        var sleepEnd = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 12, 0, 0, DateTimeKind.Utc));
         
         _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "1", sleepStart, sleepEnd));
         await _context.SaveChangesAsync();
@@ -73,8 +73,8 @@ public class ProtocolServiceTests : IDisposable
         
         // Starts Feb 5 05:00, Ends Feb 5 07:00
         // Should appear as 06:00 - 07:00 (StartMinute 0, Duration 60)
-        var sleepStart = new DateTime(2026, 2, 5, 5, 0, 0, DateTimeKind.Utc);
-        var sleepEnd = new DateTime(2026, 2, 5, 7, 0, 0, DateTimeKind.Utc);
+        var sleepStart = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 5, 0, 0, DateTimeKind.Utc));
+        var sleepEnd = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 7, 0, 0, DateTimeKind.Utc));
         
         _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "split-start", sleepStart, sleepEnd));
         await _context.SaveChangesAsync();
@@ -102,8 +102,8 @@ public class ProtocolServiceTests : IDisposable
         
         // Starts Feb 6 05:00, Ends Feb 6 07:00
         // Should appear as 05:00 - 06:00 (StartMinute 23*60 = 1380, Duration 60)
-        var sleepStart = new DateTime(2026, 2, 6, 5, 0, 0, DateTimeKind.Utc);
-        var sleepEnd = new DateTime(2026, 2, 6, 7, 0, 0, DateTimeKind.Utc);
+        var sleepStart = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 5, 0, 0, DateTimeKind.Utc));
+        var sleepEnd = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 7, 0, 0, DateTimeKind.Utc));
         
         _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "split-end", sleepStart, sleepEnd));
         await _context.SaveChangesAsync();
@@ -130,7 +130,7 @@ public class ProtocolServiceTests : IDisposable
         var day = new DateOnly(2026, 2, 5);
         
         // Nursing at 08:00
-        var nursingTime = new DateTime(2026, 2, 5, 8, 0, 0, DateTimeKind.Utc);
+        var nursingTime = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 8, 0, 0, DateTimeKind.Utc));
         
         _context.NursingFeeds.Add(NursingFeed.Create(Guid.NewGuid(), "n1", nursingTime, null));
         await _context.SaveChangesAsync();
@@ -178,7 +178,7 @@ public class ProtocolServiceTests : IDisposable
         // Local 06:00 Feb 5 is 05:00 UTC Feb 5
         
         // Event at 06:00 LOCAL (05:00 UTC)
-        var utcTime = new DateTime(2026, 2, 5, 5, 0, 0, DateTimeKind.Utc);
+        var utcTime = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 5, 0, 0, DateTimeKind.Utc));
         
         _context.NursingFeeds.Add(NursingFeed.Create(Guid.NewGuid(), "tz-test", utcTime, null));
         await _context.SaveChangesAsync();
