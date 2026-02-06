@@ -1,10 +1,11 @@
 using GajaTrack.Application.DTOs.Protocol;
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Entities;
+using GajaTrack.Domain.Services;
 
 namespace GajaTrack.Application.Services;
 
-public class ProtocolService(ITrackingRepository repository) : IProtocolService
+public class ProtocolService(ITrackingRepository repository, ProtocolDomainService domainService) : IProtocolService
 {
     public async Task<List<ProtocolDay>> GetProtocolAsync(DateOnly startDate, DateOnly endDate, bool mostRecentFirst = false, TimeZoneInfo? timeZone = null, CancellationToken cancellationToken = default)
     {
@@ -31,71 +32,62 @@ public class ProtocolService(ITrackingRepository repository) : IProtocolService
         // 3. Iterate Days
         for (var d = startDate; d <= endDate; d = d.AddDays(1))
         {
-            // Window is 06:00 Local to 06:00 Local (Next Day)
-            var localStart = new DateTime(d.Year, d.Month, d.Day, 6, 0, 0, DateTimeKind.Unspecified);
-            var windowStartUtc = UtcDateTime.FromDateTime(TimeZoneInfo.ConvertTimeToUtc(localStart, timeZone));
-            var windowEndUtc = UtcDateTime.FromDateTime(windowStartUtc.Value.AddDays(1));
-            var window = new TimeRange(windowStartUtc, windowEndUtc);
-            
+            var window = domainService.GetProtocolWindow(d, timeZone);
             var dayEvents = new List<ProtocolEvent>();
 
             // Process Sleep
             foreach (var s in sleepTask.Result)
             {
-                var @event = new TimeRange(s.StartTime, s.EndTime ?? UtcDateTime.Now());
-                var intersection = window.GetIntersection(@event);
-                
+                var intersection = domainService.GetIntersection(window, s.StartTime, s.EndTime);
                 if (intersection.HasValue)
                 {
                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(s.StartTime, timeZone);
-                    dayEvents.Add(ProtocolEvent.Create(s.Id, ProtocolEventType.Sleep, displayTime, windowStartUtc, intersection.Value.Start, intersection.Value.End));
+                    dayEvents.Add(ProtocolEvent.Create(s.Id, ProtocolEventType.Sleep, displayTime, window.Start, intersection.Value.Start, intersection.Value.End));
                 }
             }
             
             // Process Crying
             foreach (var c in cryingTask.Result)
             {
-                var @event = new TimeRange(c.StartTime, c.EndTime ?? UtcDateTime.Now());
-                var intersection = window.GetIntersection(@event);
-                
+                var intersection = domainService.GetIntersection(window, c.StartTime, c.EndTime);
                 if (intersection.HasValue)
                 {
                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(c.StartTime, timeZone);
-                    dayEvents.Add(ProtocolEvent.Create(c.Id, ProtocolEventType.Crying, displayTime, windowStartUtc, intersection.Value.Start, intersection.Value.End));
+                    dayEvents.Add(ProtocolEvent.Create(c.Id, ProtocolEventType.Crying, displayTime, window.Start, intersection.Value.Start, intersection.Value.End));
                 }
             }
 
             // Process Nursing (Point)
             foreach (var n in nursingTask.Result)
             {
-                if (n.StartTime.Value >= windowStartUtc.Value && n.StartTime.Value < windowEndUtc.Value)
+                if (domainService.IsInWindow(window, n.StartTime))
                 {
                      var displayTime = TimeZoneInfo.ConvertTimeFromUtc(n.StartTime, timeZone);
-                     dayEvents.Add(ProtocolEvent.Create(n.Id, ProtocolEventType.Nursing, displayTime, windowStartUtc, n.StartTime, n.StartTime));
+                     dayEvents.Add(ProtocolEvent.Create(n.Id, ProtocolEventType.Nursing, displayTime, window.Start, n.StartTime, n.StartTime));
                 }
             }
             
             // Process Bottle (Point)
             foreach (var b in bottleTask.Result)
             {
-                if (b.Time.Value >= windowStartUtc.Value && b.Time.Value < windowEndUtc.Value)
+                if (domainService.IsInWindow(window, b.Time))
                 {
                      var displayTime = TimeZoneInfo.ConvertTimeFromUtc(b.Time, timeZone);
                      var type = b.Content == BottleContent.Formula ? ProtocolEventType.BottleFormula : ProtocolEventType.BottleMilk;
-                     dayEvents.Add(ProtocolEvent.Create(b.Id, type, displayTime, windowStartUtc, b.Time, b.Time, $"{b.AmountMl}ml"));
+                     dayEvents.Add(ProtocolEvent.Create(b.Id, type, displayTime, window.Start, b.Time, b.Time, $"{b.AmountMl}ml"));
                 }
             }
 
             // Process Diaper (Point)
             foreach (var di in diaperTask.Result)
             {
-                if (di.Time.Value >= windowStartUtc.Value && di.Time.Value < windowEndUtc.Value)
+                if (domainService.IsInWindow(window, di.Time))
                 {
                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(di.Time, timeZone);
-                    dayEvents.Add(ProtocolEvent.Create(di.Id, ProtocolEventType.Diaper, displayTime, windowStartUtc, di.Time, di.Time, di.Type.ToString()));
+                    dayEvents.Add(ProtocolEvent.Create(di.Id, ProtocolEventType.Diaper, displayTime, window.Start, di.Time, di.Time, di.Type.ToString()));
                 }
             }
-            result.Add(new ProtocolDay(d, windowStartUtc, windowEndUtc, dayEvents.OrderBy(x => x.StartMinute).ToList()));
+            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList()));
         }
 
         if (mostRecentFirst)

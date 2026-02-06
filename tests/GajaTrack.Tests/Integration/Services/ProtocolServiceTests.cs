@@ -1,6 +1,7 @@
 using GajaTrack.Application.DTOs.Protocol;
 using GajaTrack.Application.Services;
 using GajaTrack.Domain.Entities;
+using GajaTrack.Domain.Services;
 using GajaTrack.Infrastructure.Persistence;
 using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
@@ -27,7 +28,8 @@ public class ProtocolServiceTests : IDisposable
         _context.Database.EnsureCreated();
 
         var repository = new TrackingRepository(_context);
-        _service = new ProtocolService(repository);
+        var domainService = new ProtocolDomainService();
+        _service = new ProtocolService(repository, domainService);
     }
 
     public void Dispose()
