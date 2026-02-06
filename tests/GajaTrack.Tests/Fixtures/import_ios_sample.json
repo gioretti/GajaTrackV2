@@ -1,0 +1,392 @@
+﻿{
+    "baby_nursingfeed":  [
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  0,
+                                 "endDate":  0,
+                                 "nursingSide":  "left",
+                                 "startDate":  1757947543.883111,
+                                 "startingBreast":  "left",
+                                 "pk":  553549207548193,
+                                 "rightDuration":  0
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  0,
+                                 "endDate":  1759922474.1993608,
+                                 "nursingSide":  "right",
+                                 "startDate":  1759921965.1993608,
+                                 "startingBreast":  "right",
+                                 "pk":  1139879339067594,
+                                 "rightDuration":  509
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  910,
+                                 "endDate":  1764796045.885772,
+                                 "nursingSide":  "left",
+                                 "startDate":  1764795135.885772,
+                                 "startingBreast":  "left",
+                                 "pk":  3291831980518246,
+                                 "rightDuration":  0
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  321,
+                                 "endDate":  1763158609.311321,
+                                 "nursingSide":  "left",
+                                 "startDate":  1763158288.311321,
+                                 "startingBreast":  "left",
+                                 "pk":  6756641528474922,
+                                 "rightDuration":  0
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  729,
+                                 "endDate":  1757611963.8022809,
+                                 "nursingSide":  "left",
+                                 "startDate":  1757611234.8022809,
+                                 "startingBreast":  "left",
+                                 "pk":  7463045314755926,
+                                 "rightDuration":  0
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  0,
+                                 "endDate":  1754060719.3052139,
+                                 "nursingSide":  "right",
+                                 "startDate":  1754060119.3052139,
+                                 "startingBreast":  "right",
+                                 "pk":  13506371515716002,
+                                 "rightDuration":  600
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  703,
+                                 "endDate":  1754993328.9410529,
+                                 "nursingSide":  "left",
+                                 "startDate":  1754992625.9410529,
+                                 "startingBreast":  "right",
+                                 "pk":  15286151905628857,
+                                 "rightDuration":  0
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  0,
+                                 "endDate":  1762648526.7566051,
+                                 "nursingSide":  "right",
+                                 "startDate":  1762648046.7566051,
+                                 "startingBreast":  "right",
+                                 "pk":  16585284543960609,
+                                 "rightDuration":  480
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  598,
+                                 "endDate":  1765474611.882875,
+                                 "nursingSide":  "left",
+                                 "startDate":  1765474013.882875,
+                                 "startingBreast":  "left",
+                                 "pk":  19319253486386511,
+                                 "rightDuration":  0
+                             },
+                             {
+                                 "babyid":  1,
+                                 "leftDuration":  824,
+                                 "endDate":  1756230644,
+                                 "nursingSide":  "left",
+                                 "startDate":  1756229820,
+                                 "startingBreast":  "left",
+                                 "pk":  24004717574821970,
+                                 "rightDuration":  0
+                             }
+                         ],
+    "baby_bottlefeed":  [
+                            {
+                                "pk":  4764208270345891,
+                                "amountML":  45,
+                                "isFormula":  0,
+                                "babyid":  1,
+                                "date":  1767200118.3507919
+                            },
+                            {
+                                "pk":  27253484506560548,
+                                "amountML":  100,
+                                "isFormula":  0,
+                                "babyid":  1,
+                                "date":  1766077200
+                            },
+                            {
+                                "pk":  77943230308979244,
+                                "amountML":  30,
+                                "isFormula":  0,
+                                "babyid":  1,
+                                "date":  1752527065.363482
+                            },
+                            {
+                                "pk":  95047498644392079,
+                                "amountML":  120,
+                                "isFormula":  1,
+                                "babyid":  1,
+                                "date":  1769418300
+                            },
+                            {
+                                "pk":  210496187121246555,
+                                "amountML":  160,
+                                "isFormula":  1,
+                                "babyid":  1,
+                                "date":  1769505075.5280001
+                            },
+                            {
+                                "pk":  261112809994279524,
+                                "amountML":  30,
+                                "isFormula":  0,
+                                "babyid":  1,
+                                "date":  1755565910.591897
+                            },
+                            {
+                                "pk":  323960939588765303,
+                                "amountML":  15,
+                                "isFormula":  1,
+                                "babyid":  1,
+                                "date":  1768834500
+                            },
+                            {
+                                "pk":  485499686921826294,
+                                "amountML":  40,
+                                "isFormula":  0,
+                                "babyid":  1,
+                                "date":  1755539299.685704
+                            },
+                            {
+                                "pk":  532272016080177820,
+                                "amountML":  70,
+                                "isFormula":  0,
+                                "babyid":  1,
+                                "date":  1758971748.100059
+                            },
+                            {
+                                "pk":  557085784804623499,
+                                "amountML":  80,
+                                "isFormula":  0,
+                                "babyid":  1,
+                                "date":  1768715481.9260001
+                            }
+                        ],
+    "baby_sleep":  [
+                       {
+                           "pk":  7955345336439378,
+                           "startDate":  1768888194.7737341,
+                           "babyid":  1,
+                           "endDate":  1768891375.0423632,
+                           "duration":  3180.2686289548874
+                       },
+                       {
+                           "pk":  8509626154911066,
+                           "startDate":  1764319674.417582,
+                           "babyid":  1,
+                           "endDate":  1764321971.2705331,
+                           "duration":  2296.8529509305954
+                       },
+                       {
+                           "pk":  12261427645463607,
+                           "startDate":  1765331112.478261,
+                           "babyid":  1,
+                           "endDate":  1765333607.808857,
+                           "duration":  2495.3305959701538
+                       },
+                       {
+                           "pk":  15324543495249690,
+                           "startDate":  1766805648.1024718,
+                           "babyid":  1,
+                           "endDate":  1766808726.336777,
+                           "duration":  3078.2343051433563
+                       },
+                       {
+                           "pk":  15771807904330125,
+                           "startDate":  1764579195.902853,
+                           "babyid":  1,
+                           "endDate":  1764582300,
+                           "duration":  3104.097146987915
+                       },
+                       {
+                           "pk":  18295592144167430,
+                           "startDate":  1762657217.7671409,
+                           "babyid":  1,
+                           "endDate":  1762663324.5978661,
+                           "duration":  6106.8307251930237
+                       },
+                       {
+                           "pk":  24330143540059071,
+                           "startDate":  1767226333,
+                           "babyid":  1,
+                           "endDate":  1767227471.784395,
+                           "duration":  1138.7843949794769
+                       },
+                       {
+                           "pk":  28227074460094401,
+                           "startDate":  1769361725.7525439,
+                           "babyid":  1,
+                           "endDate":  1769363687.165019,
+                           "duration":  1961.4124751091003
+                       },
+                       {
+                           "pk":  28940998661761582,
+                           "startDate":  1766412300,
+                           "babyid":  1,
+                           "endDate":  1766416180.4879489,
+                           "duration":  3880.48794901371
+                       },
+                       {
+                           "pk":  29212809622311881,
+                           "startDate":  1758033924.6992741,
+                           "babyid":  1,
+                           "endDate":  1758036256.782932,
+                           "duration":  2332.0836579799652
+                       }
+                   ],
+    "baby_nappy":  [
+                       {
+                           "pk":  4262040631247780,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Wet",
+                           "date":  1762238020.8705559
+                       },
+                       {
+                           "pk":  6858458697929382,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Mixed",
+                           "date":  1769493324.237
+                       },
+                       {
+                           "pk":  11494502715415770,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Wet",
+                           "date":  1766653620
+                       },
+                       {
+                           "pk":  12037601967088140,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Mixed",
+                           "date":  1762245810.4233761
+                       },
+                       {
+                           "pk":  16042175336420789,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Mixed",
+                           "date":  1751695500
+                       },
+                       {
+                           "pk":  39206072228976707,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Mixed",
+                           "date":  1752070500
+                       },
+                       {
+                           "pk":  43438239416464817,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Wet",
+                           "date":  1754519738.08255
+                       },
+                       {
+                           "pk":  43573589931256732,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Mixed",
+                           "date":  1754931600
+                       },
+                       {
+                           "pk":  46016309892404606,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Wet",
+                           "date":  1769040300
+                       },
+                       {
+                           "pk":  58875955261854572,
+                           "details":  "None",
+                           "babyid":  1,
+                           "type":  "Wet",
+                           "date":  1757998119.3874478
+                       }
+                   ],
+    "baby_crying":  [
+                        {
+                            "pk":  8036390281010770,
+                            "startDate":  1763804114.5012031,
+                            "babyid":  1,
+                            "endDate":  1763804338.3950701,
+                            "duration":  223.89386689662933
+                        },
+                        {
+                            "pk":  20952463970576222,
+                            "startDate":  1757608054.4029279,
+                            "babyid":  1,
+                            "endDate":  1757608320.563565,
+                            "duration":  266.16063714027405
+                        },
+                        {
+                            "pk":  32173910368960752,
+                            "startDate":  1762927200,
+                            "babyid":  1,
+                            "endDate":  1762928100,
+                            "duration":  900
+                        },
+                        {
+                            "pk":  41626112168074866,
+                            "startDate":  1767543533.3578491,
+                            "babyid":  1,
+                            "endDate":  1767543620.7789259,
+                            "duration":  87.421076893806458
+                        },
+                        {
+                            "pk":  42310946725624435,
+                            "startDate":  1760016600,
+                            "babyid":  1,
+                            "endDate":  1760017200,
+                            "duration":  600
+                        },
+                        {
+                            "pk":  45127208048472047,
+                            "startDate":  1760276714.8867869,
+                            "babyid":  1,
+                            "endDate":  1760277044.762908,
+                            "duration":  329.87612104415894
+                        },
+                        {
+                            "pk":  50438375236059046,
+                            "startDate":  1766343832.911407,
+                            "babyid":  1,
+                            "endDate":  1766345221.924927,
+                            "duration":  1389.0135200023651
+                        },
+                        {
+                            "pk":  75539748338414643,
+                            "startDate":  1760459755.2058458,
+                            "babyid":  1,
+                            "endDate":  1760460274.923871,
+                            "duration":  519.71802520751953
+                        },
+                        {
+                            "pk":  80634357197371163,
+                            "startDate":  1768887145.762187,
+                            "babyid":  1,
+                            "endDate":  1768887320.054502,
+                            "duration":  174.2923150062561
+                        },
+                        {
+                            "pk":  130095179066302630,
+                            "startDate":  1761720000,
+                            "babyid":  1,
+                            "endDate":  1761721218.5556159,
+                            "duration":  1218.5556160211563
+                        }
+                    ]
+}

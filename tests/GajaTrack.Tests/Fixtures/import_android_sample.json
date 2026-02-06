@@ -1,0 +1,432 @@
+﻿{
+    "baby_nursingfeed":  [
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-05T18:18:08.620+01:00",
+                                 "leftDuration":  626,
+                                 "pk":  4315031405462215107,
+                                 "note":  null,
+                                 "nursingSide":  "left",
+                                 "rightDuration":  0,
+                                 "startDate":  "2026-02-05T18:07:42.620+01:00",
+                                 "startingBreast":  "left"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-05T06:34:35.925+01:00",
+                                 "leftDuration":  0,
+                                 "pk":  8372544934533914207,
+                                 "note":  null,
+                                 "nursingSide":  "right",
+                                 "rightDuration":  168,
+                                 "startDate":  "2026-02-05T06:31:47.925+01:00",
+                                 "startingBreast":  "right"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-05T06:02:47.337+01:00",
+                                 "leftDuration":  5,
+                                 "pk":  8291016389684491187,
+                                 "note":  null,
+                                 "nursingSide":  "left",
+                                 "rightDuration":  0,
+                                 "startDate":  "2026-02-05T06:02:42.337+01:00",
+                                 "startingBreast":  "left"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "1970-01-01T01:00:00.000+01:00",
+                                 "leftDuration":  0,
+                                 "pk":  54061995717722147,
+                                 "note":  null,
+                                 "nursingSide":  "right",
+                                 "rightDuration":  0,
+                                 "startDate":  "2026-02-05T03:46:53.954+01:00",
+                                 "startingBreast":  "right"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-05T02:38:43.077+01:00",
+                                 "leftDuration":  0,
+                                 "pk":  4253770683550440346,
+                                 "note":  null,
+                                 "nursingSide":  "right",
+                                 "rightDuration":  786,
+                                 "startDate":  "2026-02-05T02:25:37.077+01:00",
+                                 "startingBreast":  "right"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-04T22:35:26.960+01:00",
+                                 "leftDuration":  853,
+                                 "pk":  1488199936803393366,
+                                 "note":  null,
+                                 "nursingSide":  "left",
+                                 "rightDuration":  0,
+                                 "startDate":  "2026-02-04T22:21:13.960+01:00",
+                                 "startingBreast":  "left"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-04T18:13:14.476+01:00",
+                                 "leftDuration":  897,
+                                 "pk":  5534523389405620229,
+                                 "note":  null,
+                                 "nursingSide":  "left",
+                                 "rightDuration":  0,
+                                 "startDate":  "2026-02-04T17:58:17.476+01:00",
+                                 "startingBreast":  "left"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "1970-01-01T01:00:00.000+01:00",
+                                 "leftDuration":  0,
+                                 "pk":  706775213248344091,
+                                 "note":  null,
+                                 "nursingSide":  "right",
+                                 "rightDuration":  0,
+                                 "startDate":  "2026-02-04T07:00:30.529+01:00",
+                                 "startingBreast":  "right"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-04T04:50:07.716+01:00",
+                                 "leftDuration":  0,
+                                 "pk":  8750960496181626321,
+                                 "note":  null,
+                                 "nursingSide":  "right",
+                                 "rightDuration":  418,
+                                 "startDate":  "2026-02-04T04:43:09.716+01:00",
+                                 "startingBreast":  "right"
+                             },
+                             {
+                                 "babyid":  1,
+                                 "endDate":  "2026-02-04T02:44:19.066+01:00",
+                                 "leftDuration":  5,
+                                 "pk":  1366546783042428339,
+                                 "note":  null,
+                                 "nursingSide":  "left",
+                                 "rightDuration":  0,
+                                 "startDate":  "2026-02-04T02:44:14.066+01:00",
+                                 "startingBreast":  "left"
+                             }
+                         ],
+    "baby_bottlefeed":  [
+                            {
+                                "amountML":  165.0,
+                                "babyid":  1,
+                                "isFormula":  true,
+                                "pk":  3704017744934605094,
+                                "note":  null,
+                                "date":  "2026-02-05T16:10:00.000+01:00"
+                            },
+                            {
+                                "amountML":  105.0,
+                                "babyid":  1,
+                                "isFormula":  false,
+                                "pk":  8718058267114800378,
+                                "note":  null,
+                                "date":  "2026-02-05T14:00:00.000+01:00"
+                            },
+                            {
+                                "amountML":  165.0,
+                                "babyid":  1,
+                                "isFormula":  true,
+                                "pk":  3460472470751848433,
+                                "note":  null,
+                                "date":  "2026-02-05T09:30:00.000+01:00"
+                            },
+                            {
+                                "amountML":  80.0,
+                                "babyid":  1,
+                                "isFormula":  true,
+                                "pk":  7488882356244504050,
+                                "note":  null,
+                                "date":  "2026-02-04T16:25:00.000+01:00"
+                            },
+                            {
+                                "amountML":  130.0,
+                                "babyid":  1,
+                                "isFormula":  false,
+                                "pk":  2304835106368095779,
+                                "note":  null,
+                                "date":  "2026-02-04T14:25:00.000+01:00"
+                            },
+                            {
+                                "amountML":  130.0,
+                                "babyid":  1,
+                                "isFormula":  true,
+                                "pk":  3011963476909775124,
+                                "note":  null,
+                                "date":  "2026-02-04T09:35:00.000+01:00"
+                            },
+                            {
+                                "amountML":  70.0,
+                                "babyid":  1,
+                                "isFormula":  false,
+                                "pk":  5019585250711603773,
+                                "note":  null,
+                                "date":  "2026-02-03T16:15:41.550+01:00"
+                            },
+                            {
+                                "amountML":  60.0,
+                                "babyid":  1,
+                                "isFormula":  true,
+                                "pk":  3633306595941467677,
+                                "note":  null,
+                                "date":  "2026-02-03T14:14:00.000+01:00"
+                            },
+                            {
+                                "amountML":  130.0,
+                                "babyid":  1,
+                                "isFormula":  false,
+                                "pk":  731911998300470131,
+                                "note":  null,
+                                "date":  "2026-02-03T14:06:29.629+01:00"
+                            },
+                            {
+                                "amountML":  130.0,
+                                "babyid":  1,
+                                "isFormula":  true,
+                                "pk":  1338251650736476950,
+                                "note":  null,
+                                "date":  "2026-02-03T09:25:00.000+01:00"
+                            }
+                        ],
+    "baby_sleep":  [
+                       {
+                           "babyid":  1,
+                           "duration":  0,
+                           "endDate":  "1970-01-01T01:00:00.000+01:00",
+                           "pk":  2117857159383370402,
+                           "note":  null,
+                           "startDate":  "2026-02-05T18:55:19.062+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  2396,
+                           "endDate":  "2026-02-05T15:41:56.048+01:00",
+                           "pk":  6087004359218056831,
+                           "note":  null,
+                           "startDate":  "2026-02-05T15:02:00.000+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  4466,
+                           "endDate":  "2026-02-05T12:44:09.198+01:00",
+                           "pk":  7416956073732256581,
+                           "note":  null,
+                           "startDate":  "2026-02-05T11:29:42.604+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  3657,
+                           "endDate":  "2026-02-05T09:12:57.640+01:00",
+                           "pk":  4222166420847483956,
+                           "note":  null,
+                           "startDate":  "2026-02-05T08:12:00.000+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  7732,
+                           "endDate":  "2026-02-05T06:02:34.748+01:00",
+                           "pk":  5919792966023091424,
+                           "note":  null,
+                           "startDate":  "2026-02-05T03:53:42.012+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  3790,
+                           "endDate":  "2026-02-05T03:46:47.748+01:00",
+                           "pk":  4633399939770297029,
+                           "note":  null,
+                           "startDate":  "2026-02-05T02:43:37.167+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  9216,
+                           "endDate":  "2026-02-05T02:25:30.904+01:00",
+                           "pk":  7432826166190187716,
+                           "note":  null,
+                           "startDate":  "2026-02-04T23:51:53.999+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  3360,
+                           "endDate":  "2026-02-04T23:48:00.000+01:00",
+                           "pk":  2439722982134355402,
+                           "note":  null,
+                           "startDate":  "2026-02-04T22:52:00.000+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  323,
+                           "endDate":  "2026-02-04T22:40:54.924+01:00",
+                           "pk":  8937945297612854629,
+                           "note":  null,
+                           "startDate":  "2026-02-04T22:35:31.889+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "duration":  2160,
+                           "endDate":  "2026-02-04T21:55:00.000+01:00",
+                           "pk":  8190038905546145309,
+                           "note":  null,
+                           "startDate":  "2026-02-04T21:19:00.000+01:00"
+                       }
+                   ],
+    "baby_nappy":  [
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  8912935084534731665,
+                           "type":  "Wet",
+                           "note":  null,
+                           "date":  "2026-02-05T18:07:04.671+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  3913080165868547106,
+                           "type":  "Wet",
+                           "note":  null,
+                           "date":  "2026-02-05T13:25:00.000+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  8247372998147026266,
+                           "type":  "Mixed",
+                           "note":  null,
+                           "date":  "2026-02-05T10:15:00.000+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  6293768364186848527,
+                           "type":  "Wet",
+                           "note":  null,
+                           "date":  "2026-02-05T06:18:15.801+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  7947207253860568238,
+                           "type":  "Wet",
+                           "note":  null,
+                           "date":  "2026-02-04T17:32:17.674+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  5907051047166249310,
+                           "type":  "Mixed",
+                           "note":  null,
+                           "date":  "2026-02-04T13:55:00.000+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  8091420839058685039,
+                           "type":  "Wet",
+                           "note":  null,
+                           "date":  "2026-02-04T10:04:11.058+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  6983789508997440997,
+                           "type":  "Wet",
+                           "note":  null,
+                           "date":  "2026-02-04T06:42:53.635+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "None",
+                           "pk":  1329318243970503921,
+                           "type":  "Wet",
+                           "note":  null,
+                           "date":  "2026-02-03T17:45:00.000+01:00"
+                       },
+                       {
+                           "babyid":  1,
+                           "details":  "Diarrhoea",
+                           "pk":  645955291890556563,
+                           "type":  "Mixed",
+                           "note":  null,
+                           "date":  "2026-02-03T16:25:25.727+01:00"
+                       }
+                   ],
+    "baby_crying":  [
+                        {
+                            "babyid":  1,
+                            "duration":  1200,
+                            "endDate":  "2026-02-05T16:05:00.000+01:00",
+                            "pk":  2515904700352207114,
+                            "startDate":  "2026-02-05T15:45:00.000+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  360,
+                            "endDate":  "2026-02-05T10:46:00.000+01:00",
+                            "pk":  4263074419303424011,
+                            "startDate":  "2026-02-05T10:40:00.000+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  900,
+                            "endDate":  "2026-02-04T11:05:00.000+01:00",
+                            "pk":  244758658170054710,
+                            "startDate":  "2026-02-04T10:50:00.000+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  135,
+                            "endDate":  "2026-02-03T14:51:30.126+01:00",
+                            "pk":  2544465609908625484,
+                            "startDate":  "2026-02-03T14:49:14.250+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  720,
+                            "endDate":  "2026-02-03T14:42:00.000+01:00",
+                            "pk":  1930704985596472128,
+                            "startDate":  "2026-02-03T14:30:00.000+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  920,
+                            "endDate":  "2026-02-03T07:47:20.377+01:00",
+                            "pk":  2854698254035255640,
+                            "startDate":  "2026-02-03T07:32:00.000+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  147,
+                            "endDate":  "2026-02-01T14:55:59.760+01:00",
+                            "pk":  3569344934624455991,
+                            "startDate":  "2026-02-01T14:53:32.398+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  77,
+                            "endDate":  "2026-01-29T00:13:13.844+01:00",
+                            "pk":  5571013391706638995,
+                            "startDate":  "2026-01-29T00:11:56.692+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  900,
+                            "endDate":  "2026-01-27T14:15:00.000+01:00",
+                            "pk":  547754914654848923,
+                            "startDate":  "2026-01-27T14:00:00.000+01:00"
+                        },
+                        {
+                            "babyid":  1,
+                            "duration":  260,
+                            "endDate":  "2026-01-27T06:58:20.195+01:00",
+                            "pk":  2927131210383922359,
+                            "startDate":  "2026-01-27T06:54:00.000+01:00"
+                        }
+                    ]
+}

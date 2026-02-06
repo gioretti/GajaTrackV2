@@ -24,4 +24,10 @@
     <ProjectReference Include="..\..\src\GajaTrack.Infrastructure\GajaTrack.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Fixtures\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
