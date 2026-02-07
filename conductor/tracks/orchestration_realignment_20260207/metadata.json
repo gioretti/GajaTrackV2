@@ -1,0 +1,8 @@
+{
+  "track_id": "orchestration_realignment_20260207",
+  "type": "feature",
+  "status": "in_progress",
+  "created_at": "2026-02-07T17:33:00Z",
+  "updated_at": "2026-02-07T17:33:00Z",
+  "description": "Re-align project orchestration to use Conductor as the central state manager between PO, Architect, and Developer skills."
+}
