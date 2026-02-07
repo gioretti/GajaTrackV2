@@ -6,16 +6,23 @@
 - **Clean Architecture & DDD:** Adhere to the boundaries defined in `docs/architecture.md`.
 - **Atomic Commits:** Commit changes after every individual task.
 
-## Persona-Based Orchestration
-Following the protocols in `GEMINI.md`:
-1. **Product Owner:** Defines requirements and Gherkin features (Product Brief).
-2. **Software Architect:** System design, ADR management, and "Verdict" on implementation plans.
-3. **Software Developer:** Task execution and "Implementation Summary" for Architect review.
+## Persona-Based Orchestration (Conductor Flow)
+1. **Product Owner:** Defines requirements via `spec.md` in the track folder.
+2. **Software Architect:** Validates technical design via `plan.md` and manages ADRs.
+3. **Software Developer:** Executes tasks from the approved `plan.md`.
+
+## Definition of Done (DoD)
+A track or feature is considered "Done" only when:
+- **Product Requirement:** All Acceptance Criteria in `spec.md` are met and verified.
+- **Technical Quality:** Code follows DDD boundaries and passes 80% test coverage.
+- **Architectural Review:** The Architect has issued a "Pass" on the final implementation summary.
+- **Documentation:** Relevant ADRs and `docs/architecture.md` are updated.
+- **Orchestration:** The track status in `conductor/tracks.md` is updated to `[x]`.
 
 ## Requirements & Constraints
 - **Test Coverage:** Minimum 80% code coverage required for all new logic.
 - **Task Summaries:** Recorded directly in the Git commit messages.
-- **File Writes:** All changes (ADRs, Docs, Code) must be physical file writes to disk.
+- **File Writes:** All changes (ADRs, Docs, Code, Tracks) must be physical file writes to disk.
 
 ## Phase Completion & Checkpointing
 At the end of each phase, the Developer must seek Architect approval via an "Implementation Summary" before proceeding.
