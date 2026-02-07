@@ -14,4 +14,11 @@
 ## Phase 3: Final Integration
 - [x] Task: Update `conductor/workflow.md` with final "Definition of Done" including persona-specific checks.
 - [x] Task: Final project-wide audit of all orchestration files.
-- [>] Task: Conductor - User Manual Verification 'Final Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Final Integration' (Protocol in workflow.md)
+
+## Phase 4: Quality & Review Rigor
+- [x] Task: Consolidate Coding Guidelines and remove redundancy.
+- [x] Task: Formalize Architect's "Code Review" and "Challenge" mandate in `SKILL.md`.
+- [x] Task: Define the "Rework & Re-review" loop in Developer and Architect skills.
+- [x] Task: Implement "Behavioral vs Structural" commit separation in Developer workflow.
+- [x] Task: Conductor - User Manual Verification 'Quality & Review Rigor' (Protocol in workflow.md)
