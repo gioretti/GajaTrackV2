@@ -1,6 +1,7 @@
 # Project Workflow: Baby Gaja Tracking Application
 
 ## Development Methodology
+- **Track-Based State Management:** The `conductor/tracks.md` and individual track plans are the source of truth for project and feature state.
 - **TDD (Test-Driven Development):** All features must begin with failing tests before implementation.
 - **Clean Architecture & DDD:** Adhere to the boundaries defined in `docs/architecture.md`.
 - **Atomic Commits:** Commit changes after every individual task.

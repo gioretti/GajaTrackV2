@@ -2,7 +2,7 @@
 
 ## Phase 1: Core Orchestration (GEMINI.md)
 - [x] Task: Redraft `GEMINI.md` to integrate Conductor as the Orchestrator.
-- [ ] Task: Update Operational Guidelines to reference Conductor Tracks for state management.
+- [x] Task: Update Operational Guidelines to reference Conductor Tracks for state management.
 - [ ] Task: Conductor - User Manual Verification 'Core Orchestration' (Protocol in workflow.md)
 
 ## Phase 2: Skill Refinement
