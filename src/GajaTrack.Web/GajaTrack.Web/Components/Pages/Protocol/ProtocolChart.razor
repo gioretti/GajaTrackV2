@@ -106,6 +106,12 @@
                         <!-- Solid Grey Triangle -->
                         <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
                         break;
+
+                    case ProtocolEventType.Diaper:
+                        <!-- Square for Diaper changes -->
+                        var diaperColor = ev.Description?.Contains("Wet") == true ? "#FFD700" : "#8B4513";
+                        <rect x="@(xStart - 5)" y="@(midY - 5)" width="10" height="10" fill="@diaperColor" title="Diaper: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
+                        break;
                 }
             }
         }

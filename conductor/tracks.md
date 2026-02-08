@@ -6,5 +6,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [005_RefactorProtocolSummaryComponent](./tracks/005_RefactorProtocolSummaryComponent/index.md): Refactor Protocol Summary Component
 - [x] [006_NightWakings](./tracks/006_NightWakings/index.md): Night Wakings Metric (18:00 - 06:00)
 - [x] [007_ProtocolVisibilityToggles](./tracks/007_ProtocolVisibilityToggles/index.md): Protocol Visibility Toggles
-- [ ] [008_DiaperVisualization](./tracks/008_DiaperVisualization/index.md): Diaper Change Visualization
+- [x] [008_DiaperVisualization](./tracks/008_DiaperVisualization/index.md): Diaper Change Visualization
 

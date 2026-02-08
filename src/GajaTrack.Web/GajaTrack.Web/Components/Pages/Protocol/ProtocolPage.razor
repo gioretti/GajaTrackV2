@@ -62,6 +62,14 @@
                     <svg width="15" height="15"><polygon points="7.5,2 13,13 2,13" fill="grey" stroke="grey"/></svg>
                     <span>Bottle (Milk)</span>
                 </div>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="checkbox" checked="@_visibleTypes.Contains(ProtocolEventType.Diaper)" @onchange="@(() => ToggleVisibility(ProtocolEventType.Diaper))" class="form-check-input" />
+                    <svg width="30" height="15">
+                        <rect x="2" y="2" width="10" height="10" fill="#FFD700" />
+                        <rect x="16" y="2" width="10" height="10" fill="#8B4513" />
+                    </svg>
+                    <span>Diaper (Yellow: Wet, Brown: Mixed/Solid)</span>
+                </div>
             </div>
         </div>
     }
@@ -78,7 +86,8 @@
         ProtocolEventType.Crying,
         ProtocolEventType.Nursing,
         ProtocolEventType.BottleFormula,
-        ProtocolEventType.BottleMilk
+        ProtocolEventType.BottleMilk,
+        ProtocolEventType.Diaper
     };
 
     protected override async Task OnInitializedAsync()
