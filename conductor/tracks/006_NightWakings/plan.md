@@ -24,10 +24,10 @@ Implement the night wakings count in the daily summary, defined as any sleep ses
 - [x] **Task 2.1: Update ProtocolSummaryCell.razor**
   - Add a new `<text>` element to display "Night Wakings (18-06): [Count]".
   - Position it below the "Sleep" total.
-- [ ] **Task 2.2: Manual UI Verification**
+- [x] **Task 2.2: Manual UI Verification**
   - Launch application and verify the metric appears correctly for days with night wakings.
   - Verify alignment and label clarity.
 
 ## Phase 3: Finalization
-- [ ] **Task 3.1: Architectural Review**
-- [ ] **Task 3.2: Complete Track**
+- [x] **Task 3.1: Architectural Review**
+- [x] **Task 3.2: Complete Track**

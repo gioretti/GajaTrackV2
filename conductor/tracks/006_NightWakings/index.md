@@ -1,6 +1,6 @@
 # Track: Night Wakings Metric
 
-## Status: In Progress
+## Status: Done
 **Owner:** Product Owner
 **Start Date:** 2026-02-08
 
@@ -9,5 +9,5 @@ Calculate and display the number of night wakings (18:00 - 06:00) in the daily s
 
 ## Deliverables
 - [x] Specification (spec.md)
-- [ ] Implementation Plan (plan.md)
-- [ ] Feature Implementation
+- [x] Implementation Plan (plan.md)
+- [x] Feature Implementation
