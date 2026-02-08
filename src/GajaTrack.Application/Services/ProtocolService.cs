@@ -46,6 +46,10 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                 }
             }
             
+            var totalSleep = dayEvents
+                .Where(e => e.Type == ProtocolEventType.Sleep)
+                .Sum(e => e.DurationMinutes);
+
             // Process Crying
             foreach (var c in cryingTask.Result)
             {
@@ -87,7 +91,7 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                     dayEvents.Add(ProtocolEvent.Create(di.Id, ProtocolEventType.Diaper, displayTime, window.Start, di.Time, di.Time, di.Type.ToString()));
                 }
             }
-            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new ProtocolSummary(0)));
+            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new ProtocolSummary(totalSleep)));
         }
 
         if (mostRecentFirst)

@@ -18,7 +18,7 @@ This plan implements the Daily Summary Column for the 24-hour protocol, starting
     - Multiple sleep events within the day.
     - Sleep events spanning across the 06:00 boundary (verifying only the clipped portion is summed).
   - **Status:** Tests should fail (logic not implemented).
-- [ ] **Task 1.3: Implement Calculation Logic**
+- [x] **Task 1.3: Implement Calculation Logic**
   - Update `ProtocolService.GetProtocolAsync` to populate the `ProtocolSummary` by summing the `DurationMinutes` of all `Sleep` events.
   - **Status:** Tests should now pass.
 
