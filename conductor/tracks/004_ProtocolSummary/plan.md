@@ -11,7 +11,7 @@ This plan implements the Daily Summary Column for the 24-hour protocol, starting
 - [x] **Task 1.1: Update DTOs (Structural Prep)**
   - Add `ProtocolSummary` record to `ProtocolDtos.cs`.
   - Update `ProtocolDay` to include a `Summary` property (nullable/empty initially).
-- [ ] **Task 1.2: Write Failing Unit Tests (TDD Start)**
+- [x] **Task 1.2: Write Failing Unit Tests (TDD Start)**
   - Create/Update tests in `ProtocolServiceTests` to assert that `TotalSleepMinutes` is correctly calculated for a `ProtocolDay`.
   - Include scenarios for:
     - No sleep events (0 mins).

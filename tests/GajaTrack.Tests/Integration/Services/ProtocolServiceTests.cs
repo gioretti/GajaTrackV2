@@ -192,4 +192,54 @@ public class ProtocolServiceTests : IDisposable
         // OriginalStartTime in DTO should be converted to Local
         Assert.Equal(6, ev.OriginalStartTime.Hour);
     }
+
+    [Fact]
+    public async Task GetProtocol_ShouldCalculateTotalSleepMinutes()
+    {
+        // Arrange
+        var day = new DateOnly(2026, 2, 5);
+        
+        // Sleep 1: 08:00 - 10:00 (120 mins)
+        var s1Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 8, 0, 0, DateTimeKind.Utc));
+        var s1End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 10, 0, 0, DateTimeKind.Utc));
+        
+        // Sleep 2: 14:00 - 15:30 (90 mins)
+        var s2Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 14, 0, 0, DateTimeKind.Utc));
+        var s2End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 15, 30, 0, DateTimeKind.Utc));
+        
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s1", s1Start, s1End));
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s2", s2Start, s2End));
+        await _context.SaveChangesAsync();
+        
+        // Act
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+
+        // Assert
+        Assert.Equal(120 + 90, result[0].Summary.TotalSleepMinutes);
+    }
+
+    [Fact]
+    public async Task GetProtocol_ShouldCalculateTotalSleepMinutes_ClippedByBoundaries()
+    {
+        // Arrange
+        var day = new DateOnly(2026, 2, 5); // 06:00 - 06:00 (Next Day)
+        
+        // Sleep 1: 05:00 - 07:00 (Clipped to 06:00 - 07:00 -> 60 mins)
+        var s1Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 5, 0, 0, DateTimeKind.Utc));
+        var s1End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 7, 0, 0, DateTimeKind.Utc));
+        
+        // Sleep 2: 05:00 next day - 07:00 next day (Clipped to 05:00 - 06:00 -> 60 mins)
+        var s2Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 5, 0, 0, DateTimeKind.Utc));
+        var s2End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 7, 0, 0, DateTimeKind.Utc));
+        
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s3", s1Start, s1End));
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s4", s2Start, s2End));
+        await _context.SaveChangesAsync();
+        
+        // Act
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+
+        // Assert
+        Assert.Equal(60 + 60, result[0].Summary.TotalSleepMinutes);
+    }
 }
