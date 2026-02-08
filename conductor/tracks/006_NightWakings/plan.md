@@ -11,12 +11,14 @@ Implement the night wakings count in the daily summary, defined as any sleep ses
   - Add `NightWakingCount` to `ProtocolSummary` in `ProtocolDtos.cs`.
 - [ ] **Task 1.2: Write Failing Unit Tests (TDD)**
   - Add test cases to `ProtocolServiceTests.cs`:
-    - Count wakings where `EndMinute` is between 720 (18:00) and 1440 (06:00).
-    - Ensure a session ending exactly at 1440 (06:00) is **not** counted.
-    - Ensure multiple wakings are counted correctly.
+    - Case: Single sleep session ending at 05:45 (Count: 0).
+    - Case: Two sleep sessions, ending at 02:00 and 05:45 (Count: 1).
+    - Case: Sleep session spanning past 06:00 (Count: 0).
+    - Case: No sleep sessions (Count: 0).
 - [ ] **Task 1.3: Implement Calculation**
   - Update `ProtocolService.cs` to calculate `NightWakingCount`.
-  - Logic: Count `ProtocolEventType.Sleep` events in `dayEvents` where `StartMinute + DurationMinutes` is within the night window [720, 1440).
+  - Logic: Identify all `ProtocolEventType.Sleep` events in `dayEvents`. If count > 1, the number of night wakings is `(number of sleep sessions ending before 06:00) - 1`. If 1 session ends before 06:00, count is 0. If sessions end after 06:00, they don't contribute to the "interruption" count.
+  - Specifically: `dayEvents.Where(e => e.Type == Sleep && e.End < 06:00).Count() - 1` (clamped to 0).
 
 ## Phase 2: UI Implementation
 - [ ] **Task 2.1: Update ProtocolSummaryCell.razor**

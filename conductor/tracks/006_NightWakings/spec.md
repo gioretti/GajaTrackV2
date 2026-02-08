@@ -12,9 +12,10 @@ Parents need to track how often their baby wakes up during the night to assess s
 
 ### 1. Definition & Calculation
 - [ ] **Night Window:** Defined as **18:00** of the Protocol Day to **06:00** of the next morning (the end of the Protocol Day).
-- [ ] **Waking Definition:** A "night waking" is counted every time a **Sleep Session ends** within the Night Window (18:00 <= End Time < 06:00).
-- [ ] **Exclusion:** The final wake-up that occurs at or after 06:00 is **not** counted as a night waking, as it marks the start of the next day's activity.
-- [ ] **Boundary Handling:** Only sleep sessions belonging to the current Protocol Day's grid are considered.
+- [ ] **Waking Definition:** A "night waking" is an interruption during the Night Window. 
+- [ ] **Calculation Logic:** Count every **Sleep Session end** that occurs within the Night Window (18:00 <= End Time < 06:00), **EXCEPT for the very last sleep session of the protocol day.**
+- [ ] **Boundary Handling:** If a day has only one sleep session that ends at 05:45, it is considered the start of the day and not an interruption, so the count is 0.
+- [ ] **Constraint:** Only sleep sessions belonging to the current Protocol Day's grid are considered.
 
 ### 2. UI/UX Display
 - [ ] **Location:** The metric is displayed as a new row in the `ProtocolSummaryCell`.
