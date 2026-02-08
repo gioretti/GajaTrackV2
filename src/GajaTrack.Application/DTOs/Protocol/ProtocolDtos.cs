@@ -40,7 +40,8 @@ public record ProtocolEvent(
 }
 
 public record ProtocolSummary(
-    double TotalSleepMinutes
+    double TotalSleepMinutes,
+    int NightWakingCount
 );
 
 public record ProtocolDay(

@@ -7,7 +7,7 @@ Implement the night wakings count in the daily summary, defined as any sleep ses
 - **UI Layer:** Update `ProtocolSummaryCell.razor` to render the new metric.
 
 ## Phase 1: Application Logic (TDD)
-- [ ] **Task 1.1: Update DTO**
+- [x] **Task 1.1: Update DTO**
   - Add `NightWakingCount` to `ProtocolSummary` in `ProtocolDtos.cs`.
 - [ ] **Task 1.2: Write Failing Unit Tests (TDD)**
   - Add test cases to `ProtocolServiceTests.cs`:

@@ -91,7 +91,7 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                     dayEvents.Add(ProtocolEvent.Create(di.Id, ProtocolEventType.Diaper, displayTime, window.Start, di.Time, di.Time, di.Type.ToString()));
                 }
             }
-            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new ProtocolSummary(totalSleep)));
+            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new ProtocolSummary(totalSleep, 0)));
         }
 
         if (mostRecentFirst)
