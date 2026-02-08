@@ -15,7 +15,7 @@ Implement the night wakings count in the daily summary, defined as any sleep ses
     - Case: Two sleep sessions, ending at 02:00 and 05:45 (Count: 1).
     - Case: Sleep session spanning past 06:00 (Count: 0).
     - Case: No sleep sessions (Count: 0).
-- [ ] **Task 1.3: Implement Calculation**
+- [x] **Task 1.3: Implement Calculation**
   - Update `ProtocolService.cs` to calculate `NightWakingCount`.
   - Logic: Identify all `ProtocolEventType.Sleep` events in `dayEvents`. If count > 1, the number of night wakings is `(number of sleep sessions ending before 06:00) - 1`. If 1 session ends before 06:00, count is 0. If sessions end after 06:00, they don't contribute to the "interruption" count.
   - Specifically: `dayEvents.Where(e => e.Type == Sleep && e.End < 06:00).Count() - 1` (clamped to 0).

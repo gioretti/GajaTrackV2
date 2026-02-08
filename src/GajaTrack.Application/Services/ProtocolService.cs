@@ -50,6 +50,25 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                 .Where(e => e.Type == ProtocolEventType.Sleep)
                 .Sum(e => e.DurationMinutes);
 
+            var sleepEvents = dayEvents
+                .Where(e => e.Type == ProtocolEventType.Sleep)
+                .OrderBy(e => e.StartMinute)
+                .ToList();
+
+            int nightWakingCount = 0;
+            for (int i = 0; i < sleepEvents.Count; i++)
+            {
+                var ev = sleepEvents[i];
+                var endMin = ev.StartMinute + ev.DurationMinutes;
+
+                // Night window is 18:00 (720m) to 06:00 (1440m)
+                // We count interruptions: wake-ups that happen during the night, excluding the last wake-up of the day.
+                if (endMin >= 720 && endMin < 1440 && i < sleepEvents.Count - 1)
+                {
+                    nightWakingCount++;
+                }
+            }
+
             // Process Crying
             foreach (var c in cryingTask.Result)
             {
@@ -91,7 +110,7 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                     dayEvents.Add(ProtocolEvent.Create(di.Id, ProtocolEventType.Diaper, displayTime, window.Start, di.Time, di.Time, di.Type.ToString()));
                 }
             }
-            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new ProtocolSummary(totalSleep, 0)));
+            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new ProtocolSummary(totalSleep, nightWakingCount)));
         }
 
         if (mostRecentFirst)
