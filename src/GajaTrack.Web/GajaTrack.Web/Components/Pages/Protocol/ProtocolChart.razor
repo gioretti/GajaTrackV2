@@ -74,6 +74,8 @@
             <!-- Events -->
             @foreach (var ev in day.Events)
             {
+                if (!VisibleTypes.Contains(ev.Type)) continue;
+
                 var xStart = LeftMargin + ev.StartMinute;
                 var width = ev.DurationMinutes;
                 
@@ -112,6 +114,7 @@
 
 @code {
     [Parameter] public List<ProtocolDay> Days { get; set; } = new();
+    [Parameter] public HashSet<ProtocolEventType> VisibleTypes { get; set; } = new();
     
     private const double ChartWidth = 1440; // 24 hours * 60 minutes
     private const double LeftMargin = 60;   // Space for Date labels

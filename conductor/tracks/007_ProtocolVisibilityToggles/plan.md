@@ -8,21 +8,21 @@ Add checkboxes to the 24-hour protocol legend to allow showing/hiding specific a
 - **Decoupling:** Filtering only affects the visual rendering in `ProtocolChart`; the `ProtocolSummary` calculation in the Application layer remains unchanged (as per requirement).
 
 ## Phase 1: UI State & Legend
-- [ ] **Task 1.1: Add Visibility State to ProtocolPage**
+- [x] **Task 1.1: Add Visibility State to ProtocolPage**
   - Initialize a `HashSet<ProtocolEventType>` containing all types by default.
   - Add a toggle method: `ToggleVisibility(ProtocolEventType type)`.
-- [ ] **Task 1.2: Update Legend with Checkboxes**
+- [x] **Task 1.2: Update Legend with Checkboxes**
   - Modify the legend in `ProtocolPage.razor` to include `<input type="checkbox">` for each activity type.
   - Bind the checkbox state to the visibility set.
-- [ ] **Task 1.3: Pass State to ProtocolChart**
+- [x] **Task 1.3: Pass State to ProtocolChart**
   - Update `ProtocolChart.razor` to accept `HashSet<ProtocolEventType> VisibleTypes` as a parameter.
   - Pass the state from `ProtocolPage.razor`.
 
 ## Phase 2: Chart Filtering
-- [ ] **Task 2.1: Implement Filtering in ProtocolChart**
+- [x] **Task 2.1: Implement Filtering in ProtocolChart**
   - In the event rendering loop, check if `ev.Type` is present in `VisibleTypes`.
   - Skip rendering if the type is hidden.
-- [ ] **Task 2.2: Manual UI Verification**
+- [x] **Task 2.2: Manual UI Verification**
   - Start the application.
   - Verify that all activity types are visible by default.
   - Uncheck "Sleep": verify sleep lines disappear while totals in the summary remain.
