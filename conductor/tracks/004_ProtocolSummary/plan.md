@@ -31,14 +31,14 @@ This plan implements the Daily Summary Column for the 24-hour protocol, starting
   - Use Flexbox `column` layout to ensure future metrics can be stacked vertically (Extensibility requirement).
 - [x] **Task 2.3: Render Sleep Total**
   - Display the formatted sleep duration (e.g., "14h 30m").
-- [>] **Task 2.4: Manual UI Verification**
+- [x] **Task 2.4: Manual UI Verification**
   - Start the application.
   - Navigate to the protocol page.
   - Verify that the summary column is visible and correctly aligned with the rows.
   - Verify that the totals match the visual sleep bars.
 
 ## Phase 3: Final Review
-- [ ] **Task 3.1: Architectural Review**
+- [x] **Task 3.1: Architectural Review**
   - Submit Implementation Summary to Architect.
-- [ ] **Task 3.2: Complete Track**
+- [x] **Task 3.2: Complete Track**
   - Update `conductor/tracks.md`.
