@@ -21,7 +21,7 @@ Implement the night wakings count in the daily summary, defined as any sleep ses
   - Specifically: `dayEvents.Where(e => e.Type == Sleep && e.End < 06:00).Count() - 1` (clamped to 0).
 
 ## Phase 2: UI Implementation
-- [ ] **Task 2.1: Update ProtocolSummaryCell.razor**
+- [x] **Task 2.1: Update ProtocolSummaryCell.razor**
   - Add a new `<text>` element to display "Night Wakings (18-06): [Count]".
   - Position it below the "Sleep" total.
 - [ ] **Task 2.2: Manual UI Verification**
