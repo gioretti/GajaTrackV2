@@ -15,9 +15,18 @@
 A track or feature is considered "Done" only when:
 - **Product Requirement:** All Acceptance Criteria in `spec.md` are met and verified.
 - **Technical Quality:** Code follows DDD boundaries and passes 80% test coverage.
+- **Manual Verification:** UI-related features must be manually verified using **Chrome DevTools** (see below).
 - **Architectural Review:** The Architect has issued a "Pass" on the final implementation summary.
 - **Documentation:** Relevant ADRs and `docs/architecture.md` are updated.
 - **Orchestration:** The track status in `conductor/tracks.md` is updated to `[x]`.
+
+## Manual UI Verification Protocol
+When implementing or modifying user interface elements, the Developer must:
+1. **Launch Application:** Start the web application (e.g., `dotnet run`).
+2. **Initialize Browser:** Use the `chrome-devtools` skill to navigate to the application URL.
+3. **Execute Manual Test:** Perform the actions described in the Acceptance Criteria.
+4. **Inspect State:** Use DevTools to verify network requests, console logs, or DOM state if necessary.
+5. **Evidence:** Briefly document the verification result in the **Implementation Summary**.
 
 ## Requirements & Constraints
 - **Test Coverage:** Minimum 80% code coverage required for all new logic.
