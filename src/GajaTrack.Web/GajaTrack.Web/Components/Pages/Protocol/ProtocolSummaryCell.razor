@@ -1,0 +1,16 @@
+@using GajaTrack.Application.DTOs.Protocol
+
+<g transform="translate(@X, @Y)">
+    @{
+        var hours = (int)(Summary.TotalSleepMinutes / 60);
+        var minutes = (int)(Summary.TotalSleepMinutes % 60);
+    }
+    <text x="0" y="20" font-size="12" fill="#333" font-weight="500">Sleep: @(hours)h @(minutes)m</text>
+    <!-- Space for future rows below (e.g., y=35, y=50...) -->
+</g>
+
+@code {
+    [Parameter] public ProtocolSummary Summary { get; set; } = default!;
+    [Parameter] public double X { get; set; }
+    [Parameter] public double Y { get; set; }
+}

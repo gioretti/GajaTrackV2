@@ -69,15 +69,7 @@
             </g>
             
             <!-- Summary Data (Right) -->
-            <g transform="translate(@(LeftMargin + ChartWidth + 10), @y)">
-                <!-- Summary container for extensibility (starts at y+15 to allow room for header-like spacing) -->
-                @{
-                    var hours = (int)(day.Summary.TotalSleepMinutes / 60);
-                    var minutes = (int)(day.Summary.TotalSleepMinutes % 60);
-                }
-                <text x="0" y="20" font-size="12" fill="#333" font-weight="500">Sleep: @(hours)h @(minutes)m</text>
-                <!-- Space for future rows below (e.g., y=35, y=50...) -->
-            </g>
+            <ProtocolSummaryCell Summary="day.Summary" X="@(LeftMargin + ChartWidth + 10)" Y="@y" />
 
             <!-- Events -->
             @foreach (var ev in day.Events)
