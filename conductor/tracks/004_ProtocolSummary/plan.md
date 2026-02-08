@@ -7,15 +7,20 @@ This plan implements the Daily Summary Column for the 24-hour protocol, starting
 - **Application Layer:** Update `ProtocolService` to populate the summary data.
 - **UI Layer:** Update the Blazor components to render the new column and its extensible container.
 
-## Phase 1: Application Logic & DTOs
-- [ ] **Task 1.1: Update DTOs**
-  - Add `ProtocolSummary` record to `ProtocolDtos.cs` to hold summary metrics.
-  - Update `ProtocolDay` to include a `Summary` property.
-- [ ] **Task 1.2: Implement Calculation in ProtocolService**
-  - In `ProtocolService.GetProtocolAsync`, calculate the total duration of all `Sleep` events for each day.
-  - Since `ProtocolEvent` durations are already clipped to the window, this is a simple sum of `DurationMinutes`.
-- [ ] **Task 1.3: Verification (Unit Tests)**
-  - Add unit tests to `ProtocolServiceTests` (or create new ones) to verify `TotalSleepMinutes` correctly aggregates durations within the 06:00-06:00 window, including split sessions.
+## Phase 1: Application Logic & DTOs (TDD)
+- [ ] **Task 1.1: Update DTOs (Structural Prep)**
+  - Add `ProtocolSummary` record to `ProtocolDtos.cs`.
+  - Update `ProtocolDay` to include a `Summary` property (nullable/empty initially).
+- [ ] **Task 1.2: Write Failing Unit Tests (TDD Start)**
+  - Create/Update tests in `ProtocolServiceTests` to assert that `TotalSleepMinutes` is correctly calculated for a `ProtocolDay`.
+  - Include scenarios for:
+    - No sleep events (0 mins).
+    - Multiple sleep events within the day.
+    - Sleep events spanning across the 06:00 boundary (verifying only the clipped portion is summed).
+  - **Status:** Tests should fail (logic not implemented).
+- [ ] **Task 1.3: Implement Calculation Logic**
+  - Update `ProtocolService.GetProtocolAsync` to populate the `ProtocolSummary` by summing the `DurationMinutes` of all `Sleep` events.
+  - **Status:** Tests should now pass.
 
 ## Phase 2: UI Implementation
 - [ ] **Task 2.1: Update Protocol Grid Layout**
