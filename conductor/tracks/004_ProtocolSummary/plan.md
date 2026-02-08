@@ -23,15 +23,15 @@ This plan implements the Daily Summary Column for the 24-hour protocol, starting
   - **Status:** Tests should now pass.
 
 ## Phase 2: UI Implementation
-- [ ] **Task 2.1: Update Protocol Grid Layout**
+- [x] **Task 2.1: Update Protocol Grid Layout**
   - Modify `ProtocolChart.razor` (or the container component) to include a new column on the right.
   - Ensure the layout remains responsive/mobile-friendly (horizontal scroll for the grid is already allowed).
-- [ ] **Task 2.2: Implement Summary Container Component**
+- [x] **Task 2.2: Implement Summary Container Component**
   - Create a small sub-component or styled `<div>` for the summary cell.
   - Use Flexbox `column` layout to ensure future metrics can be stacked vertically (Extensibility requirement).
-- [ ] **Task 2.3: Render Sleep Total**
+- [x] **Task 2.3: Render Sleep Total**
   - Display the formatted sleep duration (e.g., "14h 30m").
-- [ ] **Task 2.4: Manual UI Verification**
+- [>] **Task 2.4: Manual UI Verification**
   - Start the application.
   - Navigate to the protocol page.
   - Verify that the summary column is visible and correctly aligned with the rows.
