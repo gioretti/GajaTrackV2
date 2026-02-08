@@ -9,7 +9,7 @@ Implement the night wakings count in the daily summary, defined as any sleep ses
 ## Phase 1: Application Logic (TDD)
 - [x] **Task 1.1: Update DTO**
   - Add `NightWakingCount` to `ProtocolSummary` in `ProtocolDtos.cs`.
-- [ ] **Task 1.2: Write Failing Unit Tests (TDD)**
+- [x] **Task 1.2: Write Failing Unit Tests (TDD)**
   - Add test cases to `ProtocolServiceTests.cs`:
     - Case: Single sleep session ending at 05:45 (Count: 0).
     - Case: Two sleep sessions, ending at 02:00 and 05:45 (Count: 1).

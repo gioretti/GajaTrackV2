@@ -242,4 +242,71 @@ public class ProtocolServiceTests : IDisposable
         // Assert
         Assert.Equal(60 + 60, result[0].Summary.TotalSleepMinutes);
     }
+
+    [Fact]
+    public async Task GetProtocol_ShouldCalculateNightWakings_ExcludingLastWakeUp()
+    {
+        // Arrange
+        var day = new DateOnly(2026, 2, 5); // 06:00 - 06:00 (Next Day)
+        
+        // Session 1: 20:00 - 02:00 (Ends at 02:00 next day, which is 20:00 + 6h = 26:00 from start of day, or 20:00 - 06:00 = 14h after window start)
+        // 18:00 is 12 hours after 06:00. 02:00 is 20 hours after 06:00.
+        var s1Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 20, 0, 0, DateTimeKind.Utc));
+        var s1End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 2, 0, 0, DateTimeKind.Utc));
+        
+        // Session 2: 03:00 - 05:45 (Ends at 05:45 next day, which is 23:45 after window start)
+        var s2Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 3, 0, 0, DateTimeKind.Utc));
+        var s2End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 5, 45, 0, DateTimeKind.Utc));
+        
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s5", s1Start, s1End));
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s6", s2Start, s2End));
+        await _context.SaveChangesAsync();
+        
+        // Act
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+
+        // Assert
+        // Session 1 ends at 02:00 (interruption). Session 2 ends at 05:45 (last wake up).
+        Assert.Equal(1, result[0].Summary.NightWakingCount);
+    }
+
+    [Fact]
+    public async Task GetProtocol_ShouldNotCountLastWakeUpAsWaking_WhenSingleSession()
+    {
+        // Arrange
+        var day = new DateOnly(2026, 2, 5);
+        
+        // Single session: 20:00 - 05:45
+        var s1Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 20, 0, 0, DateTimeKind.Utc));
+        var s1End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 5, 45, 0, DateTimeKind.Utc));
+        
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s7", s1Start, s1End));
+        await _context.SaveChangesAsync();
+        
+        // Act
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+
+        // Assert
+        Assert.Equal(0, result[0].Summary.NightWakingCount);
+    }
+
+    [Fact]
+    public async Task GetProtocol_ShouldNotCountSessionsEndingAtOrAfter0600()
+    {
+        // Arrange
+        var day = new DateOnly(2026, 2, 5);
+        
+        // Session: 22:00 - 06:15 next day
+        var s1Start = UtcDateTime.FromDateTime(new DateTime(2026, 2, 5, 22, 0, 0, DateTimeKind.Utc));
+        var s1End = UtcDateTime.FromDateTime(new DateTime(2026, 2, 6, 6, 15, 0, DateTimeKind.Utc));
+        
+        _context.SleepSessions.Add(SleepSession.Create(Guid.NewGuid(), "s8", s1Start, s1End));
+        await _context.SaveChangesAsync();
+        
+        // Act
+        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+
+        // Assert
+        Assert.Equal(0, result[0].Summary.NightWakingCount);
+    }
 }
