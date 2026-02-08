@@ -1,6 +1,6 @@
 # Track: Protocol Visibility Toggles
 
-## Status: In Progress
+## Status: Done
 **Owner:** Product Owner
 **Start Date:** 2026-02-08
 
@@ -9,5 +9,5 @@ Add checkboxes to the 24-hour protocol legend to allow showing/hiding specific a
 
 ## Deliverables
 - [x] Specification (spec.md) - **Done**
-- [ ] Implementation Plan (plan.md)
-- [ ] Feature Implementation
+- [x] Implementation Plan (plan.md) - **Done**
+- [x] Feature Implementation - **Done**

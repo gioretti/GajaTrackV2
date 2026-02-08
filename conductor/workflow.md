@@ -22,11 +22,13 @@ A track or feature is considered "Done" only when:
 
 ## Manual UI Verification Protocol
 When implementing or modifying user interface elements, the Developer must:
-1. **Launch Application:** Start the web application (e.g., `dotnet run`).
+1. **Launch Application:** Start the web application using a **detached process** (e.g., a Windows Scheduled Task or an independent background job). This prevents CLI shell transitions from breaking the Blazor circuit (WebSocket connection).
+   - *Protocol:* Use `schtasks` to create a one-time task that runs the application on a dedicated port.
 2. **Initialize Browser:** Use the `chrome-devtools` skill to navigate to the application URL.
 3. **Execute Manual Test:** Perform the actions described in the Acceptance Criteria.
 4. **Inspect State:** Use DevTools to verify network requests, console logs, or DOM state if necessary.
 5. **Evidence:** Briefly document the verification result in the **Implementation Summary**.
+6. **Cleanup:** Physically terminate the detached process and delete any temporary tasks (e.g., `schtasks /delete`) once verification is complete.
 
 ## Requirements & Constraints
 - **Test Coverage:** Minimum 80% code coverage required for all new logic.

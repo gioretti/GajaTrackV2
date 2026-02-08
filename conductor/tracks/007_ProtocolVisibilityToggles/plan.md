@@ -30,5 +30,5 @@ Add checkboxes to the 24-hour protocol legend to allow showing/hiding specific a
   - Re-check: verify icons reappear.
 
 ## Phase 3: Final Review
-- [ ] **Task 3.1: Architectural Review**
-- [ ] **Task 3.2: Complete Track**
+- [x] **Task 3.1: Architectural Review**
+- [x] **Task 3.2: Complete Track**
