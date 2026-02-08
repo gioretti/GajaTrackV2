@@ -8,7 +8,7 @@ This plan implements the Daily Summary Column for the 24-hour protocol, starting
 - **UI Layer:** Update the Blazor components to render the new column and its extensible container.
 
 ## Phase 1: Application Logic & DTOs (TDD)
-- [ ] **Task 1.1: Update DTOs (Structural Prep)**
+- [x] **Task 1.1: Update DTOs (Structural Prep)**
   - Add `ProtocolSummary` record to `ProtocolDtos.cs`.
   - Update `ProtocolDay` to include a `Summary` property (nullable/empty initially).
 - [ ] **Task 1.2: Write Failing Unit Tests (TDD Start)**

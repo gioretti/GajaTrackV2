@@ -39,9 +39,14 @@ public record ProtocolEvent(
     }
 }
 
+public record ProtocolSummary(
+    double TotalSleepMinutes
+);
+
 public record ProtocolDay(
     DateOnly Date,
     DateTime WindowStart, // Date + 06:00
     DateTime WindowEnd,   // Date + 1 day + 06:00
-    List<ProtocolEvent> Events
+    List<ProtocolEvent> Events,
+    ProtocolSummary Summary
 );
