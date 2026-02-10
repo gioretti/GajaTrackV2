@@ -1,0 +1,82 @@
+@page "/"
+@using GajaTrack.Application.Interfaces
+@inject IStatsService StatsService
+@inject IExportService ExportService
+@inject IJSRuntime JS
+@rendermode InteractiveAuto
+
+<PageTitle>Home</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Baby Gaja Tracking</h1>
+    <button class="btn btn-secondary" @onclick="DownloadExport">
+        <i class="bi bi-download"></i> Export Data
+    </button>
+</div>
+
+@if (_stats == null)
+{
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row mt-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-3 shadow-sm">
+                <h3>Nursing</h3>
+                <p class="display-4">@_stats.NursingCount</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-3 shadow-sm">
+                <h3>Bottle</h3>
+                <p class="display-4">@_stats.BottleCount</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-3 shadow-sm">
+                <h3>Sleep</h3>
+                <p class="display-4">@_stats.SleepCount</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-3 shadow-sm">
+                <h3>Diapers</h3>
+                <p class="display-4">@_stats.DiaperCount</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center p-3 shadow-sm">
+                <h3>Crying</h3>
+                <p class="display-4">@_stats.CryingCount</p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private TrackingStats? _stats;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _stats = await StatsService.GetStatsAsync();
+    }
+
+    private async Task DownloadExport()
+    {
+        var bytes = await ExportService.ExportDataAsync();
+        if (bytes.Length > 0)
+        {
+            var fileName = $"gajatrack_export_{DateTime.UtcNow:yyyy-MM-dd}.json";
+            
+            using var stream = new MemoryStream(bytes);
+            using var streamRef = new DotNetStreamReference(stream);
+            
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        }
+    }
+}
