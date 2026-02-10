@@ -7,4 +7,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [006_NightWakings](./tracks/006_NightWakings/index.md): Night Wakings Metric (18:00 - 06:00)
 - [x] [007_ProtocolVisibilityToggles](./tracks/007_ProtocolVisibilityToggles/index.md): Protocol Visibility Toggles
 - [x] [008_DiaperVisualization](./tracks/008_DiaperVisualization/index.md): Diaper Change Visualization
+- [ ] [009_RestApiTransition](./tracks/009_RestApiTransition/index.md): REST API Transition
 
