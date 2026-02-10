@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.23" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\GajaTrack.Application\GajaTrack.Application.csproj" />
+  </ItemGroup>
+
 </Project>
