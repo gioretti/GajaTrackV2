@@ -1,8 +1,8 @@
 @page "/import-babyplus"
 @using GajaTrack.Application.Interfaces
-@inject IServiceScopeFactory ScopeFactory
+@inject HttpClient Http
 @inject ILogger<BabyPlusImport> Logger
-@rendermode InteractiveServer
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <PageTitle>Import Baby+ Data</PageTitle>
 
@@ -87,7 +87,7 @@
         _isProcessing = true;
         _errorMessage = null;
         _summary = null;
-        _progressMessage = "Initializing...";
+        _progressMessage = "Uploading and processing...";
         StateHasChanged();
 
         try
@@ -98,28 +98,22 @@
                 return;
             }
 
-            var progressReporter = new Progress<string>(m => 
+            using var stream = _selectedFile.OpenReadStream(MaxFileSize);
+            var content = new StreamContent(stream);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+            var response = await Http.PostAsync("/api/import/babyplus", content);
+
+            if (response.IsSuccessStatusCode)
             {
-                _progressMessage = m;
-                InvokeAsync(StateHasChanged);
-            });
-
-            using var ms = new MemoryStream();
-            await _selectedFile.OpenReadStream(MaxFileSize).CopyToAsync(ms);
-            ms.Position = 0;
-
-            _progressMessage = "Upload complete. Starting background processing...";
-            StateHasChanged();
-
-            // Offload to background thread with a FRESH scope to avoid DbContext threading issues
-            _summary = await Task.Run(async () => 
+                _summary = await response.Content.ReadFromJsonAsync<ImportSummary>();
+                Logger.LogInformation("Imported records successfully.");
+            }
+            else
             {
-                using var scope = ScopeFactory.CreateScope();
-                var scopedService = scope.ServiceProvider.GetRequiredService<IBabyPlusImportService>();
-                return await scopedService.ImportFromStreamAsync(ms, progressReporter);
-            });
-
-            Logger.LogInformation("Imported records successfully.");
+                _errorMessage = $"Import failed with status: {response.StatusCode}";
+                Logger.LogError("Import failed with status: {StatusCode}", response.StatusCode);
+            }
         }
         catch (Exception ex)
         {
