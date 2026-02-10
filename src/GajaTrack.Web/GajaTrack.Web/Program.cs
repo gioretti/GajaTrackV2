@@ -61,6 +61,12 @@ api.MapGet("/protocol", async (DateOnly startDate, DateOnly endDate, GajaTrack.A
     return Results.Ok(result);
 });
 
+api.MapPost("/import/babyplus", async (HttpRequest request, GajaTrack.Application.Interfaces.IBabyPlusImportService importService) =>
+{
+    var summary = await importService.ImportFromStreamAsync(request.Body);
+    return Results.Ok(summary);
+});
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
