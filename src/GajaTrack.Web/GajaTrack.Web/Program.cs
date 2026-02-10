@@ -67,6 +67,18 @@ api.MapPost("/import/babyplus", async (HttpRequest request, GajaTrack.Applicatio
     return Results.Ok(summary);
 });
 
+api.MapGet("/export", async (GajaTrack.Application.Interfaces.IExportService exportService) =>
+{
+    var bytes = await exportService.ExportDataAsync();
+    return Results.File(bytes, "application/json", $"gajatrack_export_{DateTime.UtcNow:yyyy-MM-dd}.json");
+});
+
+api.MapGet("/stats", async (GajaTrack.Application.Interfaces.IStatsService statsService) =>
+{
+    var stats = await statsService.GetStatsAsync();
+    return Results.Ok(stats);
+});
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
