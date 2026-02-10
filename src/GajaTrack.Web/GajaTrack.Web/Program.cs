@@ -53,9 +53,19 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+var api = app.MapGroup("/api");
+
+api.MapGet("/protocol", async (DateOnly startDate, DateOnly endDate, GajaTrack.Application.Interfaces.IProtocolService protocolService) =>
+{
+    var result = await protocolService.GetProtocolAsync(startDate, endDate);
+    return Results.Ok(result);
+});
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(GajaTrack.Web.Client._Imports).Assembly);
 
 app.Run();
+
+public partial class Program { }
