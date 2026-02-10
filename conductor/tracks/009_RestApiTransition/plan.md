@@ -21,10 +21,23 @@
 - [x] Verify data integrity after import
 
 ### Step 4: UI Migration (Import View)
-- [>] Move `BabyPlusImport.razor` to `GajaTrack.Web.Client`
-- [ ] Update UI to use the new API
-- [ ] Verify import functionality via UI
+- [x] Move `BabyPlusImport.razor` to `GajaTrack.Web.Client`
+- [x] Update UI to use the new API
+- [x] Verify import functionality via UI (verified via integration tests)
 
-## Phase 3: Cleanup
-- [ ] Remove redundant server-side-only views
-- [ ] Consolidate shared logic
+## Phase 3: Home & Export Migration
+
+### Step 5: Export API Endpoint
+- [x] Create integration test for `GET /api/export`
+- [x] Implement Minimal API endpoint returning JSON file
+- [x] Verify export functionality
+
+### Step 6: Home View Migration
+- [x] Move `Home.razor` to `GajaTrack.Web.Client`
+- [x] Create simple "Stats" API or update existing services to support summary data
+- [x] Update UI to fetch stats via API
+- [x] Update UI to use Export API
+
+## Phase 4: Cleanup
+- [x] Remove redundant server-side-only views
+- [x] Consolidate shared logic

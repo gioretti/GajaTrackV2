@@ -41,11 +41,17 @@ Handles technical concerns and communication with external systems.
 - **Migrations:** Database schema versioning.
 - **External Services:** Implementations of import/export logic.
 
-### 4. Web Layer (`src/GajaTrack.Web`)
-The presentation layer built with .NET 9 Blazor.
+### 4. Web Layer (`src/GajaTrack.Web` & `src/GajaTrack.Web.Client`)
+The presentation layer built with .NET 9 Blazor, operating in a Client-Server model.
 
-- **Components:** UI elements and pages.
-- **Visualization:** SVG-based 24-hour protocol chart.
+- **Server (`GajaTrack.Web`):**
+    - Hosts the Blazor Server and serves the WASM client.
+    - Exposes a **REST API** (`/api/protocol`, `/api/import`, etc.) for data access.
+    - Registers direct service implementations (`Infrastructure` -> `Application`).
+- **Client (`GajaTrack.Web.Client`):**
+    - Runs in the browser (WebAssembly).
+    - Contains all UI Pages and Components (`Home`, `ProtocolPage`, etc.).
+    - Uses `HttpClient` implementations of Application interfaces to communicate with the Server API.
 
 ## Data Integrity Principles
 
