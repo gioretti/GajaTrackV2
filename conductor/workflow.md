@@ -32,7 +32,7 @@ When implementing or modifying user interface elements, the Developer must:
 
 ## Requirements & Constraints
 - **Test Coverage:** Minimum 80% code coverage required for all new logic.
-- **Task Summaries:** Recorded directly in the Git commit messages.
+- **Git Protocol:** Commit messages MUST include a detailed summary of the "what" and "why" in the message body, matching the style of the final session summary.
 - **File Writes:** All changes (ADRs, Docs, Code, Tracks) must be physical file writes to disk.
 
 ## Phase Completion & Checkpointing
