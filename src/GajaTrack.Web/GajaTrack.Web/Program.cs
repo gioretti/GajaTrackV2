@@ -55,9 +55,9 @@ app.UseAntiforgery();
 
 var api = app.MapGroup("/api");
 
-api.MapGet("/protocol", async (DateOnly startDate, DateOnly endDate, GajaTrack.Application.Interfaces.IProtocolService protocolService) =>
+api.MapGet("/daily-rhythm-map", async (DateOnly startDate, DateOnly endDate, GajaTrack.Application.Interfaces.IDailyRhythmMapService dailyRhythmMapService) =>
 {
-    var result = await protocolService.GetProtocolAsync(startDate, endDate);
+    var result = await dailyRhythmMapService.GetDailyRhythmMapAsync(startDate, endDate);
     return Results.Ok(result);
 });
 

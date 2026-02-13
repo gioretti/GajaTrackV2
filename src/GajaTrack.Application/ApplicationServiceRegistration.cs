@@ -9,8 +9,8 @@ public static class ApplicationServiceRegistration
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<ProtocolDomainService>();
-        services.AddScoped<IProtocolService, ProtocolService>();
+        services.AddScoped<DailyRhythmMapDomainService>();
+        services.AddScoped<IDailyRhythmMapService, DailyRhythmMapService>();
         return services;
     }
 }
