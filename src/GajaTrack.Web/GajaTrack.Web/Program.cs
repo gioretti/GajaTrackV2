@@ -1,6 +1,5 @@
 using GajaTrack.Infrastructure;
 using GajaTrack.Application;
-using GajaTrack.Web.Components;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,18 +13,7 @@ builder.Services.AddScoped(p => p.GetRequiredService<IDbContextFactory<GajaTrack
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration.GetConnectionString("DefaultConnection")!);
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents(options => 
-    {
-        options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(10);
-    })
-    .AddInteractiveWebAssemblyComponents();
-
-builder.Services.AddServerSideBlazor()
-    .AddHubOptions(options => 
-    {
-        options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB
-    });
+builder.Services.AddAntiforgery();
 
 var app = builder.Build();
 
@@ -43,13 +31,13 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 
+app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
@@ -79,10 +67,7 @@ api.MapGet("/stats", async (GajaTrack.Application.Interfaces.IStatsService stats
     return Results.Ok(stats);
 });
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(GajaTrack.Web.Client._Imports).Assembly);
+app.MapFallbackToFile("index.html");
 
 app.Run();
 

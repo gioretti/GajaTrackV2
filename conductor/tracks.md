@@ -11,3 +11,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] [010_RenameProtocolToDailyRhythmMap](./tracks/010_RenameProtocolToDailyRhythmMap/index.md): Rename Protocol to Daily Rhythm Map
 - [x] [011_GlobalInteractivityRefactor](./tracks/011_GlobalInteractivityRefactor/index.md): Global Interactivity & Component Migration
+- [ ] [012_DecoupleFrontendAndApi](./tracks/012_DecoupleFrontendAndApi/index.md): Decouple Frontend and API
