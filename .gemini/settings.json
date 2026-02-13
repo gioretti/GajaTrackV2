@@ -1,0 +1,10 @@
+{
+  "security": {
+    "folderTrust": {
+      "enabled": true
+    }
+  },
+  "tools": {
+    "approvalMode": "auto_edit"
+  }
+}
