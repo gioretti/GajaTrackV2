@@ -1,6 +1,6 @@
-namespace GajaTrack.Application.DTOs.Protocol;
+namespace GajaTrack.Application.DTOs.DailyRhythmMap;
 
-public enum ProtocolEventType
+public enum DailyRhythmMapEventType
 {
     Sleep,
     Crying,
@@ -10,18 +10,18 @@ public enum ProtocolEventType
     Diaper
 }
 
-public record ProtocolEvent(
+public record DailyRhythmMapEvent(
     Guid Id,
-    ProtocolEventType Type,
+    DailyRhythmMapEventType Type,
     DateTime OriginalStartTime,
     double StartMinute, // Minutes from window start (0 to 1440)
     double DurationMinutes,
     string? Description = null
 )
 {
-    public static ProtocolEvent Create(
+    public static DailyRhythmMapEvent Create(
         Guid id,
-        ProtocolEventType type,
+        DailyRhythmMapEventType type,
         DateTime originalStartTime,
         DateTime windowStart,
         DateTime effectiveStart,
@@ -35,19 +35,19 @@ public record ProtocolEvent(
         startMin = Math.Max(0, Math.Min(1440, startMin));
         durMin = Math.Max(0, Math.Min(1440 - startMin, durMin));
 
-        return new ProtocolEvent(id, type, originalStartTime, startMin, durMin, description);
+        return new DailyRhythmMapEvent(id, type, originalStartTime, startMin, durMin, description);
     }
 }
 
-public record ProtocolSummary(
+public record DailyRhythmMapSummary(
     double TotalSleepMinutes,
     int NightWakingCount
 );
 
-public record ProtocolDay(
+public record DailyRhythmMapDay(
     DateOnly Date,
     DateTime WindowStart, // Date + 06:00
     DateTime WindowEnd,   // Date + 1 day + 06:00
-    List<ProtocolEvent> Events,
-    ProtocolSummary Summary
+    List<DailyRhythmMapEvent> Events,
+    DailyRhythmMapSummary Summary
 );

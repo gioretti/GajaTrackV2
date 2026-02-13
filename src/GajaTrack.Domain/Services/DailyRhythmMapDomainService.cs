@@ -2,13 +2,13 @@ using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Domain.Services;
 
-public class ProtocolDomainService
+public class DailyRhythmMapDomainService
 {
-    private const int ProtocolDayStartHour = 6;
+    private const int DailyRhythmMapStartHour = 6;
 
-    public TimeRange GetProtocolWindow(DateOnly date, TimeZoneInfo timeZone)
+    public TimeRange GetDailyRhythmMapWindow(DateOnly date, TimeZoneInfo timeZone)
     {
-        var localStart = new DateTime(date.Year, date.Month, date.Day, ProtocolDayStartHour, 0, 0, DateTimeKind.Unspecified);
+        var localStart = new DateTime(date.Year, date.Month, date.Day, DailyRhythmMapStartHour, 0, 0, DateTimeKind.Unspecified);
         var windowStartUtc = UtcDateTime.FromDateTime(TimeZoneInfo.ConvertTimeToUtc(localStart, timeZone));
         var windowEndUtc = UtcDateTime.FromDateTime(windowStartUtc.Value.AddDays(1));
         

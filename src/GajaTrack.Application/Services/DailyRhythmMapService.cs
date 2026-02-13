@@ -1,13 +1,13 @@
-using GajaTrack.Application.DTOs.Protocol;
+using GajaTrack.Application.DTOs.DailyRhythmMap;
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Domain.Services;
 
 namespace GajaTrack.Application.Services;
 
-public class ProtocolService(ITrackingRepository repository, ProtocolDomainService domainService) : IProtocolService
+public class DailyRhythmMapService(ITrackingRepository repository, DailyRhythmMapDomainService domainService) : IDailyRhythmMapService
 {
-    public async Task<List<ProtocolDay>> GetProtocolAsync(DateOnly startDate, DateOnly endDate, bool mostRecentFirst = false, TimeZoneInfo? timeZone = null, CancellationToken cancellationToken = default)
+    public async Task<List<DailyRhythmMapDay>> GetDailyRhythmMapAsync(DateOnly startDate, DateOnly endDate, bool mostRecentFirst = false, TimeZoneInfo? timeZone = null, CancellationToken cancellationToken = default)
     {
         timeZone ??= TimeZoneInfo.Local;
 
@@ -27,13 +27,13 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
 
         await Task.WhenAll(sleepTask, nursingTask, bottleTask, cryingTask, diaperTask);
 
-        var result = new List<ProtocolDay>();
+        var result = new List<DailyRhythmMapDay>();
         
         // 3. Iterate Days
         for (var d = startDate; d <= endDate; d = d.AddDays(1))
         {
-            var window = domainService.GetProtocolWindow(d, timeZone);
-            var dayEvents = new List<ProtocolEvent>();
+            var window = domainService.GetDailyRhythmMapWindow(d, timeZone);
+            var dayEvents = new List<DailyRhythmMapEvent>();
 
             // Process Sleep
             foreach (var s in sleepTask.Result)
@@ -42,16 +42,16 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                 if (intersection.HasValue)
                 {
                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(s.StartTime, timeZone);
-                    dayEvents.Add(ProtocolEvent.Create(s.Id, ProtocolEventType.Sleep, displayTime, window.Start, intersection.Value.Start, intersection.Value.End));
+                    dayEvents.Add(DailyRhythmMapEvent.Create(s.Id, DailyRhythmMapEventType.Sleep, displayTime, window.Start, intersection.Value.Start, intersection.Value.End));
                 }
             }
             
             var totalSleep = dayEvents
-                .Where(e => e.Type == ProtocolEventType.Sleep)
+                .Where(e => e.Type == DailyRhythmMapEventType.Sleep)
                 .Sum(e => e.DurationMinutes);
 
             var sleepEvents = dayEvents
-                .Where(e => e.Type == ProtocolEventType.Sleep)
+                .Where(e => e.Type == DailyRhythmMapEventType.Sleep)
                 .OrderBy(e => e.StartMinute)
                 .ToList();
 
@@ -76,7 +76,7 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                 if (intersection.HasValue)
                 {
                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(c.StartTime, timeZone);
-                    dayEvents.Add(ProtocolEvent.Create(c.Id, ProtocolEventType.Crying, displayTime, window.Start, intersection.Value.Start, intersection.Value.End));
+                    dayEvents.Add(DailyRhythmMapEvent.Create(c.Id, DailyRhythmMapEventType.Crying, displayTime, window.Start, intersection.Value.Start, intersection.Value.End));
                 }
             }
 
@@ -86,7 +86,7 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                 if (domainService.IsInWindow(window, n.StartTime))
                 {
                      var displayTime = TimeZoneInfo.ConvertTimeFromUtc(n.StartTime, timeZone);
-                     dayEvents.Add(ProtocolEvent.Create(n.Id, ProtocolEventType.Nursing, displayTime, window.Start, n.StartTime, n.StartTime));
+                     dayEvents.Add(DailyRhythmMapEvent.Create(n.Id, DailyRhythmMapEventType.Nursing, displayTime, window.Start, n.StartTime, n.StartTime));
                 }
             }
             
@@ -96,8 +96,8 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                 if (domainService.IsInWindow(window, b.Time))
                 {
                      var displayTime = TimeZoneInfo.ConvertTimeFromUtc(b.Time, timeZone);
-                     var type = b.Content == BottleContent.Formula ? ProtocolEventType.BottleFormula : ProtocolEventType.BottleMilk;
-                     dayEvents.Add(ProtocolEvent.Create(b.Id, type, displayTime, window.Start, b.Time, b.Time, $"{b.AmountMl}ml"));
+                     var type = b.Content == BottleContent.Formula ? DailyRhythmMapEventType.BottleFormula : DailyRhythmMapEventType.BottleMilk;
+                     dayEvents.Add(DailyRhythmMapEvent.Create(b.Id, type, displayTime, window.Start, b.Time, b.Time, $"{b.AmountMl}ml"));
                 }
             }
 
@@ -107,10 +107,10 @@ public class ProtocolService(ITrackingRepository repository, ProtocolDomainServi
                 if (domainService.IsInWindow(window, di.Time))
                 {
                     var displayTime = TimeZoneInfo.ConvertTimeFromUtc(di.Time, timeZone);
-                    dayEvents.Add(ProtocolEvent.Create(di.Id, ProtocolEventType.Diaper, displayTime, window.Start, di.Time, di.Time, di.Type.ToString()));
+                    dayEvents.Add(DailyRhythmMapEvent.Create(di.Id, DailyRhythmMapEventType.Diaper, displayTime, window.Start, di.Time, di.Time, di.Type.ToString()));
                 }
             }
-            result.Add(new ProtocolDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new ProtocolSummary(totalSleep, nightWakingCount)));
+            result.Add(new DailyRhythmMapDay(d, window.Start, window.End, dayEvents.OrderBy(x => x.StartMinute).ToList(), new DailyRhythmMapSummary(totalSleep, nightWakingCount)));
         }
 
         if (mostRecentFirst)
