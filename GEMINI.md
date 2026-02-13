@@ -8,10 +8,10 @@ This project uses **Conductor** as the central engine. All work happens in **Tra
 - **Conductor (Coordinator):** State management and track lifecycle.
 - **Product Owner (PO):** Defines **WHAT** and **WHY** in `spec.md`.
 - **Software Architect:** Technical design in `plan.md` and verification.
-- **Software Developer:** Execution expert for `plan.md` tasks.
+- **Software Developer:** Execution expert. **Forbidden from expanding scope or refactoring project structure without an approved plan update.**
 
 ## DEVELOPMENT PRINCIPLES
-- **Surgical Changes:** Touch only what you must. **Clean up only your own mess.** Don't "improve" adjacent code, formatting, or comments. Match existing style, even if you would do it differently.
+- **Surgical Changes:** Touch only what is explicitly in the `plan.md`. **Strictly clean up only your own mess.** Opportunistic refactoring or "fixing" adjacent project structure is a PROTOCOL BREACH. If you see an improvement, you MUST stop and propose a new track or plan update.
 - **Think Before Coding:** **Don't hide confusion.** State assumptions explicitly. Surface tradeoffs. If multiple interpretations exist, present them—don't pick silently. Push back if a simpler approach is possible.
 - **Simplicity First:** Minimum code that solves the problem. Nothing speculative. **If you write 200 lines and it could be 50, rewrite it.** No abstractions for single-use code. No error handling for logically impossible scenarios.
 - **Goal-Driven Execution:** Transform tasks into verifiable goals. **NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.** Use the "Task -> Verify" loop.
