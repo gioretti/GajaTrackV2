@@ -1,3 +1,5 @@
+@using GajaTrack.Application.DTOs.DailyRhythmMap
+
 <g transform="translate(@X, @Y)">
     @{
         var hours = (int)(Summary.TotalSleepMinutes / 60);
@@ -9,7 +11,7 @@
 </g>
 
 @code {
-    [Parameter] public ProtocolSummary Summary { get; set; } = default!;
+    [Parameter] public DailyRhythmMapSummary Summary { get; set; } = default!;
     [Parameter] public double X { get; set; }
     [Parameter] public double Y { get; set; }
 }

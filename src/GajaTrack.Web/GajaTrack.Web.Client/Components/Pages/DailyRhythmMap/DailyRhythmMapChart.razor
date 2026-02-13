@@ -1,4 +1,5 @@
 @using System.Text
+@using GajaTrack.Application.DTOs.DailyRhythmMap
 
 <div class="protocol-chart-container">
     <svg viewBox="0 0 @TotalWidth @TotalHeight" preserveAspectRatio="xMidYMid meet" class="protocol-svg">
@@ -68,7 +69,7 @@
             </g>
             
             <!-- Summary Data (Right) -->
-            <ProtocolSummaryCell Summary="day.Summary" X="@(LeftMargin + ChartWidth + 10)" Y="@y" />
+            <DailyRhythmMapSummaryCell Summary="day.Summary" X="@(LeftMargin + ChartWidth + 10)" Y="@y" />
 
             <!-- Events -->
             @foreach (var ev in day.Events)
@@ -80,33 +81,33 @@
                 
                 switch (ev.Type)
                 {
-                    case ProtocolEventType.Sleep:
+                    case DailyRhythmMapEventType.Sleep:
                         <!-- Sleep Line (Thin horizontal line) -->
                         <line x1="@xStart" y1="@midY" x2="@(xStart + width)" y2="@midY" stroke="black" stroke-width="2" stroke-linecap="square" title="Sleep: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
                         
-                    case ProtocolEventType.Crying:
+                    case DailyRhythmMapEventType.Crying:
                         <!-- Wavy Line (Black Sine Wave) -->
                         <!-- Amplitude: 5px (Total height 10px, matches triangle) -->
                         <path d="@GenerateSineWave(xStart, width, midY, 5)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
 
-                    case ProtocolEventType.Nursing:
+                    case DailyRhythmMapEventType.Nursing:
                         <!-- Hollow Triangle -->
                         <polygon points="@GetTrianglePoints(xStart, midY)" fill="white" stroke="black" stroke-width="1.5" title="Nursing: @ev.OriginalStartTime.ToString("HH:mm")" />
                         break;
                         
-                    case ProtocolEventType.BottleFormula:
+                    case DailyRhythmMapEventType.BottleFormula:
                         <!-- Solid Blue Triangle -->
                         <polygon points="@GetTrianglePoints(xStart, midY)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
                         break;
                         
-                    case ProtocolEventType.BottleMilk:
+                    case DailyRhythmMapEventType.BottleMilk:
                         <!-- Solid Grey Triangle -->
                         <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
                         break;
 
-                    case ProtocolEventType.Diaper:
+                    case DailyRhythmMapEventType.Diaper:
                         <!-- Square for Diaper changes -->
                         var diaperColor = ev.Description?.Contains("Wet") == true ? "#FFD700" : "#8B4513";
                         <rect x="@(xStart - 5)" y="@(midY - 5)" width="10" height="10" fill="@diaperColor" title="Diaper: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
@@ -118,8 +119,8 @@
 </div>
 
 @code {
-    [Parameter] public List<ProtocolDay> Days { get; set; } = new();
-    [Parameter] public HashSet<ProtocolEventType> VisibleTypes { get; set; } = new();
+    [Parameter] public List<DailyRhythmMapDay> Days { get; set; } = new();
+    [Parameter] public HashSet<DailyRhythmMapEventType> VisibleTypes { get; set; } = new();
     
     private const double ChartWidth = 1440; // 24 hours * 60 minutes
     private const double LeftMargin = 60;   // Space for Date labels
