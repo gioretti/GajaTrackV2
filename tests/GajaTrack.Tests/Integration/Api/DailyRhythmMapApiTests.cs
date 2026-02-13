@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using GajaTrack.Application.DTOs.Protocol;
+using GajaTrack.Application.DTOs.DailyRhythmMap;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,11 +9,11 @@ using Microsoft.Data.Sqlite;
 
 namespace GajaTrack.Tests.Integration.Api;
 
-public class ProtocolApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class DailyRhythmMapApiTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
-    public ProtocolApiTests(WebApplicationFactory<Program> factory)
+    public DailyRhythmMapApiTests(WebApplicationFactory<Program> factory)
     {
         var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();
@@ -36,7 +36,7 @@ public class ProtocolApiTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task GetProtocol_ReturnsData()
+    public async Task GetDailyRhythmMap_ReturnsData()
     {
         // Arrange
         var client = _factory.CreateClient();
@@ -54,11 +54,11 @@ public class ProtocolApiTests : IClassFixture<WebApplicationFactory<Program>>
         var testDay = new DateOnly(2026, 2, 5);
 
         // Act
-        var response = await client.GetAsync($"/api/protocol?startDate={testDay:yyyy-MM-dd}&endDate={testDay:yyyy-MM-dd}");
+        var response = await client.GetAsync($"/api/daily-rhythm-map?startDate={testDay:yyyy-MM-dd}&endDate={testDay:yyyy-MM-dd}");
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<List<ProtocolDay>>();
+        var result = await response.Content.ReadFromJsonAsync<List<DailyRhythmMapDay>>();
         Assert.NotNull(result);
         Assert.Single(result);
         Assert.Equal(testDay, result[0].Date);
@@ -67,7 +67,7 @@ public class ProtocolApiTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task GetProtocol_RangeReturnsMultipleDays()
+    public async Task GetDailyRhythmMap_RangeReturnsMultipleDays()
     {
         // Arrange
         var client = _factory.CreateClient();
@@ -75,11 +75,11 @@ public class ProtocolApiTests : IClassFixture<WebApplicationFactory<Program>>
         var endDay = new DateOnly(2026, 2, 6);
 
         // Act
-        var response = await client.GetAsync($"/api/protocol?startDate={startDay:yyyy-MM-dd}&endDate={endDay:yyyy-MM-dd}");
+        var response = await client.GetAsync($"/api/daily-rhythm-map?startDate={startDay:yyyy-MM-dd}&endDate={endDay:yyyy-MM-dd}");
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<List<ProtocolDay>>();
+        var result = await response.Content.ReadFromJsonAsync<List<DailyRhythmMapDay>>();
         Assert.NotNull(result);
         Assert.Equal(2, result.Count);
         Assert.Equal(startDay, result[0].Date);

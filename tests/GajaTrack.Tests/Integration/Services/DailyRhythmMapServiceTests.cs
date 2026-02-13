@@ -1,4 +1,4 @@
-using GajaTrack.Application.DTOs.Protocol;
+using GajaTrack.Application.DTOs.DailyRhythmMap;
 using GajaTrack.Application.Services;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Domain.Services;
@@ -9,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GajaTrack.Tests.Integration.Services;
 
-public class ProtocolServiceTests : IDisposable
+public class DailyRhythmMapServiceTests : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly GajaDbContext _context;
-    private readonly ProtocolService _service;
+    private readonly DailyRhythmMapService _service;
 
-    public ProtocolServiceTests()
+    public DailyRhythmMapServiceTests()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
@@ -28,8 +28,8 @@ public class ProtocolServiceTests : IDisposable
         _context.Database.EnsureCreated();
 
         var repository = new TrackingRepository(_context);
-        var domainService = new ProtocolDomainService();
-        _service = new ProtocolService(repository, domainService);
+        var domainService = new DailyRhythmMapDomainService();
+        _service = new DailyRhythmMapService(repository, domainService);
     }
 
     public void Dispose()
@@ -39,7 +39,7 @@ public class ProtocolServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldIncludeEventsInsideWindow()
+    public async Task GetDailyRhythmMap_ShouldIncludeEventsInsideWindow()
     {
         // Arrange
         // Day: Feb 5th (06:00 Feb 5 - 06:00 Feb 6)
@@ -53,16 +53,16 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
-        var protocolDay = result[0];
-        Assert.Equal(day, protocolDay.Date);
+        var dailyRhythmMapDay = result[0];
+        Assert.Equal(day, dailyRhythmMapDay.Date);
         
-        Assert.Single(protocolDay.Events);
-        var ev = protocolDay.Events[0];
-        Assert.Equal(ProtocolEventType.Sleep, ev.Type);
+        Assert.Single(dailyRhythmMapDay.Events);
+        var ev = dailyRhythmMapDay.Events[0];
+        Assert.Equal(DailyRhythmMapEventType.Sleep, ev.Type);
         
         // 06:00 -> 10:00 = 4 hours = 240 minutes
         Assert.Equal(240, ev.StartMinute); 
@@ -70,7 +70,7 @@ public class ProtocolServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldSplitEventCrossingStartBoundary()
+    public async Task GetDailyRhythmMap_ShouldSplitEventCrossingStartBoundary()
     {
         // Arrange
         // Day: Feb 5th (06:00 Feb 5 - 06:00 Feb 6)
@@ -85,7 +85,7 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -97,7 +97,7 @@ public class ProtocolServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldSplitEventCrossingEndBoundary()
+    public async Task GetDailyRhythmMap_ShouldSplitEventCrossingEndBoundary()
     {
         // Arrange
         // Day: Feb 5th (06:00 Feb 5 - 06:00 Feb 6)
@@ -112,7 +112,7 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result);
@@ -125,7 +125,7 @@ public class ProtocolServiceTests : IDisposable
     }
     
     [Fact]
-    public async Task GetProtocol_ShouldIncludePointEvents()
+    public async Task GetDailyRhythmMap_ShouldIncludePointEvents()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5);
@@ -137,25 +137,25 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Single(result[0].Events);
         var ev = result[0].Events[0];
-        Assert.Equal(ProtocolEventType.Nursing, ev.Type);
+        Assert.Equal(DailyRhythmMapEventType.Nursing, ev.Type);
         Assert.Equal(120, ev.StartMinute); // 2 hours
         Assert.Equal(0, ev.DurationMinutes);
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldReturnMostRecentFirst_WhenDescendingIsTrue()
+    public async Task GetDailyRhythmMap_ShouldReturnMostRecentFirst_WhenDescendingIsTrue()
     {
         // Arrange
         var day1 = new DateOnly(2026, 2, 5);
         var day2 = new DateOnly(2026, 2, 6);
         
         // Act
-        var result = await _service.GetProtocolAsync(day1, day2, mostRecentFirst: true);
+        var result = await _service.GetDailyRhythmMapAsync(day1, day2, mostRecentFirst: true);
 
         // Assert
         Assert.Equal(2, result.Count);
@@ -164,7 +164,7 @@ public class ProtocolServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldHandleTimeZoneOffset()
+    public async Task GetDailyRhythmMap_ShouldHandleTimeZoneOffset()
     {
         // Arrange
         // We use a fixed timezone: UTC+1 (Central European Time without DST for simplicity)
@@ -181,7 +181,7 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: tz);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: tz);
 
         // Assert
         Assert.Single(result[0].Events);
@@ -194,7 +194,7 @@ public class ProtocolServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldCalculateTotalSleepMinutes()
+    public async Task GetDailyRhythmMap_ShouldCalculateTotalSleepMinutes()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5);
@@ -212,14 +212,14 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Equal(120 + 90, result[0].Summary.TotalSleepMinutes);
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldCalculateTotalSleepMinutes_ClippedByBoundaries()
+    public async Task GetDailyRhythmMap_ShouldCalculateTotalSleepMinutes_ClippedByBoundaries()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5); // 06:00 - 06:00 (Next Day)
@@ -237,14 +237,14 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Equal(60 + 60, result[0].Summary.TotalSleepMinutes);
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldCalculateNightWakings_ExcludingLastWakeUp()
+    public async Task GetDailyRhythmMap_ShouldCalculateNightWakings_ExcludingLastWakeUp()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5); // 06:00 - 06:00 (Next Day)
@@ -263,7 +263,7 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         // Session 1 ends at 02:00 (interruption). Session 2 ends at 05:45 (last wake up).
@@ -271,7 +271,7 @@ public class ProtocolServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldNotCountLastWakeUpAsWaking_WhenSingleSession()
+    public async Task GetDailyRhythmMap_ShouldNotCountLastWakeUpAsWaking_WhenSingleSession()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5);
@@ -284,14 +284,14 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Equal(0, result[0].Summary.NightWakingCount);
     }
 
     [Fact]
-    public async Task GetProtocol_ShouldNotCountSessionsEndingAtOrAfter0600()
+    public async Task GetDailyRhythmMap_ShouldNotCountSessionsEndingAtOrAfter0600()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5);
@@ -304,7 +304,7 @@ public class ProtocolServiceTests : IDisposable
         await _context.SaveChangesAsync();
         
         // Act
-        var result = await _service.GetProtocolAsync(day, day, timeZone: TimeZoneInfo.Utc);
+        var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
         Assert.Equal(0, result[0].Summary.NightWakingCount);

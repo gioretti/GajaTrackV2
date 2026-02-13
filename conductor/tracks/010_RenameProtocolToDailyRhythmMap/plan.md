@@ -21,7 +21,7 @@
 ## Phase 4: Tests
 - [ ] Rename ProtocolServiceTests.cs.
 - [ ] Rename ProtocolApiTests.cs.
-- [ ] Update all test content.
+- [x] Update all test content.
 
 ## Phase 5: Verification
 - [ ] Run dotnet build.
