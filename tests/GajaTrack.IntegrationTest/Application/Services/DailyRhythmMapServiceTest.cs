@@ -7,15 +7,15 @@ using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace GajaTrack.IntegrationTest.Services;
+namespace GajaTrack.Application.Services;
 
-public class DailyRhythmMapServiceTests : IDisposable
+public class DailyRhythmMapServiceTest : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly GajaDbContext _context;
     private readonly DailyRhythmMapService _service;
 
-    public DailyRhythmMapServiceTests()
+    public DailyRhythmMapServiceTest()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();

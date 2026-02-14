@@ -11,7 +11,7 @@
 ## 2. Formatting (Codebase Consistency)
 - **Indentation:** 4 spaces.
 - **Braces:** Allman style (Opening brace `{` on a new line).
-- **Namespaces:** Use file-scoped namespaces.
+- **Namespaces & Organization:** Use file-scoped namespaces. The folder structure MUST exactly match the namespace structure (e.g., namespace `GajaTrack.Domain.Entities` MUST be in `Domain/Entities/` folder relative to the project root).
 - **Explicit Access:** Always declare access modifiers.
 
 ## 3. The "Keep It Simple" (KISS) Principle

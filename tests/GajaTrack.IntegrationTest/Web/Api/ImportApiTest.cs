@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 
-namespace GajaTrack.IntegrationTest.Api;
+namespace GajaTrack.Web.Api;
 
-public class ImportApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class ImportApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
-    public ImportApiTests(WebApplicationFactory<Program> factory)
+    public ImportApiTest(WebApplicationFactory<Program> factory)
     {
         var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();

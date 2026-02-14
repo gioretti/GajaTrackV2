@@ -6,13 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.IntegrationTest.Api;
+namespace GajaTrack.Web.Api;
 
-public class ExportApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class ExportApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
-    public ExportApiTests(WebApplicationFactory<Program> factory)
+    public ExportApiTest(WebApplicationFactory<Program> factory)
     {
         var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();

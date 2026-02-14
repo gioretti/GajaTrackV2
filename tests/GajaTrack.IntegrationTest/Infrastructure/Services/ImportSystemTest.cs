@@ -6,15 +6,15 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace GajaTrack.IntegrationTest.Import;
+namespace GajaTrack.Infrastructure.Services;
 
-public class ImportSystemTests : IDisposable
+public class ImportSystemTest : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly GajaDbContext _context;
     private readonly BabyPlusImportService _service;
 
-    public ImportSystemTests()
+    public ImportSystemTest()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();

@@ -7,14 +7,14 @@ using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace GajaTrack.IntegrationTest.Import;
+namespace GajaTrack.Infrastructure.Services;
 
-public class BabyPlusImportServiceTests : IDisposable
+public class BabyPlusImportServiceTest : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly GajaDbContext _context;
 
-    public BabyPlusImportServiceTests()
+    public BabyPlusImportServiceTest()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
