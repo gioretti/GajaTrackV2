@@ -19,8 +19,8 @@ This project uses **Conductor** as the central engine. All work happens in **Tra
 ## OPERATIONAL GUIDELINES
 - **Track-Driven Development:** No work outside a Conductor track. Use `/conductor:implement`.
 - **Branch Isolation:** Every track MUST have its own Git branch named exactly after the Track ID (e.g., `013_GitWorkflowEvolution`). Direct commits to `master` are FORBIDDEN.
-- **Mandatory Review Gate:** Merging into `master` is a privileged operation. The Developer MUST request a code review and obtain explicit user approval AFTER the Implementation Summary is passed by the Architect and BEFORE the merge sequence begins.
-- **Merge Strategy:** Tracks are merged into `master` ONLY after a successful code review. Merging MUST use a `rebase` followed by a `merge --no-ff` strategy to preserve linear-ish history with merge bubbles. **The track branch MUST be deleted immediately after a successful merge to maintain repository hygiene.**
+- **Mandatory Review Gate:** Merging into `master` is a privileged operation. The Developer MUST create a GitHub Pull Request and obtain explicit user approval on GitHub. The Developer is responsible for reading and addressing code review comments provided on the PR via the GitHub API.
+- **Merge Strategy:** Tracks are merged into `master` via the GitHub API AFTER a successful code review. The sequence MUST be: (1) Rebase track branch locally on `master`, (2) Force-push to PR, (3) Execute a non-fast-forward merge via the GitHub API (`merge_pull_request` with `merge_method: "merge"`) to preserve merge bubbles on a linear history. Cleanup follows locally. **The track branch MUST be deleted immediately after a successful merge to maintain repository hygiene.**
 - **The Handoff:**
     1. **PO Discovery:** User Request -> `spec.md`.
     2. **Architect Design:** `spec.md` -> `plan.md`.

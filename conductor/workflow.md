@@ -19,20 +19,24 @@ Every track is isolated in its own branch to ensure clean integration and review
 2.  **Development:** Execute atomic commits on the track branch.
 3.  **Validation:** Ensure all tests pass and verification is complete.
 
-### Phase B: MANDATORY REVIEW GATE
-1.  **Stop:** The Developer is FORBIDDEN from merging at this stage.
-2.  **Request Review:** The Developer MUST present the final state to the user and request a code review.
-3.  **Approval:** Wait for explicit user confirmation to proceed with integration.
+### Phase B: MANDATORY REVIEW GATE (GitHub PR)
+1.  **Create Pull Request:** The Developer MUST create a Pull Request on GitHub from the `<Track_ID>` branch to `master`.
+2.  **Review Loop:**
+    - The Developer MUST monitor the PR for feedback.
+    - Use `pull_request_read` (method: `get_review_comments`) to ingest user feedback directly from GitHub.
+    - Address comments locally, commit, and push updates to the track branch.
+3.  **Approval:** Wait for the user to approve the PR on GitHub or provide explicit confirmation in chat.
 
-### Phase C: Integration (Into Master)
+### Phase C: Integration (via GitHub API)
 Only execute after Phase B approval:
-1.  `git checkout master`
-2.  `git pull origin master` (if applicable)
-3.  `git checkout <Track_ID>`
-4.  `git rebase master` (Solve conflicts if any)
-5.  `git checkout master`
-6.  `git merge <Track_ID> --no-ff` (Creates a merge bubble)
-7.  `git branch -d <Track_ID>`
+1.  **Rebase:** `git checkout <Track_ID>`, then `git rebase master`.
+2.  **Sync:** `git push origin <Track_ID> --force-with-lease` to ensure the PR is clean and rebased.
+3.  **Merge:** Use the GitHub API (`merge_pull_request`) with `merge_method: "merge"` to integrate the PR. This ensures a merge commit is created (merge bubble) on top of a linear history.
+4.  **Cleanup:**
+    - `git checkout master`
+    - `git pull origin master`
+    - `git branch -d <Track_ID>`
+    - `git remote prune origin`
 
 ## Definition of Done (DoD)
 A track or feature is considered "Done" only when:
