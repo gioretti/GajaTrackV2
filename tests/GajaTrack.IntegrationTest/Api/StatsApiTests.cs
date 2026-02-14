@@ -8,7 +8,7 @@ using Microsoft.Data.Sqlite;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Application.Interfaces;
 
-namespace GajaTrack.Tests.Integration.Api;
+namespace GajaTrack.IntegrationTest.Api;
 
 public class StatsApiTests : IClassFixture<WebApplicationFactory<Program>>
 {

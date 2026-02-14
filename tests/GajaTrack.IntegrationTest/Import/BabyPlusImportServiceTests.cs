@@ -7,7 +7,7 @@ using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace GajaTrack.Tests.Integration.Import;
+namespace GajaTrack.IntegrationTest.Import;
 
 public class BabyPlusImportServiceTests : IDisposable
 {

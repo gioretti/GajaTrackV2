@@ -5,7 +5,7 @@ using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace GajaTrack.Tests.Unit.Infrastructure;
+namespace GajaTrack.IntegrationTest.Infrastructure;
 
 public class ExportServiceTests : IDisposable
 {
