@@ -5,14 +5,14 @@ using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace GajaTrack.IntegrationTest.Infrastructure;
+namespace GajaTrack.Infrastructure.Services;
 
-public class ExportServiceTests : IDisposable
+public class ExportServiceTest : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly GajaDbContext _context;
 
-    public ExportServiceTests()
+    public ExportServiceTest()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();

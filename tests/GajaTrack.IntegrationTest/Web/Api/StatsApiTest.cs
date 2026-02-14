@@ -8,13 +8,13 @@ using Microsoft.Data.Sqlite;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Application.Interfaces;
 
-namespace GajaTrack.IntegrationTest.Api;
+namespace GajaTrack.Web.Api;
 
-public class StatsApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class StatsApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
-    public StatsApiTests(WebApplicationFactory<Program> factory)
+    public StatsApiTest(WebApplicationFactory<Program> factory)
     {
         var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();

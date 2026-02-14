@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 
-namespace GajaTrack.IntegrationTest.Api;
+namespace GajaTrack.Web.Api;
 
-public class DailyRhythmMapApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class DailyRhythmMapApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
-    public DailyRhythmMapApiTests(WebApplicationFactory<Program> factory)
+    public DailyRhythmMapApiTest(WebApplicationFactory<Program> factory)
     {
         var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();
