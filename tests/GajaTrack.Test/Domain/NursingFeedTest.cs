@@ -1,8 +1,8 @@
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Test.Domain;
+namespace GajaTrack.Domain.Entities;
 
-public class NursingFeedTests
+public class NursingFeedTest
 {
     [Fact]
     public void Create_ShouldInitializePropertiesCorrectly()

@@ -1,9 +1,9 @@
 using GajaTrack.Domain.Entities;
 using Xunit;
 
-namespace GajaTrack.Test.Domain;
+namespace GajaTrack.Domain.Entities;
 
-public class CryingSessionTests
+public class CryingSessionTest
 {
     [Fact]
     public void Create_ShouldInitializeCorrectly()

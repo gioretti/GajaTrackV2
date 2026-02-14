@@ -1,8 +1,8 @@
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Test.Domain;
+namespace GajaTrack.Domain.Entities;
 
-public class SleepSessionTests
+public class SleepSessionTest
 {
     [Fact]
     public void Create_ShouldInitializePropertiesCorrectly()

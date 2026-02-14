@@ -1,8 +1,8 @@
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Test.Domain;
+namespace GajaTrack.Domain.Entities;
 
-public class UtcDateTimeTests
+public class UtcDateTimeTest
 {
     [Fact]
     public void FromDateTime_WithUtcKind_ShouldSucceed()

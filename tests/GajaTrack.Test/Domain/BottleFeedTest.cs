@@ -1,8 +1,8 @@
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Test.Domain;
+namespace GajaTrack.Domain.Entities;
 
-public class BottleFeedTests
+public class BottleFeedTest
 {
     [Fact]
     public void Create_ShouldInitializePropertiesCorrectly()

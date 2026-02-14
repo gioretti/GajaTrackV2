@@ -3,9 +3,9 @@ using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Test.Import;
+namespace GajaTrack.Infrastructure.Services.ImportHandlers;
 
-public class NursingFeedImporterTests
+public class NursingFeedImporterTest
 {
     [Fact]
     public void Map_ShouldMapJsonToEntity()

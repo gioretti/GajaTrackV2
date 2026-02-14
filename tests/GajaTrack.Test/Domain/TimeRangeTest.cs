@@ -1,8 +1,8 @@
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Test.Domain;
+namespace GajaTrack.Domain.Entities;
 
-public class TimeRangeTests
+public class TimeRangeTest
 {
     [Fact]
     public void Create_WithValidRange_ShouldSucceed()

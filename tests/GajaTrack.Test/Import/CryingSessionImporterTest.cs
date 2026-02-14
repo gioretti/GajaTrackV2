@@ -3,9 +3,9 @@ using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Test.Import;
+namespace GajaTrack.Infrastructure.Services.ImportHandlers;
 
-public class CryingSessionImporterTests
+public class CryingSessionImporterTest
 {
     [Fact]
     public void Map_ShouldMapJsonToEntity()
