@@ -25,6 +25,13 @@
 - **Dependency Rule:** Dependencies MUST point inwards towards the Domain.
 - **Cross-Reference:** Always verify implementation against existing **ADRs** in `docs/adr/`.
 
-## 5. Review Standards
+## 5. Testing Standards
+- **Naming:** Unit test classes MUST be named after the class being tested with a "Test" postfix (e.g., `BottleFeedTest`, NOT `BottleFeedTests`).
+- **Namespaces:** Test class namespaces MUST exactly match the namespace of the class being tested. This improves discoverability and boundary enforcement.
+- **Separation:**
+    - `GajaTrack.Test`: For pure logic unit tests (no DB, no external dependencies).
+    - `GajaTrack.IntegrationTest`: For tests requiring infrastructure, database, or API hosting.
+
+## 6. Review Standards
 - **Naming Challenge:** Names must be descriptive and follow conventions.
 - **Complexity:** Methods should follow the Single Responsibility Principle.
