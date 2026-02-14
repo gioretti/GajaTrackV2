@@ -27,6 +27,7 @@ Every track is isolated in its own branch to ensure clean integration and review
     - Use `pull_request_read` (method: `get_review_comments`) to ingest user feedback directly from GitHub.
     - Address comments locally, commit, and push updates to the track branch.
 3.  **Approval:** Wait for the Software Architect (user) to approve the PR on GitHub.
+    - **Unresolved Comments:** The Developer is STRICTLY FORBIDDEN from merging if there are any unresolved comments or active discussion threads in the PR. All feedback must be addressed and the corresponding threads resolved (or acknowledged as addressed) before proceeding to Phase C.
 
 ### Phase C: Integration (via GitHub API)
 Only execute after Phase B approval:
@@ -43,7 +44,7 @@ Only execute after Phase B approval:
 
 ## Definition of Done (DoD)
 A track or feature is considered "Done" only when:
-- **Product Requirement:** All Acceptance Critereia in `spec.md` are met and verified.
+- **Product Requirement:** All Acceptance Criteria in `spec.md` are met and verified.
 - **Technical Quality:** Code follows DDD boundaries and passes 80% test coverage.
 - **Manual Verification:** UI-related features must be manually verified using **Chrome DevTools** (see below).
 - **Architectural Review:** The Architect has issued a "Pass" on the final implementation summary.
