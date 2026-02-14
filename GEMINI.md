@@ -18,6 +18,8 @@ This project uses **Conductor** as the central engine. All work happens in **Tra
 
 ## OPERATIONAL GUIDELINES
 - **Track-Driven Development:** No work outside a Conductor track. Use `/conductor:implement`.
+- **Branch Isolation:** Every track MUST have its own Git branch named exactly after the Track ID (e.g., `013_GitWorkflowEvolution`). Direct commits to `master` are FORBIDDEN.
+- **Merge Strategy:** Tracks are merged into `master` ONLY after a successful code review. Merging MUST use a `rebase` followed by a `merge --no-ff` strategy to preserve linear-ish history with merge bubbles.
 - **The Handoff:**
     1. **PO Discovery:** User Request -> `spec.md`.
     2. **Architect Design:** `spec.md` -> `plan.md`.

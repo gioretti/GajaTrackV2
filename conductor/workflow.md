@@ -11,6 +11,21 @@
 2. **Software Architect:** Validates technical design via `plan.md` and manages ADRs.
 3. **Software Developer:** Executes tasks from the approved `plan.md`.
 
+## Git Branching & Merging Protocol
+Every track is isolated in its own branch to ensure clean integration and review cycles.
+
+1.  **Branch Creation:** `git checkout -b <Track_ID>` (e.g., `git checkout -b 013_GitWorkflowEvolution`).
+2.  **Development:** Execute atomic commits on the track branch.
+3.  **Review:** Once the Implementation Summary is passed by the Architect, the track is ready for merge.
+4.  **Integration (Into Master):**
+    -   `git checkout master`
+    -   `git pull origin master` (if applicable)
+    -   `git checkout <Track_ID>`
+    -   `git rebase master` (Solve conflicts if any)
+    -   `git checkout master`
+    -   `git merge <Track_ID> --no-ff` (Creates a merge bubble)
+    -   `git branch -d <Track_ID>`
+
 ## Definition of Done (DoD)
 A track or feature is considered "Done" only when:
 - **Product Requirement:** All Acceptance Criteria in `spec.md` are met and verified.
