@@ -3,7 +3,7 @@ using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Tests.Integration.Import;
+namespace GajaTrack.IntegrationTest.Import;
 
 public class BottleFeedImporterTests
 {

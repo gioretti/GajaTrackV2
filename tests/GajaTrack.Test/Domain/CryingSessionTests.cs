@@ -1,7 +1,7 @@
 using GajaTrack.Domain.Entities;
 using Xunit;
 
-namespace GajaTrack.Tests.Unit.Domain;
+namespace GajaTrack.Test.Domain;
 
 public class CryingSessionTests
 {

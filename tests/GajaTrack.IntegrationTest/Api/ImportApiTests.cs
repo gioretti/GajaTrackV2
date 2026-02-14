@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 
-namespace GajaTrack.Tests.Integration.Api;
+namespace GajaTrack.IntegrationTest.Api;
 
 public class ImportApiTests : IClassFixture<WebApplicationFactory<Program>>
 {

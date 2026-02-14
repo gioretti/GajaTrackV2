@@ -1,6 +1,6 @@
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Tests.Unit.Domain;
+namespace GajaTrack.Test.Domain;
 
 public class TimeRangeTests
 {

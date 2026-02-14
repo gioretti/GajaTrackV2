@@ -7,7 +7,7 @@ using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace GajaTrack.Tests.Integration.Services;
+namespace GajaTrack.IntegrationTest.Services;
 
 public class DailyRhythmMapServiceTests : IDisposable
 {

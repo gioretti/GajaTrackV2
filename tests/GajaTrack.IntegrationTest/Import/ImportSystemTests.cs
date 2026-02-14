@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace GajaTrack.Tests.Integration.Import;
+namespace GajaTrack.IntegrationTest.Import;
 
 public class ImportSystemTests : IDisposable
 {
