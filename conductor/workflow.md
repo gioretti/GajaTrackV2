@@ -14,17 +14,25 @@
 ## Git Branching & Merging Protocol
 Every track is isolated in its own branch to ensure clean integration and review cycles.
 
-1.  **Branch Creation:** `git checkout -b <Track_ID>` (e.g., `git checkout -b 013_GitWorkflowEvolution`).
+### Phase A: Isolation & Development
+1.  **Branch Creation:** `git checkout -b <Track_ID>` (e.g., `git checkout -b 014_SeparateTestProjects`).
 2.  **Development:** Execute atomic commits on the track branch.
-3.  **Review:** Once the Implementation Summary is passed by the Architect, the track is ready for merge.
-4.  **Integration (Into Master):**
-    -   `git checkout master`
-    -   `git pull origin master` (if applicable)
-    -   `git checkout <Track_ID>`
-    -   `git rebase master` (Solve conflicts if any)
-    -   `git checkout master`
-    -   `git merge <Track_ID> --no-ff` (Creates a merge bubble)
-    -   `git branch -d <Track_ID>`
+3.  **Validation:** Ensure all tests pass and verification is complete.
+
+### Phase B: MANDATORY REVIEW GATE
+1.  **Stop:** The Developer is FORBIDDEN from merging at this stage.
+2.  **Request Review:** The Developer MUST present the final state to the user and request a code review.
+3.  **Approval:** Wait for explicit user confirmation to proceed with integration.
+
+### Phase C: Integration (Into Master)
+Only execute after Phase B approval:
+1.  `git checkout master`
+2.  `git pull origin master` (if applicable)
+3.  `git checkout <Track_ID>`
+4.  `git rebase master` (Solve conflicts if any)
+5.  `git checkout master`
+6.  `git merge <Track_ID> --no-ff` (Creates a merge bubble)
+7.  `git branch -d <Track_ID>`
 
 ## Definition of Done (DoD)
 A track or feature is considered "Done" only when:
