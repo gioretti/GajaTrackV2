@@ -15,4 +15,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [013_GitWorkflowEvolution](./tracks/013_GitWorkflowEvolution/index.md): Git Workflow Evolution
 - [x] [014_SeparateTestProjects](./tracks/014_SeparateTestProjects/index.md): Separate Test Projects
 - [x] [015_TestProjectRefinement](./tracks/015_TestProjectRefinement/index.md): Test Project Refinement
-- [ ] [016_UnitTestStructureRefinement](./tracks/016_UnitTestStructureRefinement/index.md): Unit Test Structure Refinement
+- [x] [016_UnitTestStructureRefinement](./tracks/016_UnitTestStructureRefinement/index.md): Unit Test Structure Refinement
