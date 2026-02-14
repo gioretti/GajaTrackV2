@@ -29,14 +29,16 @@ Every track is isolated in its own branch to ensure clean integration and review
 
 ### Phase C: Integration (via GitHub API)
 Only execute after Phase B approval:
-1.  **Rebase:** `git checkout <Track_ID>`, then `git rebase master`.
-2.  **Sync:** `git push origin <Track_ID> --force-with-lease` to ensure the PR is clean and rebased.
-3.  **Merge:** Use the GitHub API (`merge_pull_request`) with `merge_method: "merge"` to integrate the PR. This ensures a merge commit is created (merge bubble) on top of a linear history.
+1.  **Rebase:** `git checkout <Track_ID>`, then `git rebase master`. This aligns the track branch with the current master to ensure a clean merge.
+2.  **Sync:** `git push origin <Track_ID> --force-with-lease` to update the PR with the rebased commits.
+3.  **Merge:** Use the GitHub API (`merge_pull_request`) with `merge_method: "merge"`. 
+    - **Why:** This ensures a merge commit is created (the "merge bubble") on top of your rebased commits, maintaining the clear visual history requested.
+    - **Context:** Avoid `"squash"` (which loses commit history) or `"rebase"` (which skips the merge bubble). Using `"merge"` after a local rebase is the only way to achieve the specific history structure defined in the project.
 4.  **Cleanup:**
     - `git checkout master`
     - `git pull origin master`
-    - `git branch -d <Track_ID>`
-    - `git remote prune origin`
+    - **Crucial:** `git branch -d <Track_ID>` (The Developer MUST physically delete the local branch immediately after pulling to keep the repository hygienic).
+    - `git remote prune origin` (Removes stale tracking references).
 
 ## Definition of Done (DoD)
 A track or feature is considered "Done" only when:
