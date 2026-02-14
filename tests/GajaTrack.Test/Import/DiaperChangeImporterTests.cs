@@ -3,7 +3,7 @@ using GajaTrack.Infrastructure.Services;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.IntegrationTest.Import;
+namespace GajaTrack.Test.Import;
 
 public class DiaperChangeImporterTests
 {
