@@ -30,11 +30,11 @@ Every track is isolated in its own branch to ensure clean integration and review
 
 ### Phase C: Integration (via GitHub API)
 Only execute after Phase B approval:
-1.  **Rebase:** `git checkout <Track_ID>`, then `git rebase master`. This aligns the track branch with the current master to ensure a clean merge.
-2.  **Sync:** `git push origin <Track_ID> --force-with-lease` to update the PR with the rebased commits.
+1.  **Rebase:** `git checkout <Track_ID>`, then `git rebase master`. This aligns the track branch with the current master to ensure a clean, linear base.
+2.  **Force Push:** `git push origin <Track_ID> --force-with-lease`. **This is mandatory** after a local rebase to update the remote branch and Pull Request with the new history.
 3.  **Merge:** Use the GitHub API (`merge_pull_request`) with `merge_method: "merge"`. 
-    - **Why:** This ensures a merge commit is created (the "merge bubble") on top of your rebased commits, maintaining the clear visual history requested.
-    - **Context:** Avoid `"squash"` (which loses commit history) or `"rebase"` (which skips the merge bubble). Using `"merge"` after a local rebase is the only way to achieve the specific history structure defined in the project.
+    - **Why:** Since the branch is now linear (thanks to the rebase), using the `"merge"` method (equivalent to `merge --no-ff`) forces GitHub to create a merge commit. This produces the desired "bubble" in the history while keeping the underlying commits perfectly aligned with master.
+    - **Context:** Avoid `"squash"` or `"rebase"` methods in the API call, as they will not produce the required merge bubble.
 4.  **Cleanup:**
     - `git checkout master`
     - `git pull origin master`
