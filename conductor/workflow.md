@@ -19,24 +19,31 @@ Every track is isolated in its own branch to ensure clean integration and review
 2.  **Development:** Execute atomic commits on the track branch.
 3.  **Validation:** Ensure all tests pass and verification is complete.
 
-### Phase B: MANDATORY REVIEW GATE
-1.  **Stop:** The Developer is FORBIDDEN from merging at this stage.
-2.  **Request Review:** The Developer MUST present the final state to the user and request a code review.
-3.  **Approval:** Wait for explicit user confirmation to proceed with integration.
+### Phase B: MANDATORY REVIEW GATE (GitHub PR)
+1.  **Create Pull Request:** The Software Developer (agent) MUST create a Pull Request on GitHub from the `<Track_ID>` branch to `master`.
+2.  **Review Loop:**
+    - The Software Architect (user) provides feedback on the PR.
+    - The Developer MUST monitor the PR for feedback.
+    - Use `pull_request_read` (method: `get_review_comments`) to ingest user feedback directly from GitHub.
+    - Address comments locally, commit, and push updates to the track branch.
+3.  **Approval:** Wait for the Software Architect (user) to approve the PR on GitHub.
 
-### Phase C: Integration (Into Master)
+### Phase C: Integration (via GitHub API)
 Only execute after Phase B approval:
-1.  `git checkout master`
-2.  `git pull origin master` (if applicable)
-3.  `git checkout <Track_ID>`
-4.  `git rebase master` (Solve conflicts if any)
-5.  `git checkout master`
-6.  `git merge <Track_ID> --no-ff` (Creates a merge bubble)
-7.  `git branch -d <Track_ID>`
+1.  **Rebase:** `git checkout <Track_ID>`, then `git rebase master`. This aligns the track branch with the current master to ensure a clean, linear base.
+2.  **Force Push:** `git push origin <Track_ID> --force-with-lease`. **This is mandatory** after a local rebase to update the remote branch and Pull Request with the new history.
+3.  **Merge:** Use the GitHub API (`merge_pull_request`) with `merge_method: "merge"`. 
+    - **Why:** Since the branch is now linear (thanks to the rebase), using the `"merge"` method (equivalent to `merge --no-ff`) forces GitHub to create a merge commit. This produces the desired "bubble" in the history while keeping the underlying commits perfectly aligned with master.
+    - **Context:** Avoid `"squash"` or `"rebase"` methods in the API call, as they will not produce the required merge bubble.
+4.  **Cleanup:**
+    - `git checkout master`
+    - `git pull origin master`
+    - **Crucial:** `git branch -d <Track_ID>` (The Developer MUST physically delete the local branch immediately after pulling to keep the repository hygienic).
+    - `git remote prune origin` (Removes stale tracking references).
 
 ## Definition of Done (DoD)
 A track or feature is considered "Done" only when:
-- **Product Requirement:** All Acceptance Criteria in `spec.md` are met and verified.
+- **Product Requirement:** All Acceptance Critereia in `spec.md` are met and verified.
 - **Technical Quality:** Code follows DDD boundaries and passes 80% test coverage.
 - **Manual Verification:** UI-related features must be manually verified using **Chrome DevTools** (see below).
 - **Architectural Review:** The Architect has issued a "Pass" on the final implementation summary.
