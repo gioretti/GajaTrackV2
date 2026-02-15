@@ -3,7 +3,6 @@ using GajaTrack.Application.Queries;
 using GajaTrack.Application.Services;
 using GajaTrack.Domain;
 using GajaTrack.Domain.Entities;
-using GajaTrack.Domain.Services;
 using GajaTrack.Infrastructure.Persistence;
 using GajaTrack.Infrastructure.Services;
 using Microsoft.Data.Sqlite;
@@ -30,11 +29,10 @@ public class DailyRhythmMapServiceTest : IDisposable
         _context.Database.EnsureCreated();
 
         var repository = new TrackingRepository(_context);
-        var domainService = new DailyRhythmMapDomainService();
-        var getBabyDayQuery = new GetBabyDayQuery(repository, domainService);
+        var getBabyDayExecution = new GetBabyDay.Execution(repository);
         var calculateSleep = new CalculateSleep();
         var countWakings = new CountWakings();
-        _service = new DailyRhythmMapService(getBabyDayQuery, calculateSleep, countWakings, domainService);
+        _service = new DailyRhythmMapService(getBabyDayExecution, calculateSleep, countWakings);
     }
 
     public void Dispose()
@@ -194,8 +192,8 @@ public class DailyRhythmMapServiceTest : IDisposable
         
         // 06:00 Local start, event is at 06:00 Local -> StartMinute = 0
         Assert.Equal(0, ev.StartMinute);
-        // OriginalStartTime in DTO should be converted to Local
-        Assert.Equal(6, ev.OriginalStartTime.Hour);
+        // OriginalStartTime in DTO is now UTC. 06:00 Local (UTC+1) is 05:00 UTC.
+        Assert.Equal(5, ev.OriginalStartTime.Hour);
     }
 
     [Fact]

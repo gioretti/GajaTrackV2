@@ -7,24 +7,23 @@ namespace GajaTrack.Test.Domain;
 public class CountWakingsTest
 {
     private readonly CountWakings _counter = new();
-    private readonly DateOnly _today = new(2026, 2, 15);
     
     // Window: 06:00 to 06:00 (Next Day)
     private readonly UtcDateTime _windowStart = UtcDateTime.FromDateTime(new DateTime(2026, 2, 15, 6, 0, 0, DateTimeKind.Utc));
     private readonly UtcDateTime _windowEnd = UtcDateTime.FromDateTime(new DateTime(2026, 2, 16, 6, 0, 0, DateTimeKind.Utc));
-    private TimeRange Window => new(_windowStart, _windowEnd);
+    private TimeRange TimeBounds => new(_windowStart, _windowEnd);
 
     [Fact]
     public void For_ShouldReturnZero_WhenNoWakingsInNightRange()
     {
-        // Session ends at 14:00 (outside night range 18:00-06:00)
+        // Session ends at 14:00 UTC (14:00 Local in UTC TZ)
         var session = SleepSession.Create(Guid.NewGuid(), "ext-1", 
             UtcDateTime.FromDateTime(_windowStart.Value.AddHours(6)), 
             UtcDateTime.FromDateTime(_windowStart.Value.AddHours(8)));
         
         var day = CreateBabyDay(new[] { session });
 
-        var result = _counter.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0));
+        var result = _counter.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0), TimeZoneInfo.Utc);
 
         Assert.Equal(0, result);
     }
@@ -49,7 +48,7 @@ public class CountWakingsTest
 
         var day = CreateBabyDay(new[] { s1, s2, s3 });
 
-        var result = _counter.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0));
+        var result = _counter.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0), TimeZoneInfo.Utc);
 
         // Interruption 1: at 22:00
         // Interruption 2: at 02:00
@@ -71,7 +70,7 @@ public class CountWakingsTest
 
         var day = CreateBabyDay(new[] { s1, s2 });
 
-        var result = _counter.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0));
+        var result = _counter.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0), TimeZoneInfo.Utc);
 
         // Only s1 counts. s2 is excluded as the last session.
         Assert.Equal(1, result);
@@ -80,8 +79,7 @@ public class CountWakingsTest
     private BabyDay CreateBabyDay(IEnumerable<SleepSession> sessions)
     {
         return new BabyDay(
-            _today,
-            Window,
+            TimeBounds,
             sessions,
             Enumerable.Empty<CryingSession>(),
             Enumerable.Empty<NursingFeed>(),

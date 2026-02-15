@@ -1,30 +1,30 @@
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Application.Queries;
+using GajaTrack.Domain;
 using GajaTrack.Domain.Entities;
-using GajaTrack.Domain.Services;
 using Moq;
 using Xunit;
 
 namespace GajaTrack.Test.Queries;
 
-public class GetBabyDayQueryTest
+public class GetBabyDayTest
 {
     private readonly Mock<ITrackingRepository> _repositoryMock = new();
-    private readonly DailyRhythmMapDomainService _domainService = new();
-    private readonly GetBabyDayQuery _query;
+    private readonly GetBabyDay.Execution _execution;
 
-    public GetBabyDayQueryTest()
+    public GetBabyDayTest()
     {
-        _query = new GetBabyDayQuery(_repositoryMock.Object, _domainService);
+        _execution = new GetBabyDay.Execution(_repositoryMock.Object);
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldAssignOverlappingSession_ToBothDays()
+    public async Task RunAsync_ShouldAssignOverlappingSession_ToBothDays()
     {
         // Request: Feb 15 to Feb 16
         var start = new DateOnly(2026, 2, 15);
         var end = new DateOnly(2026, 2, 16);
         var tz = TimeZoneInfo.Utc;
+        var query = new GetBabyDay.Query(start, end, tz);
 
         // Session: Feb 16, 05:00 - 07:00 (Crosses the 06:00 boundary between Day 1 and Day 2)
         var overlappingSession = SleepSession.Create(
@@ -46,7 +46,7 @@ public class GetBabyDayQueryTest
             .ReturnsAsync(new List<DiaperChange>());
 
         // Act
-        var result = await _query.ExecuteAsync(start, end, tz);
+        var result = await _execution.RunAsync(query, CancellationToken.None);
 
         // Assert
         Assert.Equal(2, result.Count);

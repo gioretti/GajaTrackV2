@@ -7,12 +7,11 @@ namespace GajaTrack.Test.Domain;
 public class CalculateSleepTest
 {
     private readonly CalculateSleep _calculator = new();
-    private readonly DateOnly _today = new(2026, 2, 15);
     
     // Window: 06:00 to 06:00 (Next Day)
     private readonly UtcDateTime _windowStart = UtcDateTime.FromDateTime(new DateTime(2026, 2, 15, 6, 0, 0, DateTimeKind.Utc));
     private readonly UtcDateTime _windowEnd = UtcDateTime.FromDateTime(new DateTime(2026, 2, 16, 6, 0, 0, DateTimeKind.Utc));
-    private TimeRange Window => new(_windowStart, _windowEnd);
+    private TimeRange TimeBounds => new(_windowStart, _windowEnd);
 
     [Fact]
     public void For_ShouldReturnClippedDuration_WhenSessionStartsBeforeWindow()
@@ -68,8 +67,7 @@ public class CalculateSleepTest
     private BabyDay CreateBabyDay(IEnumerable<SleepSession> sessions)
     {
         return new BabyDay(
-            _today,
-            Window,
+            TimeBounds,
             sessions,
             Enumerable.Empty<CryingSession>(),
             Enumerable.Empty<NursingFeed>(),
