@@ -101,7 +101,7 @@ public class DailyRhythmMapService(
 
             // 3. Calculate Summaries using Domain Services
             var sleepMetrics = calculateSleep.For(day, timeZone);
-            var nightWakings = countWakings.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0), timeZone);
+            var nightWakings = countWakings.For(day, BabyDay.NightTimeStart, BabyDay.DayTimeStart, timeZone);
 
             // Calculate Date from TimeBounds.Start (Port responsibility)
             var localStart = TimeZoneInfo.ConvertTimeFromUtc(day.TimeBounds.Start, timeZone);
@@ -113,7 +113,6 @@ public class DailyRhythmMapService(
                 day.TimeBounds.End,
                 dayEvents.OrderBy(x => x.StartMinute).ToList(),
                 new DailyRhythmMapSummary(
-                    sleepMetrics.NapsMinutes + sleepMetrics.NightSleepMinutes, 
                     sleepMetrics.NapsMinutes, 
                     sleepMetrics.NightSleepMinutes, 
                     nightWakings)
