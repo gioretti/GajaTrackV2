@@ -85,4 +85,21 @@ public class DailyRhythmMapApiTest : IClassFixture<WebApplicationFactory<Program
         Assert.Equal(startDay, result[0].Date);
         Assert.Equal(endDay, result[1].Date);
     }
+
+    [Fact]
+    public async Task GetDailyRhythmMap_WithInvalidTimeZone_ReturnsBadRequest()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        var day = new DateOnly(2026, 2, 5);
+        var invalidTz = "Invalid/TimeZone_ID";
+
+        // Act
+        var response = await client.GetAsync($"/api/daily-rhythm-map?startDate={day:yyyy-MM-dd}&endDate={day:yyyy-MM-dd}&timeZoneId={invalidTz}");
+
+        // Assert
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Contains(invalidTz, content);
+    }
 }
