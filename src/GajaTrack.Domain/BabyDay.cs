@@ -15,21 +15,21 @@ public record BabyDay(
     public static BabyDay Create(
         DateOnly date, 
         TimeZoneInfo timeZone,
-        IEnumerable<SleepSession> allSleep,
-        IEnumerable<CryingSession> allCrying,
-        IEnumerable<NursingFeed> allNursing,
-        IEnumerable<BottleFeed> allBottle,
-        IEnumerable<DiaperChange> allDiapers)
+        IEnumerable<SleepSession> sleepCandidates,
+        IEnumerable<CryingSession> cryingCandidates,
+        IEnumerable<NursingFeed> nursingCandidates,
+        IEnumerable<BottleFeed> bottleCandidates,
+        IEnumerable<DiaperChange> diaperCandidates)
     {
         var timeBounds = CalculateTimeBounds(date, timeZone);
 
         return new BabyDay(
             timeBounds,
-            allSleep.Where(sleep => IsIntersecting(timeBounds, sleep.StartTime, sleep.EndTime)).ToList(),
-            allCrying.Where(crying => IsIntersecting(timeBounds, crying.StartTime, crying.EndTime)).ToList(),
-            allNursing.Where(nursing => IsInBounds(timeBounds, nursing.StartTime)).ToList(),
-            allBottle.Where(bottle => IsInBounds(timeBounds, bottle.Time)).ToList(),
-            allDiapers.Where(diaper => IsInBounds(timeBounds, diaper.Time)).ToList()
+            sleepCandidates.Where(sleep => IsIntersecting(timeBounds, sleep.StartTime, sleep.EndTime)).ToList(),
+            cryingCandidates.Where(crying => IsIntersecting(timeBounds, crying.StartTime, crying.EndTime)).ToList(),
+            nursingCandidates.Where(nursing => IsInBounds(timeBounds, nursing.StartTime)).ToList(),
+            bottleCandidates.Where(bottle => IsInBounds(timeBounds, bottle.Time)).ToList(),
+            diaperCandidates.Where(diaper => IsInBounds(timeBounds, diaper.Time)).ToList()
         );
     }
 
