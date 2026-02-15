@@ -4,7 +4,9 @@ namespace GajaTrack.Domain;
 
 public class CalculateSleep
 {
-    public (double NapsMinutes, double NightSleepMinutes) For(BabyDay day, TimeZoneInfo timeZone)
+    public record Result(double NapsMinutes, double NightSleepMinutes);
+
+    public Result For(BabyDay day, TimeZoneInfo timeZone)
     {
         double napsMinutes = 0;
         double nightSleepMinutes = 0;
@@ -25,7 +27,7 @@ public class CalculateSleep
             
             // Naps: 06:00 to 18:00
             // Night: 18:00 to 06:00 (Next day)
-            if (IsInNapWindow(localStartTime))
+            if (IsDayTime(localStartTime))
             {
                 napsMinutes += sessionRange.TotalMinutes;
             }
@@ -35,11 +37,11 @@ public class CalculateSleep
             }
         }
 
-        return (napsMinutes, nightSleepMinutes);
+        return new Result(napsMinutes, nightSleepMinutes);
     }
 
-    private static bool IsInNapWindow(TimeOnly time)
+    private static bool IsDayTime(TimeOnly time)
     {
-        return time >= new TimeOnly(6, 0) && time < new TimeOnly(18, 0);
+        return time >= new TimeOnly(BabyDay.DayTimeStart, 0) && time < new TimeOnly(BabyDay.NightTimeStart, 0);
     }
 }
