@@ -17,5 +17,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [015_TestProjectRefinement](./tracks/015_TestProjectRefinement/index.md): Test Project Refinement
 - [x] [016_GitHubWorkflowIntegration](./tracks/016_GitHubWorkflowIntegration/index.md): GitHub Workflow Integration
 - [x] [017_WorkflowRefinement](./tracks/017_WorkflowRefinement/index.md): Workflow Refinement
-- [ ] [018_BabyDayDomainModel](./tracks/018_BabyDayDomainModel/index.md): BabyDay Domain Model
+- [x] [018_BabyDayDomainModel](./tracks/018_BabyDayDomainModel/index.md): BabyDay Domain Model
+- [x] [019_RestApiFrontendDecoupling](./tracks/019_RestApiFrontendDecoupling/index.md): REST API Frontend Decoupling
 - [x] [016_UnitTestStructureRefinement](./tracks/016_UnitTestStructureRefinement/index.md): Unit Test Structure Refinement

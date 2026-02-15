@@ -1,5 +1,7 @@
 @page "/daily-rhythm-map"
-@inject IDailyRhythmMapService DailyRhythmMapService
+@using GajaTrack.Application.DTOs.DailyRhythmMap
+@using GajaTrack.Web.Client.Api
+@inject DailyRhythmMapApiClient DailyRhythmMapApi
 
 <PageTitle>Daily Rhythm Map</PageTitle>
 
@@ -106,7 +108,7 @@
 
     private async Task LoadData()
     {
-        _days = await DailyRhythmMapService.GetDailyRhythmMapAsync(_startDate, _startDate.AddDays(13), mostRecentFirst: true);
+        _days = await DailyRhythmMapApi.GetAsync(_startDate, _startDate.AddDays(13), mostRecentFirst: true);
     }
     
     private async Task PrevPage()
