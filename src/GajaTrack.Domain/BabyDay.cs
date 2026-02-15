@@ -10,11 +10,12 @@ public record BabyDay(
     IEnumerable<BottleFeed> BottleFeeds,
     IEnumerable<DiaperChange> DiaperChanges)
 {
-    public const int DayStartHour = 6;
+    public const int DayTimeStart = 6;
+    public const int NightTimeStart = 18;
 
     public static TimeRange CalculateTimeBounds(DateOnly date, TimeZoneInfo timeZone)
     {
-        var localStart = new DateTime(date.Year, date.Month, date.Day, DayStartHour, 0, 0, DateTimeKind.Unspecified);
+        var localStart = new DateTime(date.Year, date.Month, date.Day, DayTimeStart, 0, 0, DateTimeKind.Unspecified);
         var windowStartUtc = UtcDateTime.FromDateTime(TimeZoneInfo.ConvertTimeToUtc(localStart, timeZone));
         var windowEndUtc = UtcDateTime.FromDateTime(windowStartUtc.Value.AddDays(1));
         

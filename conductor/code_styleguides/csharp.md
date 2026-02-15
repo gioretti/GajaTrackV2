@@ -19,6 +19,8 @@
 - **No Over-engineering:** Implement only what is required for the current track.
 - **Cleanliness:** No commented-out code or placeholder comments.
 - **Test-Only Noise:** Avoid logic or public members used solely for testing.
+- **Explicit Types:** Avoid `ValueTuple` or `Tuple` as return types for public methods. Define a named `record` or `class` instead to provide context.
+- **Named Constants:** NEVER use hardcoded "magic" values (numbers, strings) directly in logic. Define them as well-named `const` or `static readonly` members.
 
 ## 4. Architectural Integrity
 - **Boundary Enforcement:** Respect Domain, Application, and Infrastructure layers.
