@@ -100,7 +100,7 @@ public class DailyRhythmMapService(
             }
 
             // 3. Calculate Summaries using Domain Services
-            var totalSleep = calculateSleep.For(day);
+            var sleepMetrics = calculateSleep.For(day, timeZone);
             var nightWakings = countWakings.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0), timeZone);
 
             // Calculate Date from TimeBounds.Start (Port responsibility)
@@ -112,7 +112,11 @@ public class DailyRhythmMapService(
                 day.TimeBounds.Start,
                 day.TimeBounds.End,
                 dayEvents.OrderBy(x => x.StartMinute).ToList(),
-                new DailyRhythmMapSummary(totalSleep, nightWakings)
+                new DailyRhythmMapSummary(
+                    sleepMetrics.NapsMinutes + sleepMetrics.NightSleepMinutes, 
+                    sleepMetrics.NapsMinutes, 
+                    sleepMetrics.NightSleepMinutes, 
+                    nightWakings)
             ));
         }
 

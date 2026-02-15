@@ -2,12 +2,19 @@
 
 <g transform="translate(@X, @Y)">
     @{
-        var hours = (int)(Summary.TotalSleepMinutes / 60);
-        var minutes = (int)(Summary.TotalSleepMinutes % 60);
+        var totalH = (int)(Summary.TotalSleepMinutes / 60);
+        var totalM = (int)(Summary.TotalSleepMinutes % 60);
+        
+        var napsH = (int)(Summary.NapsMinutes / 60);
+        var napsM = (int)(Summary.NapsMinutes % 60);
+        
+        var nightH = (int)(Summary.NightSleepMinutes / 60);
+        var nightM = (int)(Summary.NightSleepMinutes % 60);
     }
-    <text x="0" y="20" font-size="12" fill="#333" font-weight="500">Sleep: @(hours)h @(minutes)m</text>
-    <text x="0" y="38" font-size="12" fill="#333" font-weight="500">Night Wakings (18-06): @Summary.NightWakingCount</text>
-    <!-- Space for future rows below (e.g., y=56, y=74...) -->
+    <text x="0" y="18" font-size="11" fill="#333" font-weight="600">Total: @(totalH)h @(totalM)m</text>
+    <text x="0" y="32" font-size="11" fill="#555">Naps: @(napsH)h @(napsM)m</text>
+    <text x="0" y="46" font-size="11" fill="#555">Night: @(nightH)h @(nightM)m</text>
+    <text x="0" y="60" font-size="11" fill="#333" font-weight="500">Wakings: @Summary.NightWakingCount</text>
 </g>
 
 @code {
@@ -15,4 +22,3 @@
     [Parameter] public double X { get; set; }
     [Parameter] public double Y { get; set; }
 }
-

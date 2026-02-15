@@ -41,6 +41,8 @@ public record DailyRhythmMapEvent(
 
 public record DailyRhythmMapSummary(
     double TotalSleepMinutes,
+    double NapsMinutes,
+    double NightSleepMinutes,
     int NightWakingCount
 );
 
