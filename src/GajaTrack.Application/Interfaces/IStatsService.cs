@@ -1,12 +1,6 @@
-namespace GajaTrack.Application.Interfaces;
+using GajaTrack.Application.DTOs.Stats;
 
-public record TrackingStats(
-    int NursingCount,
-    int BottleCount,
-    int SleepCount,
-    int DiaperCount,
-    int CryingCount
-);
+namespace GajaTrack.Application.Interfaces;
 
 public interface IStatsService
 {

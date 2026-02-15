@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using GajaTrack.Infrastructure.Persistence;
+using GajaTrack.Application.DTOs.Import;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,7 +49,9 @@ public class ImportApiTest : IClassFixture<WebApplicationFactory<Program>>
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ImportSummary>();
         Assert.NotNull(result);
-        Assert.True(result.TotalImported > 0);
+        
+        var totalImported = result.NursingFeedsImported + result.BottleFeedsImported + result.SleepSessionsImported + result.DiaperChangesImported + result.CryingSessionsImported;
+        Assert.True(totalImported > 0);
 
         // Verify data integrity
         using (var scope = _factory.Services.CreateScope())
@@ -60,15 +63,5 @@ public class ImportApiTest : IClassFixture<WebApplicationFactory<Program>>
             Assert.Equal(result.DiaperChangesImported, await context.DiaperChanges.CountAsync());
             Assert.Equal(result.CryingSessionsImported, await context.CryingSessions.CountAsync());
         }
-    }
-
-    private record ImportSummary(
-        int NursingFeedsImported,
-        int BottleFeedsImported,
-        int SleepSessionsImported,
-        int DiaperChangesImported,
-        int CryingSessionsImported
-    ) {
-        public int TotalImported => NursingFeedsImported + BottleFeedsImported + SleepSessionsImported + DiaperChangesImported + CryingSessionsImported;
     }
 }

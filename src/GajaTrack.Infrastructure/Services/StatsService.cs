@@ -1,3 +1,4 @@
+using GajaTrack.Application.DTOs.Stats;
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

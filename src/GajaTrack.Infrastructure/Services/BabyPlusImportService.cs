@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GajaTrack.Application.DTOs.Import;
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Infrastructure.Persistence;
 using GajaTrack.Infrastructure.Services.ImportHandlers;
