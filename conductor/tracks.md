@@ -24,8 +24,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [022_SleepCategorization](./tracks/022_SleepCategorization/index.md): Sleep Categorization
 - [x] [023_SleepRefinement](./tracks/023_SleepRefinement/index.md): Sleep Categorization Refinement
 - [x] [024_SleepTrendChart](./tracks/024_SleepTrendChart/index.md): Sleep Trend Chart
-- [ ] [025_RhythmMapUIRefinement](./tracks/025_RhythmMapUIRefinement/index.md): Daily Rhythm Map UI Refinement
+- [x] [025_RhythmMapUIRefinement](./tracks/025_RhythmMapUIRefinement/index.md): Daily Rhythm Map UI Refinement
 - [x] [016_UnitTestStructureRefinement](./tracks/016_UnitTestStructureRefinement/index.md): Unit Test Structure Refinement
+
 
 
 
