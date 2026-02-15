@@ -15,4 +15,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [013_GitWorkflowEvolution](./tracks/013_GitWorkflowEvolution/index.md): Git Workflow Evolution
 - [x] [014_SeparateTestProjects](./tracks/014_SeparateTestProjects/index.md): Separate Test Projects
 - [x] [015_TestProjectRefinement](./tracks/015_TestProjectRefinement/index.md): Test Project Refinement
+- [x] [016_GitHubWorkflowIntegration](./tracks/016_GitHubWorkflowIntegration/index.md): GitHub Workflow Integration
+- [x] [017_WorkflowRefinement](./tracks/017_WorkflowRefinement/index.md): Workflow Refinement
+- [ ] [018_BabyDayDomainModel](./tracks/018_BabyDayDomainModel/index.md): BabyDay Domain Model
 - [x] [016_UnitTestStructureRefinement](./tracks/016_UnitTestStructureRefinement/index.md): Unit Test Structure Refinement

@@ -1,5 +1,7 @@
 using GajaTrack.Application.DTOs.DailyRhythmMap;
+using GajaTrack.Application.Queries;
 using GajaTrack.Application.Services;
+using GajaTrack.Domain;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Domain.Services;
 using GajaTrack.Infrastructure.Persistence;
@@ -29,7 +31,10 @@ public class DailyRhythmMapServiceTest : IDisposable
 
         var repository = new TrackingRepository(_context);
         var domainService = new DailyRhythmMapDomainService();
-        _service = new DailyRhythmMapService(repository, domainService);
+        var getBabyDayQuery = new GetBabyDayQuery(repository, domainService);
+        var calculateSleep = new CalculateSleep();
+        var countWakings = new CountWakings();
+        _service = new DailyRhythmMapService(getBabyDayQuery, calculateSleep, countWakings, domainService);
     }
 
     public void Dispose()
