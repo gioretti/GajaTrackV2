@@ -22,8 +22,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [020_ProjectRenaming](./tracks/020_ProjectRenaming/index.md): Project Renaming & Realignment
 - [x] [021_WorkflowProtocolRefinement](./tracks/021_WorkflowProtocolRefinement/index.md): Workflow Protocol Refinement
 - [x] [022_SleepCategorization](./tracks/022_SleepCategorization/index.md): Sleep Categorization
-- [ ] [023_SleepRefinement](./tracks/023_SleepRefinement/index.md): Sleep Categorization Refinement
+- [x] [023_SleepRefinement](./tracks/023_SleepRefinement/index.md): Sleep Categorization Refinement
 - [x] [016_UnitTestStructureRefinement](./tracks/016_UnitTestStructureRefinement/index.md): Unit Test Structure Refinement
+
 
 
 
