@@ -42,7 +42,7 @@ public class DailyRhythmMapServiceTest : IDisposable
     }
 
     [Fact]
-    public async Task GetDailyRhythmMap_ShouldIncludeEventsInsideWindow()
+    public async Task GetDailyRhythmMapAsync_ShouldIncludeSleepEvent_WhenItIsFullyWithinTheLogicalDay()
     {
         // Arrange
         // Day: Feb 5th (06:00 Feb 5 - 06:00 Feb 6)
@@ -64,16 +64,16 @@ public class DailyRhythmMapServiceTest : IDisposable
         Assert.Equal(day, dailyRhythmMapDay.Date);
         
         Assert.Single(dailyRhythmMapDay.Events);
-        var ev = dailyRhythmMapDay.Events[0];
-        Assert.Equal(DailyRhythmMapEventType.Sleep, ev.Type);
+        var sleepEvent = dailyRhythmMapDay.Events[0];
+        Assert.Equal(DailyRhythmMapEventType.Sleep, sleepEvent.Type);
         
         // 06:00 -> 10:00 = 4 hours = 240 minutes
-        Assert.Equal(240, ev.StartMinute); 
-        Assert.Equal(120, ev.DurationMinutes);
+        Assert.Equal(240, sleepEvent.StartMinute); 
+        Assert.Equal(120, sleepEvent.DurationMinutes);
     }
 
     [Fact]
-    public async Task GetDailyRhythmMap_ShouldCategorizeSleep_IntoNapsAndNight()
+    public async Task GetDailyRhythmMapAsync_ShouldCategorizeSleepIntoNapsAndNight_BasedOnSessionStartTime()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5); // 06:00 - 06:00
@@ -100,7 +100,7 @@ public class DailyRhythmMapServiceTest : IDisposable
     }
 
     [Fact]
-    public async Task GetDailyRhythmMap_ShouldSplitEventCrossingStartBoundary()
+    public async Task GetDailyRhythmMapAsync_ShouldClipEventVisuals_WhenSessionStartsBeforeTheLogicalDay()
     {
         // Arrange
         // Day: Feb 5th (06:00 Feb 5 - 06:00 Feb 6)
@@ -120,14 +120,14 @@ public class DailyRhythmMapServiceTest : IDisposable
         // Assert
         Assert.Single(result);
         Assert.Single(result[0].Events);
-        var ev = result[0].Events[0];
+        var sleepEvent = result[0].Events[0];
         
-        Assert.Equal(0, ev.StartMinute); // Starts at 06:00 (window start)
-        Assert.Equal(60, ev.DurationMinutes); // 1 hour duration in this window
+        Assert.Equal(0, sleepEvent.StartMinute); // Starts at 06:00 (window start)
+        Assert.Equal(60, sleepEvent.DurationMinutes); // 1 hour duration in this window
     }
 
     [Fact]
-    public async Task GetDailyRhythmMap_ShouldReturnMostRecentFirst_WhenDescendingIsTrue()
+    public async Task GetDailyRhythmMapAsync_ShouldReturnDaysInReverseChronologicalOrder_WhenMostRecentFirstIsTrue()
     {
         // Arrange
         var day1 = new DateOnly(2026, 2, 5);
@@ -143,7 +143,7 @@ public class DailyRhythmMapServiceTest : IDisposable
     }
 
     [Fact]
-    public async Task GetDailyRhythmMap_ShouldCalculateTotalSleepMinutes()
+    public async Task GetDailyRhythmMapAsync_ShouldCalculateTotalSleep_AsTheSumOfNapsAndNightRest()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5);
@@ -168,7 +168,7 @@ public class DailyRhythmMapServiceTest : IDisposable
     }
 
     [Fact]
-    public async Task GetDailyRhythmMap_ShouldCalculateNightWakings_ExcludingLastWakeUp()
+    public async Task GetDailyRhythmMapAsync_ShouldExcludeLastWakeUpOfTheDay_FromNightWakingCount()
     {
         // Arrange
         var day = new DateOnly(2026, 2, 5); // 06:00 - 06:00 (Next Day)
