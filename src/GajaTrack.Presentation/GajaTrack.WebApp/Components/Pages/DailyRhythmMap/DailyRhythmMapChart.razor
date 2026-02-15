@@ -64,8 +64,8 @@
             
             <!-- Date Label (Left) -->
             <g>
-                <text x="@(LeftMargin - 10)" y="@(midY - 4)" font-size="10" font-weight="normal" text-anchor="end" fill="#999">@day.Date.ToString("ddd")</text>
-                <text x="@(LeftMargin - 10)" y="@(midY + 10)" font-size="12" font-weight="bold" text-anchor="end" fill="#333">@day.Date.ToString("dd.MM.")</text>
+                <text x="@(LeftMargin - 10)" y="@(midY - 2)" font-size="9" font-weight="normal" text-anchor="end" fill="#999">@day.Date.ToString("ddd")</text>
+                <text x="@(LeftMargin - 10)" y="@(midY + 10)" font-size="11" font-weight="bold" text-anchor="end" fill="#333">@day.Date.ToString("dd.MM.")</text>
             </g>
             
             <!-- Summary Data (Right) -->
@@ -124,10 +124,10 @@
     
     private const double ChartWidth = 1440; // 24 hours * 60 minutes
     private const double LeftMargin = 60;   // Space for Date labels
-    private const double SummaryWidth = 120; // Space for Summary column
+    private const double SummaryWidth = 180; // Space for Summary column (now 2 columns)
     private const double TotalWidth = LeftMargin + ChartWidth + SummaryWidth + 20; // +Padding Right
     
-    private const double RowHeight = 75;
+    private const double RowHeight = 45;
     private const double HeaderHeight = 30;
     
     private double TotalHeight => Math.Max(RowHeight, Days.Count * RowHeight + HeaderHeight);
