@@ -83,34 +83,34 @@
                 {
                     case DailyRhythmMapEventType.Sleep:
                         <!-- Sleep Line (Thin horizontal line) -->
-                        <line x1="@xStart" y1="@midY" x2="@(xStart + width)" y2="@midY" stroke="black" stroke-width="2" stroke-linecap="square" title="Sleep: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <line x1="@xStart" y1="@midY" x2="@(xStart + width)" y2="@midY" stroke="black" stroke-width="2" stroke-linecap="square" title="Sleep: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm")" />
                         break;
                         
                     case DailyRhythmMapEventType.Crying:
                         <!-- Wavy Line (Black Sine Wave) -->
                         <!-- Amplitude: 5px (Total height 10px, matches triangle) -->
-                        <path d="@GenerateSineWave(xStart, width, midY, 5)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <path d="@GenerateSineWave(xStart, width, midY, 5)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm")" />
                         break;
 
                     case DailyRhythmMapEventType.Nursing:
                         <!-- Hollow Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="white" stroke="black" stroke-width="1.5" title="Nursing: @ev.OriginalStartTime.ToString("HH:mm")" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="white" stroke="black" stroke-width="1.5" title="Nursing: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm")" />
                         break;
                         
                     case DailyRhythmMapEventType.BottleFormula:
                         <!-- Solid Blue Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
                         break;
                         
                     case DailyRhythmMapEventType.BottleMilk:
                         <!-- Solid Grey Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
                         break;
 
                     case DailyRhythmMapEventType.Diaper:
                         <!-- Square for Diaper changes -->
                         var diaperColor = ev.Description?.Contains("Wet") == true ? "#FFD700" : "#8B4513";
-                        <rect x="@(xStart - 5)" y="@(midY - 5)" width="10" height="10" fill="@diaperColor" title="Diaper: @ev.OriginalStartTime.ToString("HH:mm") @ev.Description" />
+                        <rect x="@(xStart - 5)" y="@(midY - 5)" width="10" height="10" fill="@diaperColor" title="Diaper: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
                         break;
                 }
             }
