@@ -11,13 +11,13 @@ The current `RowHeight` of 75px makes the Daily Rhythm Map chart vertically spar
 ## Acceptance Criteria
 
 ### 1. Row Dimensions
-- Reduce `RowHeight` from 75px to approximately **45px - 50px**.
+- Reduce `RowHeight` from 45px to approximately **25px - 30px**.
 
-### 2. Summary Layout (Two Columns)
-- Instead of 4 rows of text, the summary will use 2 columns:
-    - **Column 1:** Total Duration & Wakings.
-    - **Column 2:** Naps Duration & Night Sleep Duration.
-- Column 2 should be positioned to the right of Column 1 within the summary area.
+### 2. Icon Scaling
+- Icons (Nursing triangles, Bottles, Diapers) must be scaled up to occupy approximately **80%** of the row height.
+
+### 3. Summary Layout (Ultra Compact)
+- The summary will use a single horizontal row or highly optimized two-column layout to fit the 30px height.
 
 ### 3. Visual Polish
 - Ensure font sizes and alignments are adjusted for the smaller vertical space.

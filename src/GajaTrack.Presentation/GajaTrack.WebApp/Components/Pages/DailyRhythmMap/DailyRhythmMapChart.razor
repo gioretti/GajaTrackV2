@@ -55,17 +55,15 @@
             var y = i * RowHeight + HeaderHeight;
             var midY = y + RowHeight / 2;
             
-            <!-- Row Banding (Zebra Striping) - Darker to contrast with columns -->
+            <!-- Row Banding (Zebra Striping) -->
             @if (i % 2 == 1)
             {
-                <!-- Use a mix-blend-mode or just simple transparency overlay -->
                 <rect x="@LeftMargin" y="@y" width="@(ChartWidth + SummaryWidth)" height="@RowHeight" fill="#eef2f5" opacity="0.6" />
             }
             
             <!-- Date Label (Left) -->
             <g>
-                <text x="@(LeftMargin - 10)" y="@(midY - 2)" font-size="9" font-weight="normal" text-anchor="end" fill="#999">@day.Date.ToString("ddd")</text>
-                <text x="@(LeftMargin - 10)" y="@(midY + 10)" font-size="11" font-weight="bold" text-anchor="end" fill="#333">@day.Date.ToString("dd.MM.")</text>
+                <text x="@(LeftMargin - 5)" y="@(midY + 4)" font-size="10" font-weight="bold" text-anchor="end" fill="#333">@day.Date.ToString("dd.MM")</text>
             </g>
             
             <!-- Summary Data (Right) -->
@@ -88,27 +86,26 @@
                         
                     case DailyRhythmMapEventType.Crying:
                         <!-- Wavy Line (Black Sine Wave) -->
-                        <!-- Amplitude: 5px (Total height 10px, matches triangle) -->
-                        <path d="@GenerateSineWave(xStart, width, midY, 5)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm")" />
+                        <path d="@GenerateSineWave(xStart, width, midY, 4)" stroke="black" stroke-width="1.5" fill="none" title="Crying: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm")" />
                         break;
 
                     case DailyRhythmMapEventType.Nursing:
-                        <!-- Hollow Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="white" stroke="black" stroke-width="1.5" title="Nursing: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm")" />
+                        <!-- Hollow Triangle (Scaled to ~35% of RowHeight) -->
+                        <polygon points="@GetTrianglePoints(xStart, midY, 12)" fill="white" stroke="black" stroke-width="1.5" title="Nursing: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm")" />
                         break;
                         
                     case DailyRhythmMapEventType.BottleFormula:
                         <!-- Solid Blue Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY, 12)" fill="blue" stroke="blue" stroke-width="1" title="Formula: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
                         break;
                         
                     case DailyRhythmMapEventType.BottleMilk:
                         <!-- Solid Grey Triangle -->
-                        <polygon points="@GetTrianglePoints(xStart, midY)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
+                        <polygon points="@GetTrianglePoints(xStart, midY, 12)" fill="grey" stroke="grey" stroke-width="1" title="Bottle: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
                         break;
 
                     case DailyRhythmMapEventType.Diaper:
-                        <!-- Square for Diaper changes -->
+                        <!-- Square for Diaper changes (Scaled) -->
                         var diaperColor = ev.Description?.Contains("Wet") == true ? "#FFD700" : "#8B4513";
                         <rect x="@(xStart - 5)" y="@(midY - 5)" width="10" height="10" fill="@diaperColor" title="Diaper: @ev.OriginalStartTime.ToLocalTime().ToString("HH:mm") @ev.Description" />
                         break;
@@ -124,10 +121,10 @@
     
     private const double ChartWidth = 1440; // 24 hours * 60 minutes
     private const double LeftMargin = 60;   // Space for Date labels
-    private const double SummaryWidth = 180; // Space for Summary column (now 2 columns)
+    private const double SummaryWidth = 200; // Increased for dense 2-col info
     private const double TotalWidth = LeftMargin + ChartWidth + SummaryWidth + 20; // +Padding Right
     
-    private const double RowHeight = 45;
+    private const double RowHeight = 35;
     private const double HeaderHeight = 30;
     
     private double TotalHeight => Math.Max(RowHeight, Days.Count * RowHeight + HeaderHeight);
@@ -136,43 +133,28 @@
     {
         var sb = new StringBuilder();
         sb.Append($"M {startX} {midY}");
-        
-        // Tighter wave: Wavelength = 6px (Frequency ~ 1.0)
         double frequency = 1.0; 
         int step = 1; 
-        
         for (double x = 0; x <= width; x += step)
         {
-             // Use Math.Sin with a tighter period
              double yOffset = amplitude * Math.Sin(x * frequency);
              sb.Append($" L {startX + x} {midY + yOffset}");
         }
-        
         return sb.ToString();
     }
     
-    private string GetTrianglePoints(double cx, double cy)
+    private string GetTrianglePoints(double cx, double cy, double size)
     {
-        double size = 10;
         double halfSize = size / 2;
-        // Pointing Up? Or Down?
-        // Standard triangles in charts usually point up.
-        // cx,cy is center of row.
-        // Let's center the triangle vertically.
-        
         // Top
         double x1 = cx;
         double y1 = cy - halfSize;
-        
         // Bottom Right
         double x2 = cx + halfSize;
         double y2 = cy + halfSize;
-        
         // Bottom Left
         double x3 = cx - halfSize;
         double y3 = cy + halfSize;
-        
         return $"{x1},{y1} {x2},{y2} {x3},{y3}";
     }
 }
-

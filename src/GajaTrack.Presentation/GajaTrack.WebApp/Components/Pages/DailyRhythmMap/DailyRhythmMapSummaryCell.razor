@@ -12,17 +12,17 @@
         var nightH = (int)(Summary.NightSleepMinutes / 60);
         var nightM = (int)(Summary.NightSleepMinutes % 60);
         
-        // Column Offsets
-        const double Col2X = 85;
+        const double Col2X = 90;
     }
     
-    <!-- Column 1: Totals & Wakings -->
-    <text x="0" y="16" font-size="10" fill="#333" font-weight="600">Total: @(totalH)h @(totalM)m</text>
-    <text x="0" y="28" font-size="10" fill="#333" font-weight="500">Wakings: @Summary.NightWakingCount</text>
+    <!-- Ultra-compact 2-column layout for 35px RowHeight -->
+    <!-- Row 1 -->
+    <text x="0" y="14" font-size="10" fill="#333" font-weight="600">Tot: @(totalH)h@(totalM)m</text>
+    <text x="@Col2X" y="14" font-size="10" fill="#555">Nap: @(napsH)h@(napsM)m</text>
 
-    <!-- Column 2: Breakdown -->
-    <text x="@Col2X" y="16" font-size="10" fill="#555">Naps: @(napsH)h @(napsM)m</text>
-    <text x="@Col2X" y="28" font-size="10" fill="#555">Night: @(nightH)h @(nightM)m</text>
+    <!-- Row 2 -->
+    <text x="0" y="26" font-size="10" fill="#333" font-weight="500">Wak: @Summary.NightWakingCount</text>
+    <text x="@Col2X" y="26" font-size="10" fill="#555">Nig: @(nightH)h@(nightM)m</text>
 </g>
 
 @code {
