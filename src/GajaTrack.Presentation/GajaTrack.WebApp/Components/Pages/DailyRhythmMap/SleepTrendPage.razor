@@ -1,0 +1,61 @@
+@page "/sleep-trends"
+@using GajaTrack.Application.DTOs.DailyRhythmMap
+@using GajaTrack.WebApp.Api
+@inject DailyRhythmMapApiClient DailyRhythmMapApi
+
+<PageTitle>Sleep Trends</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Sleep Duration Trends</h1>
+    <div class="d-flex gap-2 align-items-center">
+        <span>@_startDate.ToString("dd.MM.yyyy") - @_startDate.AddDays(29).ToString("dd.MM.yyyy")</span>
+        <div class="btn-group">
+            <button class="btn btn-outline-secondary" @onclick="PrevPage">&lt;</button>
+            <button class="btn btn-outline-secondary" @onclick="NextPage">&gt;</button>
+        </div>
+    </div>
+</div>
+
+@if (_days == null)
+{
+    <div class="d-flex justify-content-center p-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-flex flex-column align-items-center gap-2">
+        <SleepTrendChart Days="_days" />
+        <SleepDurationLineChart Days="_days" />
+    </div>
+}
+
+@code {
+    private List<DailyRhythmMapDay>? _days;
+    private DateOnly _startDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-29));
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        // Load 30 days of data
+        _days = await DailyRhythmMapApi.GetAsync(_startDate, _startDate.AddDays(29), mostRecentFirst: true);
+    }
+
+    private async Task PrevPage()
+    {
+        _startDate = _startDate.AddDays(-30);
+        await LoadData();
+    }
+
+    private async Task NextPage()
+    {
+        _startDate = _startDate.AddDays(30);
+        await LoadData();
+    }
+}
