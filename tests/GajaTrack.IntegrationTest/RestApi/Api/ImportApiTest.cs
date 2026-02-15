@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 
-namespace GajaTrack.Web.Api;
+namespace GajaTrack.RestApi.Api;
 
 public class ImportApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -65,3 +65,4 @@ public class ImportApiTest : IClassFixture<WebApplicationFactory<Program>>
         }
     }
 }
+

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 using GajaTrack.Domain.Entities;
 
-namespace GajaTrack.Web.Api;
+namespace GajaTrack.RestApi.Api;
 
 public class ExportApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -66,3 +66,4 @@ public class ExportApiTest : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains("bottleFeeds", content);
     }
 }
+

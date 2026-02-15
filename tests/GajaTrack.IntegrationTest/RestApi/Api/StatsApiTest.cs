@@ -9,7 +9,7 @@ using GajaTrack.Domain.Entities;
 using GajaTrack.Application.Interfaces;
 using GajaTrack.Application.DTOs.Stats;
 
-namespace GajaTrack.Web.Api;
+namespace GajaTrack.RestApi.Api;
 
 public class StatsApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -62,3 +62,4 @@ public class StatsApiTest : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(0, stats.SleepCount);
     }
 }
+

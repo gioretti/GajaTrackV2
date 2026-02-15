@@ -313,3 +313,4 @@ public class DailyRhythmMapServiceTest : IDisposable
         Assert.Equal(0, result[0].Summary.NightWakingCount);
     }
 }
+

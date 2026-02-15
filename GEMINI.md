@@ -34,6 +34,7 @@ This project uses **Conductor** as the central engine. All work happens in **Tra
 - **Architecture & ADRs:** `docs/adr/` and `docs/architecture.md`
 - **Coding Standards:** `conductor/code_styleguides/`
 - **Technical Implementation:** `/src/`
+- **Presentation Layer:** `src/GajaTrack.Presentation/` (RestApi & WebApp)
 - **Test Suite:** `/tests/`
 
 ## GLOBAL CONSTRAINTS
