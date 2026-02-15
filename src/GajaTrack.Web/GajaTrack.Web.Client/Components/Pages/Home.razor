@@ -1,7 +1,8 @@
 @page "/"
-@using GajaTrack.Application.Interfaces
-@inject IStatsService StatsService
-@inject IExportService ExportService
+@using GajaTrack.Application.DTOs.Stats
+@using GajaTrack.Web.Client.Api
+@inject StatsApiClient StatsApi
+@inject ExportApiClient ExportApi
 @inject IJSRuntime JS
 
 <PageTitle>Home</PageTitle>
@@ -62,13 +63,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _stats = await StatsService.GetStatsAsync();
+        _stats = await StatsApi.GetAsync();
     }
 
     private async Task DownloadExport()
     {
-        var bytes = await ExportService.ExportDataAsync();
-        if (bytes.Length > 0)
+        var bytes = await ExportApi.GetExportBytesAsync();
+        if (bytes != null && bytes.Length > 0)
         {
             var fileName = $"gajatrack_export_{DateTime.UtcNow:yyyy-MM-dd}.json";
             
