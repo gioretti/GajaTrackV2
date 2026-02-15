@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using GajaTrack.Application.DTOs.DailyRhythmMap;
 
-namespace GajaTrack.Web.Client.Api;
+namespace GajaTrack.WebApp.Api;
 
 public class DailyRhythmMapApiClient(HttpClient http)
 {
@@ -14,3 +14,4 @@ public class DailyRhythmMapApiClient(HttpClient http)
         return result ?? new List<DailyRhythmMapDay>();
     }
 }
+

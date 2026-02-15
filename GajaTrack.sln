@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -11,11 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GajaTrack.Application", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GajaTrack.Infrastructure", "src\GajaTrack.Infrastructure\GajaTrack.Infrastructure.csproj", "{0BBBCE07-EA05-4BE2-A037-5C94DF271792}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GajaTrack.Web", "GajaTrack.Web", "{B2FE8DFE-9DCD-4358-B7B6-F84EFDA5BC0E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GajaTrack.Presentation", "GajaTrack.Presentation", "{B2FE8DFE-9DCD-4358-B7B6-F84EFDA5BC0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GajaTrack.Web", "src\GajaTrack.Web\GajaTrack.Web\GajaTrack.Web.csproj", "{F46040FC-9B31-44EF-B7E5-B19B1FB2751E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GajaTrack.RestApi", "src\GajaTrack.Presentation\GajaTrack.RestApi\GajaTrack.RestApi.csproj", "{F46040FC-9B31-44EF-B7E5-B19B1FB2751E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GajaTrack.Web.Client", "src\GajaTrack.Web\GajaTrack.Web.Client\GajaTrack.Web.Client.csproj", "{0CCD011D-99F1-4D2A-910F-3143EE95E9C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GajaTrack.WebApp", "src\GajaTrack.Presentation\GajaTrack.WebApp\GajaTrack.WebApp.csproj", "{0CCD011D-99F1-4D2A-910F-3143EE95E9C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
@@ -132,3 +132,4 @@ Global
 		{984C5B7E-B9B4-4382-8F37-1D80D73B796D} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal
+
