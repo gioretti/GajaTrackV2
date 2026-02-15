@@ -25,8 +25,6 @@ public class CalculateSleep
             // 2. Determine category based on local start time
             var localStartTime = TimeOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(session.StartTime.Value, timeZone));
             
-            // Naps: 06:00 to 18:00
-            // Night: 18:00 to 06:00 (Next day)
             if (IsDayTime(localStartTime))
             {
                 napsMinutes += sessionRange.TotalMinutes;
@@ -42,6 +40,6 @@ public class CalculateSleep
 
     private static bool IsDayTime(TimeOnly time)
     {
-        return time >= new TimeOnly(BabyDay.DayTimeStart, 0) && time < new TimeOnly(BabyDay.NightTimeStart, 0);
+        return time >= BabyDay.DayTimeStart && time < BabyDay.NightTimeStart;
     }
 }
