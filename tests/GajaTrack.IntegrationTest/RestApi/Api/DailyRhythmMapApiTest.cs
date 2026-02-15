@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 
-namespace GajaTrack.Web.Api;
+namespace GajaTrack.RestApi.Api;
 
 public class DailyRhythmMapApiTest : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -103,3 +103,4 @@ public class DailyRhythmMapApiTest : IClassFixture<WebApplicationFactory<Program
         Assert.Contains(invalidTz, content);
     }
 }
+
