@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\GajaTrack.Application\GajaTrack.Application.csproj" />
@@ -21,3 +21,4 @@
   </PropertyGroup>
 
 </Project>
+

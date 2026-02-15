@@ -12,7 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.1" />
-    <ProjectReference Include="..\GajaTrack.Web.Client\GajaTrack.Web.Client.csproj" />
+    <ProjectReference Include="..\GajaTrack.WebApp\GajaTrack.WebApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,3 +21,5 @@
   </ItemGroup>
 
 </Project>
+
+

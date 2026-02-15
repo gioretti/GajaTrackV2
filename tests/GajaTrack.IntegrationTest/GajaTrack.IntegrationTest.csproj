@@ -23,7 +23,7 @@
     <ProjectReference Include="..\..\src\GajaTrack.Application\GajaTrack.Application.csproj" />
     <ProjectReference Include="..\..\src\GajaTrack.Domain\GajaTrack.Domain.csproj" />
     <ProjectReference Include="..\..\src\GajaTrack.Infrastructure\GajaTrack.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\GajaTrack.Web\GajaTrack.Web\GajaTrack.Web.csproj" />
+    <ProjectReference Include="..\..\src\GajaTrack.Presentation\GajaTrack.RestApi\GajaTrack.RestApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,3 +33,5 @@
   </ItemGroup>
 
 </Project>
+
+

@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using GajaTrack.Application.DTOs.Stats;
 
-namespace GajaTrack.Web.Client.Api;
+namespace GajaTrack.WebApp.Api;
 
 public class StatsApiClient(HttpClient http)
 {
@@ -10,3 +10,4 @@ public class StatsApiClient(HttpClient http)
         return await http.GetFromJsonAsync<TrackingStats>("/api/stats");
     }
 }
+

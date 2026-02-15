@@ -1,4 +1,4 @@
-namespace GajaTrack.Web.Client.Api;
+namespace GajaTrack.WebApp.Api;
 
 public class ExportApiClient(HttpClient http)
 {
@@ -12,3 +12,4 @@ public class ExportApiClient(HttpClient http)
         return Array.Empty<byte>();
     }
 }
+
