@@ -1,12 +1,6 @@
-namespace GajaTrack.Application.Interfaces;
+using GajaTrack.Application.DTOs.Import;
 
-public record ImportSummary(
-    int NursingFeedsImported,
-    int BottleFeedsImported,
-    int SleepSessionsImported,
-    int DiaperChangesImported,
-    int CryingSessionsImported
-);
+namespace GajaTrack.Application.Interfaces;
 
 public interface IBabyPlusImportService
 {

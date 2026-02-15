@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Data.Sqlite;
 using GajaTrack.Domain.Entities;
 using GajaTrack.Application.Interfaces;
+using GajaTrack.Application.DTOs.Stats;
 
 namespace GajaTrack.Web.Api;
 
