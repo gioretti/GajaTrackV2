@@ -44,36 +44,42 @@ var api = app.MapGroup("/api");
 api.MapGet("/daily-rhythm-map", async (
     [FromQuery] DateOnly startDate, 
     [FromQuery] DateOnly endDate, 
-    [FromQuery] bool mostRecentFirst, 
-    [FromQuery] string? timeZoneId,
-    [FromServices] IDailyRhythmMapService service) =>
+    [FromServices] IDailyRhythmMapService dailyRhythmMapService,
+    [FromQuery] bool mostRecentFirst = false, 
+    [FromQuery] string? timeZoneId = null) =>
 {
     TimeZoneInfo? timeZone = null;
     if (!string.IsNullOrEmpty(timeZoneId))
     {
-        try { timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId); }
-        catch (TimeZoneNotFoundException) { /* Fallback to Local/UTC */ }
+        try 
+        { 
+            timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId); 
+        }
+        catch (TimeZoneNotFoundException) 
+        {
+            return Results.BadRequest($"Timezone '{timeZoneId}' not found.");
+        }
     }
 
-    var result = await service.GetDailyRhythmMapAsync(startDate, endDate, mostRecentFirst, timeZone);
+    var result = await dailyRhythmMapService.GetDailyRhythmMapAsync(startDate, endDate, mostRecentFirst, timeZone);
     return Results.Ok(result);
 });
 
-api.MapPost("/import/babyplus", async (HttpRequest request, [FromServices] IBabyPlusImportService service) =>
+api.MapPost("/import/babyplus", async (HttpRequest request, [FromServices] IBabyPlusImportService importService) =>
 {
-    var summary = await service.ImportFromStreamAsync(request.Body);
+    var summary = await importService.ImportFromStreamAsync(request.Body);
     return Results.Ok(summary);
 });
 
-api.MapGet("/export", async ([FromServices] IExportService service) =>
+api.MapGet("/export", async ([FromServices] IExportService exportService) =>
 {
-    var bytes = await service.ExportDataAsync();
+    var bytes = await exportService.ExportDataAsync();
     return Results.File(bytes, "application/json", $"gajatrack_export_{DateTime.UtcNow:yyyy-MM-dd}.json");
 });
 
-api.MapGet("/stats", async ([FromServices] IStatsService service) =>
+api.MapGet("/stats", async ([FromServices] IStatsService statsService) =>
 {
-    var stats = await service.GetStatsAsync();
+    var stats = await statsService.GetStatsAsync();
     return Results.Ok(stats);
 });
 
