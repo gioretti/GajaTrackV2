@@ -3,22 +3,21 @@ using GajaTrack.Application.Interfaces;
 using GajaTrack.Application.Queries;
 using GajaTrack.Domain;
 using GajaTrack.Domain.Entities;
-using GajaTrack.Domain.Services;
 
 namespace GajaTrack.Application.Services;
 
 public class DailyRhythmMapService(
-    IGetBabyDayQuery getBabyDayQuery,
-    ICalculateSleep calculateSleep,
-    ICountWakings countWakings,
-    DailyRhythmMapDomainService domainService) : IDailyRhythmMapService
+    GetBabyDay.Execution getBabyDayExecution,
+    CalculateSleep calculateSleep,
+    CountWakings countWakings) : IDailyRhythmMapService
 {
     public async Task<List<DailyRhythmMapDay>> GetDailyRhythmMapAsync(DateOnly startDate, DateOnly endDate, bool mostRecentFirst = false, TimeZoneInfo? timeZone = null, CancellationToken cancellationToken = default)
     {
         timeZone ??= TimeZoneInfo.Local;
 
         // 1. Fetch BabyDay Domain Objects
-        var babyDays = await getBabyDayQuery.ExecuteAsync(startDate, endDate, timeZone, cancellationToken);
+        var query = new GetBabyDay.Query(startDate, endDate, timeZone);
+        var babyDays = await getBabyDayExecution.RunAsync(query, cancellationToken);
 
         var result = new List<DailyRhythmMapDay>();
 
@@ -28,59 +27,90 @@ public class DailyRhythmMapService(
             var dayEvents = new List<DailyRhythmMapEvent>();
 
             // Process Sleep (Interval)
-            foreach (var s in day.SleepSessions)
+            foreach (var sleep in day.SleepSessions)
             {
-                var sessionRange = new TimeRange(s.StartTime, s.EndTime ?? UtcDateTime.Now());
-                var intersection = day.Window.GetIntersection(sessionRange);
+                var sessionRange = new TimeRange(sleep.StartTime, sleep.EndTime ?? UtcDateTime.Now());
+                var intersection = day.TimeBounds.GetIntersection(sessionRange);
                 if (intersection.HasValue)
                 {
-                    var displayTime = TimeZoneInfo.ConvertTimeFromUtc(s.StartTime, timeZone);
-                    dayEvents.Add(DailyRhythmMapEvent.Create(s.Id, DailyRhythmMapEventType.Sleep, displayTime, day.Window.Start, intersection.Value.Start, intersection.Value.End));
+                    dayEvents.Add(DailyRhythmMapEvent.Create(
+                        sleep.Id, 
+                        DailyRhythmMapEventType.Sleep, 
+                        sleep.StartTime.Value, 
+                        day.TimeBounds.Start, 
+                        intersection.Value.Start, 
+                        intersection.Value.End)); 
                 }
             }
 
             // Process Crying (Interval)
-            foreach (var c in day.CryingSessions)
+            foreach (var crying in day.CryingSessions)
             {
-                var sessionRange = new TimeRange(c.StartTime, c.EndTime ?? UtcDateTime.Now());
-                var intersection = day.Window.GetIntersection(sessionRange);
+                var sessionRange = new TimeRange(crying.StartTime, crying.EndTime ?? UtcDateTime.Now());
+                var intersection = day.TimeBounds.GetIntersection(sessionRange);
                 if (intersection.HasValue)
                 {
-                    var displayTime = TimeZoneInfo.ConvertTimeFromUtc(c.StartTime, timeZone);
-                    dayEvents.Add(DailyRhythmMapEvent.Create(c.Id, DailyRhythmMapEventType.Crying, displayTime, day.Window.Start, intersection.Value.Start, intersection.Value.End));
+                    dayEvents.Add(DailyRhythmMapEvent.Create(
+                        crying.Id, 
+                        DailyRhythmMapEventType.Crying, 
+                        crying.StartTime.Value, 
+                        day.TimeBounds.Start, 
+                        intersection.Value.Start, 
+                        intersection.Value.End));
                 }
             }
 
             // Process Nursing (Point)
-            foreach (var n in day.NursingFeeds)
+            foreach (var nursing in day.NursingFeeds)
             {
-                var displayTime = TimeZoneInfo.ConvertTimeFromUtc(n.StartTime, timeZone);
-                dayEvents.Add(DailyRhythmMapEvent.Create(n.Id, DailyRhythmMapEventType.Nursing, displayTime, day.Window.Start, n.StartTime, n.StartTime));
+                dayEvents.Add(DailyRhythmMapEvent.Create(
+                    nursing.Id, 
+                    DailyRhythmMapEventType.Nursing, 
+                    nursing.StartTime.Value, 
+                    day.TimeBounds.Start, 
+                    nursing.StartTime, 
+                    nursing.StartTime));
             }
 
             // Process Bottle (Point)
-            foreach (var b in day.BottleFeeds)
+            foreach (var bottle in day.BottleFeeds)
             {
-                var displayTime = TimeZoneInfo.ConvertTimeFromUtc(b.Time, timeZone);
-                var type = b.Content == BottleContent.Formula ? DailyRhythmMapEventType.BottleFormula : DailyRhythmMapEventType.BottleMilk;
-                dayEvents.Add(DailyRhythmMapEvent.Create(b.Id, type, displayTime, day.Window.Start, b.Time, b.Time, $"{b.AmountMl}ml"));
+                var type = bottle.Content == BottleContent.Formula ? DailyRhythmMapEventType.BottleFormula : DailyRhythmMapEventType.BottleMilk;
+                dayEvents.Add(DailyRhythmMapEvent.Create(
+                    bottle.Id, 
+                    type, 
+                    bottle.Time.Value, 
+                    day.TimeBounds.Start, 
+                    bottle.Time, 
+                    bottle.Time, 
+                    $"{bottle.AmountMl}ml"));
             }
 
             // Process Diaper (Point)
-            foreach (var di in day.DiaperChanges)
+            foreach (var diaper in day.DiaperChanges)
             {
-                var displayTime = TimeZoneInfo.ConvertTimeFromUtc(di.Time, timeZone);
-                dayEvents.Add(DailyRhythmMapEvent.Create(di.Id, DailyRhythmMapEventType.Diaper, displayTime, day.Window.Start, di.Time, di.Time, di.Type.ToString()));
+                dayEvents.Add(DailyRhythmMapEvent.Create(
+                    diaper.Id, 
+                    DailyRhythmMapEventType.Diaper, 
+                    diaper.Time.Value, 
+                    day.TimeBounds.Start, 
+                    diaper.Time, 
+                    diaper.Time, 
+                    diaper.Type.ToString()));
             }
 
             // 3. Calculate Summaries using Domain Services
             var totalSleep = calculateSleep.For(day);
-            var nightWakings = countWakings.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0));
+            var nightWakings = countWakings.For(day, new TimeOnly(18, 0), new TimeOnly(6, 0), timeZone);
+
+            // Calculate Date from TimeBounds.Start (Port responsibility)
+            var localStart = TimeZoneInfo.ConvertTimeFromUtc(day.TimeBounds.Start, timeZone);
+            var date = DateOnly.FromDateTime(localStart);
 
             result.Add(new DailyRhythmMapDay(
-                day.Date,
-                day.Window.Start,
-                day.Window.End,
+                date,
+                day.TimeBounds.Start,
+                day.TimeBounds.End,
                 dayEvents.OrderBy(x => x.StartMinute).ToList(),
                 new DailyRhythmMapSummary(totalSleep, nightWakings)
             ));
