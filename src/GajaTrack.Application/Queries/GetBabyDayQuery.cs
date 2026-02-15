@@ -15,19 +15,19 @@ public static class GetBabyDay
     {
         public async Task<List<BabyDay>> RunAsync(Query query, CancellationToken cancellationToken)
         {
-            // 1. Determine Fetch Range (Buffer to catch overlapping events)
-            var fetchStart = query.StartDate.AddDays(-1).ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
-            var fetchEnd = query.EndDate.AddDays(2).ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
+        // 1. Determine Search Window (Buffer to catch overlapping events)
+        var searchWindowStart = query.StartDate.AddDays(-1).ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
+        var searchWindowEnd = query.EndDate.AddDays(2).ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
 
-            var utcStart = UtcDateTime.FromDateTime(fetchStart);
-            var utcEnd = UtcDateTime.FromDateTime(fetchEnd);
+        var searchWindowStartUtc = UtcDateTime.FromDateTime(searchWindowStart);
+        var searchWindowEndUtc = UtcDateTime.FromDateTime(searchWindowEnd);
 
-            // 2. Fetch Data
-            var sleepTask = repository.GetSleepSessionsInRangeAsync(utcStart, utcEnd, cancellationToken);
-            var nursingTask = repository.GetNursingFeedsInRangeAsync(utcStart, utcEnd, cancellationToken);
-            var bottleTask = repository.GetBottleFeedsInRangeAsync(utcStart, utcEnd, cancellationToken);
-            var cryingTask = repository.GetCryingSessionsInRangeAsync(utcStart, utcEnd, cancellationToken);
-            var diaperTask = repository.GetDiaperChangesInRangeAsync(utcStart, utcEnd, cancellationToken);
+        // 2. Fetch Data
+        var sleepTask = repository.GetSleepSessionsInRangeAsync(searchWindowStartUtc, searchWindowEndUtc, cancellationToken);
+        var nursingTask = repository.GetNursingFeedsInRangeAsync(searchWindowStartUtc, searchWindowEndUtc, cancellationToken);
+        var bottleTask = repository.GetBottleFeedsInRangeAsync(searchWindowStartUtc, searchWindowEndUtc, cancellationToken);
+        var cryingTask = repository.GetCryingSessionsInRangeAsync(searchWindowStartUtc, searchWindowEndUtc, cancellationToken);
+        var diaperTask = repository.GetDiaperChangesInRangeAsync(searchWindowStartUtc, searchWindowEndUtc, cancellationToken);
 
             await Task.WhenAll(sleepTask, nursingTask, bottleTask, cryingTask, diaperTask);
 
