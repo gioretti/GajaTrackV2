@@ -2,8 +2,9 @@
 
 <g transform="translate(@X, @Y)">
     @{
-        var totalH = (int)(Summary.TotalSleepMinutes / 60);
-        var totalM = (int)(Summary.TotalSleepMinutes % 60);
+        var totalSleepMinutes = Summary.NapsMinutes + Summary.NightSleepMinutes;
+        var totalH = (int)(totalSleepMinutes / 60);
+        var totalM = (int)(totalSleepMinutes % 60);
         
         var napsH = (int)(Summary.NapsMinutes / 60);
         var napsM = (int)(Summary.NapsMinutes % 60);

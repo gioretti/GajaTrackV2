@@ -113,7 +113,6 @@ public class DailyRhythmMapService(
                 day.TimeBounds.End,
                 dayEvents.OrderBy(x => x.StartMinute).ToList(),
                 new DailyRhythmMapSummary(
-                    sleepMetrics.NapsMinutes + sleepMetrics.NightSleepMinutes, 
                     sleepMetrics.NapsMinutes, 
                     sleepMetrics.NightSleepMinutes, 
                     nightWakings)

@@ -96,7 +96,7 @@ public class DailyRhythmMapServiceTest : IDisposable
         // Assert
         Assert.Equal(60, result[0].Summary.NapsMinutes);
         Assert.Equal(120, result[0].Summary.NightSleepMinutes);
-        Assert.Equal(180, result[0].Summary.TotalSleepMinutes);
+        Assert.Equal(180, result[0].Summary.NapsMinutes + result[0].Summary.NightSleepMinutes);
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public class DailyRhythmMapServiceTest : IDisposable
         var result = await _service.GetDailyRhythmMapAsync(day, day, timeZone: TimeZoneInfo.Utc);
 
         // Assert
-        Assert.Equal(120 + 90, result[0].Summary.TotalSleepMinutes);
+        Assert.Equal(120 + 90, result[0].Summary.NapsMinutes + result[0].Summary.NightSleepMinutes);
     }
 
     [Fact]
