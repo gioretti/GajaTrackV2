@@ -21,7 +21,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] [019_RestApiFrontendDecoupling](./tracks/019_RestApiFrontendDecoupling/index.md): REST API Frontend Decoupling
 - [x] [020_ProjectRenaming](./tracks/020_ProjectRenaming/index.md): Project Renaming & Realignment
 - [x] [021_WorkflowProtocolRefinement](./tracks/021_WorkflowProtocolRefinement/index.md): Workflow Protocol Refinement
-- [ ] [022_SleepCategorization](./tracks/022_SleepCategorization/index.md): Sleep Categorization
+- [x] [022_SleepCategorization](./tracks/022_SleepCategorization/index.md): Sleep Categorization
 - [x] [016_UnitTestStructureRefinement](./tracks/016_UnitTestStructureRefinement/index.md): Unit Test Structure Refinement
+
 
 
