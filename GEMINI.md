@@ -11,16 +11,15 @@ This project uses **Conductor** as the central engine. All work happens in **Tra
 - **Software Developer:** Execution expert. **Forbidden from expanding scope or refactoring project structure without an approved plan update.**
 
 ## DEVELOPMENT PRINCIPLES
-- **Surgical Changes:** Touch only what is explicitly in the `plan.md`. **Strictly clean up only your own mess.** Opportunistic refactoring or "fixing" adjacent project structure is a PROTOCOL BREACH. If you see an improvement, you MUST stop and propose a new track or plan update.
-- **Think Before Coding:** **Don't hide confusion.** State assumptions explicitly. Surface tradeoffs. If multiple interpretations exist, present them—don't pick silently. Push back if a simpler approach is possible.
-- **Simplicity First:** Minimum code that solves the problem. Nothing speculative. **If you write 200 lines and it could be 50, rewrite it.** No abstractions for single-use code. No error handling for logically impossible scenarios.
-- **Goal-Driven Execution:** Transform tasks into verifiable goals. **NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.** Use the "Task -> Verify" loop.
+- **Surgical Changes:** Touch only what is explicitly in the `plan.md`. **Strictly clean up only your own mess.** Opportunistic refactoring is a PROTOCOL BREACH.
+- **Git Discipline:** The Developer MUST activate and follow the **`git-protocol`** skill for all branch, commit, PR, and merge operations. No work outside a track branch.
+- **Think Before Coding:** State assumptions explicitly. Surface tradeoffs. Push back if a simpler approach is possible.
+- **Simplicity First:** Minimum code that solves the problem. Nothing speculative.
+- **Goal-Driven Execution:** **NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.** Use the "Task -> Verify" loop.
 
 ## OPERATIONAL GUIDELINES
 - **Track-Driven Development:** No work outside a Conductor track. Use `/conductor:implement`.
-- **Branch Isolation:** Every track MUST have its own Git branch named exactly after the Track ID (e.g., `013_GitWorkflowEvolution`). Direct commits to `master` are FORBIDDEN.
-- **Mandatory Review Gate:** Merging into `master` is a privileged operation. The Software Developer (agent) MUST create a GitHub Pull Request and obtain explicit approval on GitHub from the Software Architect (user). The Developer is responsible for reading and addressing code review comments provided on the PR via the GitHub API. **The Developer MUST NOT merge the PR if there are any unresolved comments or open discussions.**
-- **Merge Strategy:** Tracks are merged into `master` via the GitHub API AFTER all comments are resolved and a successful code review is obtained. The sequence performed by the Developer MUST be: (1) Rebase track branch locally on `master`, (2) Force-push to PR, (3) Execute a non-fast-forward merge via the GitHub API (`merge_pull_request` with `merge_method: "merge"`) to preserve merge bubbles on a linear history. **Cleanup follows immediately: the track branch MUST be deleted both on the remote (via GitHub) and locally by the Developer to maintain repository hygiene.**
+- **Mandatory Review Gate:** Merging into `master` is a privileged operation. Follow the review process defined in the `git-protocol` skill.
 - **The Handoff:**
     1. **PO Discovery:** User Request -> `spec.md`.
     2. **Architect Design:** `spec.md` -> `plan.md`.
@@ -38,6 +37,8 @@ This project uses **Conductor** as the central engine. All work happens in **Tra
 - **Test Suite:** `/tests/`
 
 ## GLOBAL CONSTRAINTS
+- **Runtime Environment:** win32 (Windows).
+- **Shell Syntax:** Always use PowerShell-compatible syntax. Use `;` as a statement separator instead of `&&`.
 - **Tone:** Concise, professional, zero fluff.
 - **Physical File Writes Only:** All modifications must be saved to disk.
 - **Atomic Tasks:** Small, verifiable units only.
