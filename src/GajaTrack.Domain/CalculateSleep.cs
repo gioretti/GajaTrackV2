@@ -2,12 +2,7 @@ using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Domain;
 
-public interface ICalculateSleep
-{
-    double For(BabyDay day);
-}
-
-public class CalculateSleep : ICalculateSleep
+public class CalculateSleep
 {
     public double For(BabyDay day)
     {
@@ -16,7 +11,7 @@ public class CalculateSleep : ICalculateSleep
         foreach (var session in day.SleepSessions)
         {
             var sessionRange = new TimeRange(session.StartTime, session.EndTime ?? UtcDateTime.Now());
-            var intersection = day.Window.GetIntersection(sessionRange);
+            var intersection = day.TimeBounds.GetIntersection(sessionRange);
 
             if (intersection.HasValue)
             {

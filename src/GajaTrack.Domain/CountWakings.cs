@@ -2,52 +2,35 @@ using GajaTrack.Domain.Entities;
 
 namespace GajaTrack.Domain;
 
-public interface ICountWakings
+public class CountWakings
 {
-    int For(BabyDay day, TimeOnly from, TimeOnly to);
-}
-
-public class CountWakings : ICountWakings
-{
-    public int For(BabyDay day, TimeOnly from, TimeOnly to)
+    public int For(BabyDay day, TimeOnly from, TimeOnly to, TimeZoneInfo timeZone)
     {
         var sleepSessions = day.SleepSessions
-            .OrderBy(s => s.StartTime.Value)
+            .OrderBy(session => session.StartTime.Value)
             .ToList();
 
-        if (sleepSessions.Count <= 1) return 0;
-
-        int count = 0;
-        // Night window logic (e.g., 18:00 to 06:00)
-        // We count sessions that END within this window, excluding the last one.
-        for (int i = 0; i < sleepSessions.Count - 1; i++)
+        if (sleepSessions.Count <= 1)
         {
-            var session = sleepSessions[i];
-            if (!session.EndTime.HasValue) continue;
-
-            // Convert UTC EndTime to Local Time for checking the TimeOnly window
-            var localEnd = TimeOnly.FromDateTime(session.EndTime.Value.Value.ToLocalTime());
-
-            if (IsTimeInWindow(localEnd, from, to))
-            {
-                count++;
-            }
+            return 0;
         }
 
-        return count;
+        // We count interruptions (sessions that END within the night range), excluding the final wake-up of the day.
+        return sleepSessions
+            .Take(sleepSessions.Count - 1)
+            .Where(session => session.EndTime.HasValue)
+            .Select(session => TimeOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(session.EndTime!.Value, timeZone)))
+            .Count(localEndTime => IsTimeInWindow(localEndTime, from, to));
     }
 
-    private bool IsTimeInWindow(TimeOnly time, TimeOnly from, TimeOnly to)
+    private static bool IsTimeInWindow(TimeOnly time, TimeOnly from, TimeOnly to)
     {
         if (from <= to)
         {
-            // Simple range (e.g., 08:00 to 12:00)
             return time >= from && time <= to;
         }
-        else
-        {
-            // Overnight range (e.g., 18:00 to 06:00)
-            return time >= from || time <= to;
-        }
+        
+        // Overnight range (e.g., 18:00 to 06:00)
+        return time >= from || time <= to;
     }
 }
