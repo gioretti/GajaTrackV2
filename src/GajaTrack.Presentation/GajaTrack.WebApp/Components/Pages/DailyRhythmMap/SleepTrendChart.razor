@@ -1,7 +1,7 @@
 @using GajaTrack.Application.DTOs.DailyRhythmMap
 
 <div class="sleep-trend-chart-container mt-4 card p-3 shadow-sm">
-    <h5 class="mb-3">Sleep Duration Trend (Last 14 Days)</h5>
+    <h5 class="mb-3">Sleep Duration Trend (Last 30 Days)</h5>
     <svg viewBox="0 0 @TotalWidth @TotalHeight" preserveAspectRatio="xMidYMid meet" class="sleep-trend-svg">
         <!-- Background -->
         <rect x="0" y="0" width="@TotalWidth" height="@TotalHeight" fill="white" />
@@ -59,7 +59,7 @@
 @code {
     [Parameter] public List<DailyRhythmMapDay> Days { get; set; } = new();
 
-    private const double TotalWidth = 1000;
+    private const double TotalWidth = 1400;
     private const double TotalHeight = 350;
     private const double TopMargin = 40;
     private const double BottomMargin = 30;
