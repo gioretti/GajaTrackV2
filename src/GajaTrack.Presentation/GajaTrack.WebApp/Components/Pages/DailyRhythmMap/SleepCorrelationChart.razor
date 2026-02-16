@@ -1,0 +1,66 @@
+@using GajaTrack.Application.DTOs.DailyRhythmMap
+@using System.Text
+
+<div class="sleep-correlation-chart-container mt-4 card p-3 shadow-sm">
+    <h5 class="mb-3">Nap Duration vs. Night Wakings (Correlation)</h5>
+    <svg viewBox="0 0 @TotalWidth @TotalHeight" preserveAspectRatio="xMidYMid meet" class="sleep-correlation-svg">
+        <!-- Background -->
+        <rect x="0" y="0" width="@TotalWidth" height="@TotalHeight" fill="white" />
+
+        <!-- X-Axis Labels & Vertical Grid Lines (0 to 12h Naps) -->
+        @for (int h = 0; h <= MaxNapHours; h++)
+        {
+            var x = LeftMargin + (h * XScale);
+            <line x1="@x" y1="@TopMargin" x2="@x" y2="@(TotalHeight - BottomMargin)" stroke="#eee" stroke-width="1" />
+            <svg:text x="@x" y="@(TotalHeight - 10)" font-size="10" text-anchor="middle" fill="#666">@(h)h</svg:text>
+        }
+        <svg:text x="@(LeftMargin + ChartWidth / 2)" y="@(TotalHeight - 2)" font-size="11" text-anchor="middle" font-weight="bold" fill="#333">Daytime Nap Duration (Hours)</svg:text>
+
+        <!-- Y-Axis Labels & Horizontal Grid Lines (0 to Max Wakings) -->
+        @{
+            var maxWakings = Days.Count > 0 ? Math.Max(5, Days.Max(d => d.Summary.NightWakingCount)) : 5;
+            var yScale = ChartHeight / (double)maxWakings;
+        }
+        @for (int w = 0; w <= maxWakings; w++)
+        {
+            var y = (TotalHeight - BottomMargin) - (w * yScale);
+            <line x1="@LeftMargin" y1="@y" x2="@(TotalWidth - RightMargin)" y2="@y" stroke="#eee" stroke-width="1" />
+            <svg:text x="@(LeftMargin - 10)" y="@(y + 4)" font-size="10" text-anchor="end" fill="#666">@w</svg:text>
+        }
+        <svg:text transform="rotate(-90, 15, @(TopMargin + ChartHeight / 2))" x="15" y="@(TopMargin + ChartHeight / 2)" font-size="11" text-anchor="middle" font-weight="bold" fill="#333">Night Wakings</svg:text>
+
+        <!-- Data Points (Circles) -->
+        @foreach (var day in Days)
+        {
+            var xPos = LeftMargin + (day.Summary.NapsMinutes / 60.0) * XScale;
+            var yPos = (TotalHeight - BottomMargin) - (day.Summary.NightWakingCount * yScale);
+
+            <circle cx="@xPos" cy="@yPos" r="5" fill="#1a237e" opacity="0.5">
+                <title>@day.Date: Naps @FormatMinutes(day.Summary.NapsMinutes), Wakings: @day.Summary.NightWakingCount</title>
+            </circle>
+        }
+    </svg>
+</div>
+
+@code {
+    [Parameter] public List<DailyRhythmMapDay> Days { get; set; } = new();
+
+    private const double TotalWidth = 1600;
+    private const double TotalHeight = 350;
+    private const double TopMargin = 20;
+    private const double BottomMargin = 50;
+    private const double LeftMargin = 60;
+    private const double RightMargin = 40;
+
+    private const int MaxNapHours = 12;
+    private const double ChartWidth = TotalWidth - LeftMargin - RightMargin;
+    private const double ChartHeight = TotalHeight - TopMargin - BottomMargin;
+    private const double XScale = ChartWidth / (double)MaxNapHours;
+
+    private string FormatMinutes(double totalMinutes)
+    {
+        var h = (int)(totalMinutes / 60);
+        var m = (int)(totalMinutes % 60);
+        return $"{h}h {m}m";
+    }
+}
