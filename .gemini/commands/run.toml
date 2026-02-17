@@ -1,9 +1,11 @@
-description = "Starts the GajaTrack REST API and WebApp in the background."
+description = "Starts the GajaTrack REST API and WebApp with high-performance polling for health verification."
 prompt = """
-1. Check if 'GajaTrack.RestApi.exe' is already running using 'tasklist'.
-2. If running, do nothing and report 'Application is already running'.
-3. If not running, execute:
-   Start-Process -FilePath \"dotnet\" -ArgumentList \"run --project src/GajaTrack.Presentation/GajaTrack.RestApi/GajaTrack.RestApi.csproj --launch-profile http\" -WorkingDirectory \"src/GajaTrack.Presentation/GajaTrack.RestApi\" -WindowStyle Hidden
-4. Wait 5 seconds, then verify port 5049 is listening using 'netstat'.
-5. Report status to the user.
+1. **Health Check**: Test `http://localhost:5049/api/stats` with `Invoke-WebRequest -UseBasicParsing -ErrorAction SilentlyContinue`.
+2. **Handle Status**:
+   - If 200 OK: Report "Application is already running and healthy".
+   - Otherwise:
+     - Clear existing processes: `taskkill /F /IM GajaTrack.RestApi.exe /T 2>$null`.
+     - Start from root: `Start-Process -FilePath \"dotnet\" -ArgumentList \"run --project src/GajaTrack.Presentation/GajaTrack.RestApi/GajaTrack.RestApi.csproj --launch-profile http\" -WindowStyle Hidden`.
+     - **Poll for Health**: Use a loop to check the endpoint every 1 second, up to 10 times. Exit the loop immediately upon success.
+3. **Report Result**: Provide final status and time to start.
 """
