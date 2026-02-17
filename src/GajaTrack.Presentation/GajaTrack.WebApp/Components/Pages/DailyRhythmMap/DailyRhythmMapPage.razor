@@ -8,7 +8,11 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Daily Rhythm Map</h1>
     <div class="d-flex gap-2 align-items-center">
-        <span>@_startDate.ToString("dd.MM.yyyy") - @_startDate.AddDays(13).ToString("dd.MM.yyyy")</span>
+        <div class="d-flex align-items-center gap-2">
+            <input type="date" @bind="_startDate" @bind:after="LoadData" class="form-control" />
+            <span>-</span>
+            <input type="date" @bind="_endDate" @bind:after="LoadData" class="form-control" />
+        </div>
         <div class="btn-group">
             <button class="btn btn-outline-secondary" @onclick="PrevPage">&lt;</button>
             <button class="btn btn-outline-secondary" @onclick="NextPage">&gt;</button>
@@ -77,6 +81,7 @@
 @code {
     private List<DailyRhythmMapDay>? _days;
     // Default to showing the last 2 weeks ending today (or recent data)
+    private DateOnly _endDate = DateOnly.FromDateTime(DateTime.UtcNow);
     private DateOnly _startDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-13));
     
     private HashSet<DailyRhythmMapEventType> _visibleTypes = new()
@@ -108,18 +113,26 @@
 
     private async Task LoadData()
     {
-        _days = await DailyRhythmMapApi.GetAsync(_startDate, _startDate.AddDays(13), mostRecentFirst: true);
+         if (_startDate > _endDate)
+        {
+             (_startDate, _endDate) = (_endDate, _startDate);
+        }
+        _days = await DailyRhythmMapApi.GetAsync(_startDate, _endDate, mostRecentFirst: true);
     }
     
     private async Task PrevPage()
     {
-        _startDate = _startDate.AddDays(-14);
+        var diff = _endDate.DayNumber - _startDate.DayNumber + 1;
+        _startDate = _startDate.AddDays(-diff);
+        _endDate = _endDate.AddDays(-diff);
         await LoadData();
     }
 
     private async Task NextPage()
     {
-        _startDate = _startDate.AddDays(14);
+        var diff = _endDate.DayNumber - _startDate.DayNumber + 1;
+        _startDate = _startDate.AddDays(diff);
+        _endDate = _endDate.AddDays(diff);
         await LoadData();
     }
 }
