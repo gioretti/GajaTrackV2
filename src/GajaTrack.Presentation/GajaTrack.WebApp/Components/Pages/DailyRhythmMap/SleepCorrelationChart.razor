@@ -18,7 +18,12 @@
 
         <!-- Y-Axis Labels & Horizontal Grid Lines (0 to Max Wakings) -->
         @{
-            var maxWakings = Days.Count > 0 ? Math.Max(5, Days.Max(d => d.Summary.NightWakingCount)) : 5;
+            var filteredData = Days.Select(d => new { 
+                Day = d, 
+                WakingCount = GetFilteredNightWakingCount(d) 
+            }).ToList();
+
+            var maxWakings = filteredData.Count > 0 ? Math.Max(5, filteredData.Max(d => d.WakingCount)) : 5;
             var yScale = ChartHeight / (double)maxWakings;
         }
         @for (int w = 0; w <= maxWakings; w++)
@@ -27,16 +32,16 @@
             <line x1="@LeftMargin" y1="@y" x2="@(TotalWidth - RightMargin)" y2="@y" stroke="#eee" stroke-width="1" />
             <svg:text x="@(LeftMargin - 10)" y="@(y + 4)" font-size="10" text-anchor="end" fill="#666">@w</svg:text>
         }
-        <svg:text transform="rotate(-90, 15, @(TopMargin + ChartHeight / 2))" x="15" y="@(TopMargin + ChartHeight / 2)" font-size="11" text-anchor="middle" font-weight="bold" fill="#333">Night Wakings</svg:text>
+        <svg:text transform="rotate(-90, 15, @(TopMargin + ChartHeight / 2))" x="15" y="@(TopMargin + ChartHeight / 2)" font-size="11" text-anchor="middle" font-weight="bold" fill="#333">Night Wakings (Filtered)</svg:text>
 
         <!-- Data Points (Circles) -->
-        @foreach (var day in Days)
+        @foreach (var item in filteredData)
         {
-            var xPos = LeftMargin + (day.Summary.NapsMinutes / 60.0) * XScale;
-            var yPos = (TotalHeight - BottomMargin) - (day.Summary.NightWakingCount * yScale);
+            var xPos = LeftMargin + (item.Day.Summary.NapsMinutes / 60.0) * XScale;
+            var yPos = (TotalHeight - BottomMargin) - (item.WakingCount * yScale);
 
             <circle cx="@xPos" cy="@yPos" r="5" fill="#1a237e" opacity="0.5">
-                <title>@day.Date: Naps @FormatMinutes(day.Summary.NapsMinutes), Wakings: @day.Summary.NightWakingCount</title>
+                <title>@item.Day.Date: Naps @FormatMinutes(item.Day.Summary.NapsMinutes), Filtered Wakings: @item.WakingCount</title>
             </circle>
         }
     </svg>
@@ -56,6 +61,17 @@
     private const double ChartWidth = TotalWidth - LeftMargin - RightMargin;
     private const double ChartHeight = TotalHeight - TopMargin - BottomMargin;
     private const double XScale = ChartWidth / (double)MaxNapHours;
+
+    private int GetFilteredNightWakingCount(DailyRhythmMapDay day)
+    {
+        // Filter for sleep events starting after 18:00 (720 min) with duration >= 20m
+        var nightSessions = day.Events
+            .Where(e => e.Type == DailyRhythmMapEventType.Sleep && e.StartMinute >= 720 && e.DurationMinutes >= 20)
+            .ToList();
+
+        // Waking count is N - 1 (interruptions), minimum 0.
+        return Math.Max(0, nightSessions.Count - 1);
+    }
 
     private string FormatMinutes(double totalMinutes)
     {

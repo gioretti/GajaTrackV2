@@ -20,7 +20,7 @@
         @{
             var validDays = Days.Select(d => new { 
                 Day = d, 
-                AvgNightSession = GetAverageNightSessionMinutes(d) 
+                AvgNightSession = GetAverageFilteredNightSessionMinutes(d) 
             }).Where(x => x.AvgNightSession > 0).ToList();
 
             var maxAvgHours = validDays.Count > 0 ? Math.Max(6, (int)Math.Ceiling(validDays.Max(x => x.AvgNightSession) / 60.0)) : 6;
@@ -32,7 +32,7 @@
             <line x1="@LeftMargin" y1="@y" x2="@(TotalWidth - RightMargin)" y2="@y" stroke="#eee" stroke-width="1" />
             <svg:text x="@(LeftMargin - 10)" y="@(y + 4)" font-size="10" text-anchor="end" fill="#666">@(h)h</svg:text>
         }
-        <svg:text transform="rotate(-90, 15, @(TopMargin + ChartHeight / 2))" x="15" y="@(TopMargin + ChartHeight / 2)" font-size="11" text-anchor="middle" font-weight="bold" fill="#333">Avg Night Session</svg:text>
+        <svg:text transform="rotate(-90, 15, @(TopMargin + ChartHeight / 2))" x="15" y="@(TopMargin + ChartHeight / 2)" font-size="11" text-anchor="middle" font-weight="bold" fill="#333">Avg Filtered Night Session</svg:text>
 
         <!-- Data Points (Circles) -->
         @foreach (var item in validDays)
@@ -41,7 +41,7 @@
             var yPos = (TotalHeight - BottomMargin) - (item.AvgNightSession / 60.0) * yScale;
 
             <circle cx="@xPos" cy="@yPos" r="5" fill="#ffb300" opacity="0.5">
-                <title>@item.Day.Date: Naps @FormatMinutes(item.Day.Summary.NapsMinutes), Avg Night Session: @FormatMinutes(item.AvgNightSession)</title>
+                <title>@item.Day.Date: Naps @FormatMinutes(item.Day.Summary.NapsMinutes), Avg Filtered Session: @FormatMinutes(item.AvgNightSession)</title>
             </circle>
         }
     </svg>
@@ -62,11 +62,11 @@
     private const double ChartHeight = TotalHeight - TopMargin - BottomMargin;
     private const double XScale = ChartWidth / (double)MaxNapHours;
 
-    private double GetAverageNightSessionMinutes(DailyRhythmMapDay day)
+    private double GetAverageFilteredNightSessionMinutes(DailyRhythmMapDay day)
     {
-        // Filter sleep events starting after 18:00 (720 minutes from 06:00 window start)
+        // Filter sleep events starting after 18:00 (720 min) with duration >= 20m
         var nightSessions = day.Events
-            .Where(e => e.Type == DailyRhythmMapEventType.Sleep && e.StartMinute >= 720)
+            .Where(e => e.Type == DailyRhythmMapEventType.Sleep && e.StartMinute >= 720 && e.DurationMinutes >= 20)
             .ToList();
 
         if (nightSessions.Count == 0) return 0;
