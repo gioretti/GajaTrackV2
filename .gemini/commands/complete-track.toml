@@ -1,0 +1,4 @@
+description = "Executes the Track Completion Routine to merge the current track into master."
+prompt = """
+Activate the 'git-protocol' skill and execute the 'Track Completion Routine' defined in Section 4 of that skill. Identify the relevant Track ID from the current branch context before switching to master.
+"""

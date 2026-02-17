@@ -1,0 +1,9 @@
+description = "Starts the GajaTrack REST API and WebApp in the background."
+prompt = """
+1. Check if 'GajaTrack.RestApi.exe' is already running using 'tasklist'.
+2. If running, do nothing and report 'Application is already running'.
+3. If not running, execute:
+   Start-Process -FilePath \"dotnet\" -ArgumentList \"run --project src/GajaTrack.Presentation/GajaTrack.RestApi/GajaTrack.RestApi.csproj --launch-profile http\" -WorkingDirectory \"src/GajaTrack.Presentation/GajaTrack.RestApi\" -WindowStyle Hidden
+4. Wait 5 seconds, then verify port 5049 is listening using 'netstat'.
+5. Report status to the user.
+"""
