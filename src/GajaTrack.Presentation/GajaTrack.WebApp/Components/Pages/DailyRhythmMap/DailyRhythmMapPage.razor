@@ -37,7 +37,10 @@
         </div>
         
         <div class="mt-4 border-top pt-3">
-            <h5>Legend</h5>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5>Legend</h5>
+                <small class="text-muted">A Night is between 18:00 - 06:00</small>
+            </div>
             <div class="d-flex gap-4 flex-wrap">
                 <div class="d-flex align-items-center gap-2">
                     <input type="checkbox" checked="@_visibleTypes.Contains(DailyRhythmMapEventType.Sleep)" @onchange="@(() => ToggleVisibility(DailyRhythmMapEventType.Sleep))" class="form-check-input" />

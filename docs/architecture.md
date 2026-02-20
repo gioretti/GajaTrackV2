@@ -8,7 +8,8 @@ The application is structured into four main layers, with dependencies always po
 
 ```mermaid
 graph TD
-    Web[Web Layer - Blazor] --> Application[Application Layer]
+    Client[Presentation Layer - Blazor WASM] -->|HTTP| API[Presentation Layer - REST API]
+    API --> Application[Application Layer]
     Infrastructure[Infrastructure Layer] --> Application
     Application --> Domain[Domain Layer]
     Infrastructure -.-> Domain
@@ -41,17 +42,20 @@ Handles technical concerns and communication with external systems.
 - **Migrations:** Database schema versioning.
 - **External Services:** Implementations of import/export logic.
 
-### 4. Web Layer (`src/GajaTrack.Web` & `src/GajaTrack.Web.Client`)
-The presentation layer built with .NET 9 Blazor, operating in a Client-Server model.
+### 4. Presentation Layer (`src/GajaTrack.Presentation`)
+The entry point of the application, split into a Client-Server architecture.
 
-- **Server (`GajaTrack.Web`):**
-    - Hosts the Blazor Server and serves the WASM client.
-    - Exposes a **REST API** (`/api/protocol`, `/api/import`, etc.) for data access.
-    - Registers direct service implementations (`Infrastructure` -> `Application`).
-- **Client (`GajaTrack.Web.Client`):**
-    - Runs in the browser (WebAssembly).
-    - Contains all UI Pages and Components (`Home`, `ProtocolPage`, etc.).
-    - Uses `HttpClient` implementations of Application interfaces to communicate with the Server API.
+- **REST API (`GajaTrack.RestApi`):**
+    - The **Host** application.
+    - Exposes a stable HTTP API for data access (`/api/...`).
+    - Handles Dependency Injection and Database connections.
+    - References `Infrastructure` and `Application`.
+- **Web App (`GajaTrack.WebApp`):**
+    - A **Blazor WebAssembly** client.
+    - Runs entirely in the browser.
+    - Contains all UI Pages and Interactve Components.
+    - **Crucial:** Does NOT reference Application/Infrastructure/Domain directly.
+    - uses `HttpClient` to communicate with `GajaTrack.RestApi`.
 
 ## Data Integrity Principles
 
@@ -64,4 +68,4 @@ The presentation layer built with .NET 9 Blazor, operating in a Client-Server mo
 The protocol visualization uses a logical day window from **06:00 to 06:00 (Local Time)**. 
 - The **Domain Service** calculates these windows in UTC.
 - The **Application Service** fetches relevant events.
-- The **Web Layer** renders events relative to the window start.
+- The **Web App** renders events relative to the window start.
