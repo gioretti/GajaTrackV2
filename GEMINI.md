@@ -1,35 +1,20 @@
 # Project: Baby Gaja Tracking Application
 A minimalist tracking application for baby behavior data. Focus: Speed and Data Integrity.
 
-## PROJECT ORCHESTRATION (CONDUCTOR)
-This project uses **Conductor** as the central engine. All work happens in **Tracks**.
+## ANTIGRAVITY WORKFLOW
+This project uses Antigravity natively. The AI agent manages state, context, and execution modes (PLANNING, EXECUTION, VERIFICATION) within a unified session.
 
-### Personas & Roles
-- **Conductor (Coordinator):** State management and track lifecycle.
-- **Product Owner (PO):** Defines **WHAT** and **WHY** in `spec.md`.
-- **Software Architect:** Technical design in `plan.md` and verification.
-- **Software Developer:** Execution expert. **Forbidden from expanding scope or refactoring project structure without an approved plan update.**
+The core process is driven by the **`.agents/workflows/build-feature.md`** instruction set. You must always refer to and follow this workflow when building new features or fixing bugs.
 
 ## DEVELOPMENT PRINCIPLES
-- **Surgical Changes:** Touch only what is explicitly in the `plan.md`. **Strictly clean up only your own mess.** Opportunistic refactoring is a PROTOCOL BREACH.
-- **Git Discipline:** The Developer MUST activate and follow the **`git-protocol`** skill for all branch, commit, PR, and merge operations. No work outside a track branch.
-- **Think Before Coding:** State assumptions explicitly. Surface tradeoffs. Push back if a simpler approach is possible.
-- **Simplicity First:** Minimum code that solves the problem. Nothing speculative.
-- **Goal-Driven Execution:** **NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.** Use the "Task -> Verify" loop.
-
-## OPERATIONAL GUIDELINES
-- **Track-Driven Development:** No work outside a Conductor track. Use `/conductor:implement`.
-- **Mandatory Review Gate:** Merging into `master` is a privileged operation. Follow the review process defined in the `git-protocol` skill.
-- **The Handoff:**
-    1. **PO Discovery:** User Request -> `spec.md`.
-    2. **Architect Design:** `spec.md` -> `plan.md`.
-    3. **Developer Execution:** `plan.md` -> Implementation (TDD).
-- **Verification:** Developer MUST seek Architect approval via **Implementation Summary** for every phase.
-- **Cross-Reference:** Always verify against `docs/` and `conductor/` before proposing changes.
-
+We strictly follow Andrej Karpathy's 4 principles for AI coding:
+- **Think Before Coding:** Don't assume. Don't hide confusion. Surface tradeoffs. State your assumptions explicitly.
+- **Simplicity First:** Minimum code that solves the problem. Nothing speculative. No abstractions for single-use code.
+- **Surgical Changes:** Touch only what you must. Clean up only your own mess. Every changed line should trace directly to the user's request.
+- **Goal-Driven Execution:** Define success criteria. Loop until verified. Transform tasks into verifiable goals (e.g. "Write tests, then make them pass").
 ## REPOSITORY MAP
-- **Conductor State:** `conductor/`
-- **Requirements:** `docs/requirements/`
+- **Product Documentation:** `docs/product/` (Vision, Glossary, UI/UX Guidelines)
+- **Features:** `docs/features/`
 - **Architecture & ADRs:** `docs/adr/` and `docs/architecture.md`
 - **Coding Standards:** `conductor/code_styleguides/`
 - **Technical Implementation:** `/src/`
