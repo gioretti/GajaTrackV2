@@ -42,6 +42,7 @@ public class ExportServiceTest : IDisposable
         Assert.True(root.TryGetProperty("bottleFeeds", out _), "bottleFeeds missing");
         Assert.True(root.TryGetProperty("sleepSessions", out _), "sleepSessions missing");
         Assert.True(root.TryGetProperty("diaperChanges", out _), "diaperChanges missing");
+        Assert.True(root.TryGetProperty("cryingSessions", out _), "cryingSessions missing");
     }
 
     [Fact]
@@ -131,6 +132,27 @@ public class ExportServiceTest : IDisposable
         Assert.Equal(diaper.Id.ToString(), item.GetProperty("id").GetString());
         Assert.Equal("Soiled", item.GetProperty("type").GetString()); // Enum as String
         Assert.EndsWith("Z", item.GetProperty("time").GetString());
+    }
+
+    [Fact]
+    public async Task Export_ShouldSerializeCryingSessionCorrectly()
+    {
+        // Arrange
+        var now = DateTime.UtcNow;
+        var crying = CryingSession.Create(Guid.NewGuid(), "pk5", UtcDateTime.FromDateTime(now), UtcDateTime.FromDateTime(now.AddMinutes(30)));
+        _context.CryingSessions.Add(crying);
+        await _context.SaveChangesAsync();
+        var service = new ExportService(_context);
+
+        // Act
+        var resultBytes = await service.ExportDataAsync();
+        using var doc = JsonDocument.Parse(resultBytes);
+        var item = doc.RootElement.GetProperty("gajaTracking").GetProperty("cryingSessions")[0];
+
+        // Assert
+        Assert.Equal(crying.Id.ToString(), item.GetProperty("id").GetString());
+        Assert.EndsWith("Z", item.GetProperty("startTime").GetString());
+        Assert.EndsWith("Z", item.GetProperty("endTime").GetString());
     }
 
     public void Dispose()

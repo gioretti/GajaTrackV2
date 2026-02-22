@@ -64,6 +64,7 @@ public class ExportApiTest : IClassFixture<WebApplicationFactory<Program>>
         var content = await response.Content.ReadAsStringAsync();
         Assert.Contains("nursingFeeds", content);
         Assert.Contains("bottleFeeds", content);
+        Assert.Contains("cryingSessions", content);
     }
 }
 

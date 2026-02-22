@@ -15,12 +15,14 @@ public class ExportService(GajaDbContext dbContext) : IExportService
         var bottle = await dbContext.BottleFeeds.AsNoTracking().ToListAsync(cancellationToken);
         var sleep = await dbContext.SleepSessions.AsNoTracking().ToListAsync(cancellationToken);
         var diaper = await dbContext.DiaperChanges.AsNoTracking().ToListAsync(cancellationToken);
+        var crying = await dbContext.CryingSessions.AsNoTracking().ToListAsync(cancellationToken);
 
         var exportData = new GajaTrackExport(
             nursing.Select(x => new ExportNursingFeed(x.Id, DateTime.SpecifyKind(x.StartTime, DateTimeKind.Utc), x.EndTime.HasValue ? DateTime.SpecifyKind(x.EndTime.Value, DateTimeKind.Utc) : null)).ToList(),
             bottle.Select(x => new ExportBottleFeed(x.Id, DateTime.SpecifyKind(x.Time, DateTimeKind.Utc), x.AmountMl, x.Content.ToString())).ToList(),
             sleep.Select(x => new ExportSleepSession(x.Id, DateTime.SpecifyKind(x.StartTime, DateTimeKind.Utc), x.EndTime.HasValue ? DateTime.SpecifyKind(x.EndTime.Value, DateTimeKind.Utc) : null)).ToList(),
-            diaper.Select(x => new ExportDiaperChange(x.Id, DateTime.SpecifyKind(x.Time, DateTimeKind.Utc), x.Type.ToString())).ToList()
+            diaper.Select(x => new ExportDiaperChange(x.Id, DateTime.SpecifyKind(x.Time, DateTimeKind.Utc), x.Type.ToString())).ToList(),
+            crying.Select(x => new ExportCryingSession(x.Id, DateTime.SpecifyKind(x.StartTime, DateTimeKind.Utc), x.EndTime.HasValue ? DateTime.SpecifyKind(x.EndTime.Value, DateTimeKind.Utc) : null)).ToList()
         );
 
         var options = new JsonSerializerOptions 
