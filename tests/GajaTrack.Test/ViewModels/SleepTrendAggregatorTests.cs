@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Xunit;
 using GajaTrack.Application.DTOs.DailyRhythmMap;
 using GajaTrack.WebApp.ViewModels;
 
@@ -27,7 +27,7 @@ public class SleepTrendAggregatorTests
     public void Aggregate_WithEmptyList_ReturnsEmpty()
     {
         var result = SleepTrendAggregator.Aggregate(new List<DailyRhythmMapDay>(), SleepAggregationMode.Daily);
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -41,15 +41,15 @@ public class SleepTrendAggregatorTests
 
         var result = SleepTrendAggregator.Aggregate(days, SleepAggregationMode.Daily).ToList();
 
-        result.Should().HaveCount(2);
+        Assert.Equal(2, result.Count);
 
-        result[0].Label.Should().Be("01.10");
-        result[0].NightSleepMinutes.Should().Be(600);
-        result[0].NapsMinutes.Should().Be(120);
+        Assert.Equal("01.10", result[0].Label);
+        Assert.Equal(600, result[0].NightSleepMinutes);
+        Assert.Equal(120, result[0].NapsMinutes);
 
-        result[1].Label.Should().Be("02.10");
-        result[1].NightSleepMinutes.Should().Be(660);
-        result[1].NapsMinutes.Should().Be(60);
+        Assert.Equal("02.10", result[1].Label);
+        Assert.Equal(660, result[1].NightSleepMinutes);
+        Assert.Equal(60, result[1].NapsMinutes);
     }
 
     [Fact]
@@ -67,17 +67,17 @@ public class SleepTrendAggregatorTests
 
         var result = SleepTrendAggregator.Aggregate(days, SleepAggregationMode.Weekly).ToList();
 
-        result.Should().HaveCount(2);
+        Assert.Equal(2, result.Count);
 
         // Week 40 Average (600+660)/2 = 630 night, (120+60)/2 = 90 naps
-        result[0].Label.Should().Be("Wk 40");
-        result[0].NightSleepMinutes.Should().Be(630);
-        result[0].NapsMinutes.Should().Be(90);
+        Assert.Equal("Wk 40", result[0].Label);
+        Assert.Equal(630, result[0].NightSleepMinutes);
+        Assert.Equal(90, result[0].NapsMinutes);
 
         // Week 41
-        result[1].Label.Should().Be("Wk 41");
-        result[1].NightSleepMinutes.Should().Be(500);
-        result[1].NapsMinutes.Should().Be(0);
+        Assert.Equal("Wk 41", result[1].Label);
+        Assert.Equal(500, result[1].NightSleepMinutes);
+        Assert.Equal(0, result[1].NapsMinutes);
     }
 
     [Fact]
@@ -95,17 +95,17 @@ public class SleepTrendAggregatorTests
 
         var result = SleepTrendAggregator.Aggregate(days, SleepAggregationMode.Monthly).ToList();
 
-        result.Should().HaveCount(2);
+        Assert.Equal(2, result.Count);
 
         // October Average (600+660)/2 = 630 night, (120+60)/2 = 90 naps
-        result[0].Label.Should().Be("Oct");
-        result[0].NightSleepMinutes.Should().Be(630);
-        result[0].NapsMinutes.Should().Be(90);
+        Assert.Equal("Oct", result[0].Label);
+        Assert.Equal(630, result[0].NightSleepMinutes);
+        Assert.Equal(90, result[0].NapsMinutes);
 
         // November
-        result[1].Label.Should().Be("Nov");
-        result[1].NightSleepMinutes.Should().Be(500);
-        result[1].NapsMinutes.Should().Be(0);
+        Assert.Equal("Nov", result[1].Label);
+        Assert.Equal(500, result[1].NightSleepMinutes);
+        Assert.Equal(0, result[1].NapsMinutes);
     }
 
     [Fact]
@@ -122,9 +122,9 @@ public class SleepTrendAggregatorTests
 
         var result = SleepTrendAggregator.Aggregate(days, SleepAggregationMode.Weekly).ToList();
 
-        result.Should().HaveCount(2);
+        Assert.Equal(2, result.Count);
 
-        result[0].Label.Should().Be("Wk 52");
-        result[1].Label.Should().Be("Wk 1");
+        Assert.Equal("Wk 52", result[0].Label);
+        Assert.Equal("Wk 1", result[1].Label);
     }
 }
