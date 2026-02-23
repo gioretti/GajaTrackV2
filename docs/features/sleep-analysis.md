@@ -8,9 +8,17 @@ The Sleep Analysis feature provides longitudinal insights into the baby's sleep 
 ### Data Sourcing
 The Sleep Analysis features do not have a dedicated API endpoint. Instead, the `SleepTrendPage.razor` fetches the same list of `DailyRhythmMapDay` objects (via `/api/daily-rhythm-map`) used by the core Daily Rhythm map, but specifies a wider default date range (`-29` days to today).
 
-### Visualizations
-
 The data is rendered completely client-side via custom SVG components in Blazor WebAssembly.
+
+### Aggregation Modes
+Users can select how to aggregate the data for the trend charts (Duration Trend & Line Chart) via a dropdown:
+- **Daily**: Raw daily data.
+- **Weekly**: Data grouped by ISO 8601 week. The rendered data points represent the daily averages for that week.
+- **Monthly**: Data grouped by month. The rendered data points represent the daily averages for that month.
+
+*(Note: The correlation scatter plots always display unaggregated daily data to preserve the fidelity of the insights).*
+
+### Charts
 
 1. **Sleep Duration Trend (`SleepTrendChart.razor`)**
    - An area chart that visualizes total sleep over time.

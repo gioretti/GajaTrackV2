@@ -1,19 +1,19 @@
-@using GajaTrack.Application.DTOs.DailyRhythmMap
+@using GajaTrack.WebApp.ViewModels
 @using System.Text
 
 <div class="sleep-line-chart-container mt-4 card p-3 shadow-sm">
     <h5 class="mb-3">Independent Sleep Durations (Naps vs. Night)</h5>
     <svg viewBox="0 0 @TotalWidth @TotalHeight" preserveAspectRatio="xMidYMid meet" class="sleep-trend-svg">
         <!-- Background -->
-        <rect x="0" y="0" width="@TotalWidth" height="@TotalHeight" fill="white" />
+        <rect x="0" y="0" width="@TotalWidth" height="@TotalHeight" fill="white"/>
 
         <!-- Y-Axis Grid Lines & Labels (0 to 24h) -->
         @for (int h = 0; h <= 24; h++)
         {
             var y = ChartHeight - (h * HourScale) + TopMargin;
             var isMajor = h % 6 == 0;
-            <line x1="@LeftMargin" y1="@y" x2="@(TotalWidth - RightMargin)" y2="@y" stroke="@(isMajor ? "#ccc" : "#eee")" stroke-width="1" />
-            
+            <line x1="@LeftMargin" y1="@y" x2="@(TotalWidth - RightMargin)" y2="@y" stroke="@(isMajor ? "#ccc" : "#eee")" stroke-width="1"/>
+
             @if (isMajor || h % 2 == 0)
             {
                 <g>
@@ -23,54 +23,54 @@
         }
 
         @{
-            var sortedDays = Days.OrderBy(d => d.Date).ToList();
-            var xStep = (TotalWidth - LeftMargin - RightMargin) / Math.Max(1, sortedDays.Count - 1);
+            var pointCount = DataPoints.Count;
+            var xStep = (TotalWidth - LeftMargin - RightMargin) / Math.Max(1, pointCount - 1);
         }
 
-        @if (sortedDays.Count > 0)
+        @if (pointCount > 0)
         {
             <!-- 1. Night Sleep Line -->
-            <path d="@GenerateLinePath(sortedDays, xStep, false)" fill="none" stroke="#1a237e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
-            
+            <path d="@GenerateLinePath(DataPoints, xStep, false)" fill="none" stroke="#1a237e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+
             <!-- 2. Naps Line -->
-            <path d="@GenerateLinePath(sortedDays, xStep, true)" fill="none" stroke="#ffb300" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+            <path d="@GenerateLinePath(DataPoints, xStep, true)" fill="none" stroke="#ffb300" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 
             <!-- Vertical lines and Date labels for each day -->
-            @for (int i = 0; i < sortedDays.Count; i++)
+            @for (int i = 0; i < pointCount; i++)
             {
-                var day = sortedDays[i];
+                var point = DataPoints[i];
                 var x = LeftMargin + (i * xStep);
-                
-                <line x1="@x" y1="@TopMargin" x2="@x" y2="@(ChartHeight + TopMargin)" stroke="#eee" stroke-width="1" stroke-dasharray="2,2" />
+
+                <line x1="@x" y1="@TopMargin" x2="@x" y2="@(ChartHeight + TopMargin)" stroke="#eee" stroke-width="1" stroke-dasharray="2,2"/>
 
                 <!-- Date Label -->
                 <g>
-                    <text x="@x" y="@(TotalHeight - 5)" font-size="9" text-anchor="middle" fill="#999">@day.Date.ToString("dd.MM")</text>
+                    <text x="@x" y="@(TotalHeight - 5)" font-size="9" text-anchor="middle" fill="#999">@point.Label</text>
                 </g>
-                
+
                 <!-- Data Points (Small dots for better visibility) -->
-                <circle cx="@x" cy="@GetY(day.Summary.NightSleepMinutes)" r="3" fill="#1a237e" />
-                <circle cx="@x" cy="@GetY(day.Summary.NapsMinutes)" r="3" fill="#ffb300" />
+                <circle cx="@x" cy="@GetY(point.NightSleepMinutes)" r="3" fill="#1a237e"/>
+                <circle cx="@x" cy="@GetY(point.NapsMinutes)" r="3" fill="#ffb300"/>
 
                 <!-- Tooltip Trigger -->
                 <rect x="@(x - 15)" y="@TopMargin" width="30" height="@ChartHeight" fill="transparent">
-                    <title>@day.Date: Night @FormatMinutes(day.Summary.NightSleepMinutes), Naps @FormatMinutes(day.Summary.NapsMinutes)</title>
+                    <title>@point.Label: Night @FormatMinutes(point.NightSleepMinutes), Naps @FormatMinutes(point.NapsMinutes)</title>
                 </rect>
             }
         }
 
         <!-- Legend -->
         <g transform="translate(@(TotalWidth - 150), 10)">
-            <line x1="0" y1="5" x2="15" y2="5" stroke="#ffb300" stroke-width="3" />
+            <line x1="0" y1="5" x2="15" y2="5" stroke="#ffb300" stroke-width="3"/>
             <text x="20" y="10" font-size="12" fill="#333">Naps</text>
-            <line x1="0" y1="25" x2="15" y2="25" stroke="#1a237e" stroke-width="3" />
+            <line x1="0" y1="25" x2="15" y2="25" stroke="#1a237e" stroke-width="3"/>
             <text x="20" y="30" font-size="12" fill="#333">Night</text>
         </g>
     </svg>
 </div>
 
 @code {
-    [Parameter] public List<DailyRhythmMapDay> Days { get; set; } = new();
+    [Parameter] public List<SleepTrendDataPoint> DataPoints { get; set; } = new();
 
     private const double TotalWidth = 1600;
     private const double TotalHeight = 350;
@@ -82,18 +82,18 @@
     private const double ChartHeight = TotalHeight - TopMargin - BottomMargin;
     private const double HourScale = ChartHeight / 24.0;
 
-    private string GenerateLinePath(List<DailyRhythmMapDay> sortedDays, double xStep, bool isNaps)
+    private string GenerateLinePath(List<SleepTrendDataPoint> points, double xStep, bool isNaps)
     {
-        if (sortedDays.Count == 0) return "";
+        if (points.Count == 0) return "";
 
         var sb = new StringBuilder();
-        for (int i = 0; i < sortedDays.Count; i++)
+        for (int i = 0; i < points.Count; i++)
         {
-            var day = sortedDays[i];
+            var point = points[i];
             var x = LeftMargin + (i * xStep);
-            var minutes = isNaps ? day.Summary.NapsMinutes : day.Summary.NightSleepMinutes;
+            var minutes = isNaps ? point.NapsMinutes : point.NightSleepMinutes;
             var y = GetY(minutes);
-            
+
             sb.Append(i == 0 ? $"M {x} {y}" : $" L {x} {y}");
         }
 
@@ -111,4 +111,5 @@
         var m = (int)(totalMinutes % 60);
         return $"{h}h {m}m";
     }
+
 }

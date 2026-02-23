@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="FluentAssertions" Version="8.8.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.2" />
@@ -23,6 +24,7 @@
     <ProjectReference Include="..\..\src\GajaTrack.Application\GajaTrack.Application.csproj" />
     <ProjectReference Include="..\..\src\GajaTrack.Domain\GajaTrack.Domain.csproj" />
     <ProjectReference Include="..\..\src\GajaTrack.Infrastructure\GajaTrack.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\GajaTrack.Presentation\GajaTrack.WebApp\GajaTrack.WebApp.csproj" />
   </ItemGroup>
 
 </Project>
